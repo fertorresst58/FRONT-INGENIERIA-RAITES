@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <!-- BARRA DE ARRIBA -->
     <v-app-bar
       app
       prominent
@@ -9,6 +10,7 @@
       class="pt-5"
     >
       <v-row>
+        <!-- LOGO DE LA APLICACION -->
         <v-col cols="7">
           <v-app-bar-title>
             <v-img
@@ -20,6 +22,7 @@
           </v-app-bar-title>
         </v-col>
 
+        <!-- COLUMNA CORREO -->
         <v-col cols="2" style="height: 146px;">
           <v-row>
             <span class="fontTitle" style="color: white; font-size: 16px;">Correo:</span>
@@ -44,6 +47,7 @@
           </v-row>
         </v-col>
 
+        <!-- COLUMNA CONTRASEÑA -->
         <v-col cols="2" style="height: 146px;">
           <v-row>
             <span class="fontTitle" style="color: white; font-size: 16px;">Contraseña:</span>
@@ -71,6 +75,7 @@
           </v-row>
         </v-col>
 
+        <!-- COLUMNA BOTON LOGIN -->
         <v-col cols="1" style="height: 146px;" class="pl-0">
           <div class="pt-4">
             <v-btn block color="#FFD300" height="38px" width="90%" @click="login()">
@@ -81,9 +86,11 @@
       </v-row>
     </v-app-bar>
 
+    <!-- MAIN -->
     <v-container fluid>
       <v-main>
         <v-row class="mt-0 pa-0">
+          <!-- IMAGEN DE FONDO DEL MAIN -->
           <v-col cols="7">
             <v-img
               :src="require('@/assets/login.jpg')"
@@ -107,6 +114,7 @@
             </v-row>
           </v-col>
 
+          <!-- FORMULARIO PARA REGISTRO DE USUARIOS -->
           <v-col cols="5">
             <v-card flat outlined>
               <v-card-title class="fontTitle">
@@ -287,6 +295,7 @@
       </v-main>
     </v-container>
 
+    <!-- FOOTER -->
     <v-footer dark padless>
       <v-card class="flex" flat tile>
         <v-card-title class="blueBack">
@@ -305,6 +314,7 @@
       </v-card>
     </v-footer>
 
+    <!-- DIALOG PARA OLVIDE MI CONTRASEÑA -->
     <v-dialog v-model="showPassword" width="50%">
       <v-stepper v-model="e1">
         <v-stepper-header>
