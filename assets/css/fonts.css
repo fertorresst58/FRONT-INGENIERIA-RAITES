@@ -9,3 +9,27 @@
 .fontText {
   font-family: Muli, sans-serif;
 }
+
+.blueBack {
+  background-color: #0A263D;
+}
+
+.coyoteBack {
+  background-color: #8C6E39;
+}
+
+.goldBack {
+  background-color: #FFD300;
+}
+
+.blueText {
+  color: #0A263D;
+}
+
+.coyoteText {
+  color: #8C6E39;
+}
+
+.goldText {
+  color: #FFD300;
+}
