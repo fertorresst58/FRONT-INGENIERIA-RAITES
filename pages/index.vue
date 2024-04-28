@@ -531,6 +531,15 @@ export default {
       console.log('PASSWORD => ', this.contrasenaLogin)
       // eslint-disable-next-line no-console
       console.log('CHECKBOX => ', this.checkbox)
+
+      fetch('../backend/index.php')
+        .then(response => response.json())
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
     },
 
     signUp () {

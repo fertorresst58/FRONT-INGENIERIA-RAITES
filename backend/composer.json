@@ -1,0 +1,17 @@
+{
+    "name": "marva/raites-ug",
+    "authors": [
+        {
+            "name": "Mario Cobian",
+            "email": "marvanis@hotmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Model\\" : "./Models",
+            "MVC\\" : "./",
+            "Controllers\\" : "./controllers"
+        }
+    }
+}
