@@ -1,16 +1,31 @@
 <?php
 
-// use Controllers\LoginController;
-// use MVC\Router;
+    require_once __DIR__ . '/includes/app.php';
 
-//     $router = new Router();
+    use Controllers\LoginController;
+    use MVC\Router;
 
-// $router->post('/', function() {
-//     echo json_encode("Hola");
-// });
-// $router->post('/register', [LoginController::class, 'register']);
+    $router = new Router();
 
+    $router->get('/login', [LoginController::class, 'login']);
+    $router->post('/login', [LoginController::class, 'login']);
 
-// $router->comprobarRutas();
+    $router->comprobarRutas();
 
-echo json_encode("Hola");
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hola</title>
+</head>
+<body>
+    <form action="/login" method="POST" >
+        <input type="hidden" value="juan@example.com" name="correo">
+        <input type="hidden" value="password1" name="password">
+        <input type="submit" value="Enviar">
+    </form>
+</body>
+</html>
