@@ -16,8 +16,8 @@
             <v-img
               contain
               max-width="200"
-              max-height="90"
-              :src="require('@/assets/logo.png')"
+              max-height="100"
+              :src="require('@/assets/logo.svg')"
             />
           </v-app-bar-title>
         </v-col>
@@ -103,13 +103,22 @@
             >
               <v-col
                 cols="12"
+                justify="center"
+                align="center"
+                class="d-flex flex-column"
               >
-                <h1 class="text-h4 font-weight-bold mb-4 dark fontTitle">
+                <span
+                  class="text-h4 font-weight-bold mb-4 dark fontTitle textLogo"
+                  style="font-size: 70px !important;"
+                >
                   Raites UG
-                </h1>
-                <h4 class="subheading">
+                </span>
+                <span
+                  class="subheading fontSubtitle textLogo my-4"
+                  style="font-size: 25px !important;"
+                >
                   La mejor aplicacion para solicitar tu ride, foraneo!
-                </h4>
+                </span>
               </v-col>
             </v-row>
           </v-col>
@@ -128,7 +137,11 @@
               <v-divider />
 
               <v-card-text>
-                <v-form>
+                <v-form
+                  ref="formRegistro"
+                  v-model="formRegistro"
+                  @submit.prevent="submit"
+                >
                   <h3 class="fontTitle">
                     Nombre:
                   </h3>
@@ -139,6 +152,9 @@
                     solo
                     outlined
                     flat
+                    required
+                    type="text"
+                    :rules="requiredRule"
                   />
                   <h3 class="fontTitle">
                     Apellido Paterno:
@@ -150,6 +166,9 @@
                     solo
                     outlined
                     flat
+                    required
+                    type="text"
+                    :rules="requiredRule"
                   />
                   <h3 class="fontTitle">
                     Apellido Materno:
@@ -161,6 +180,7 @@
                     solo
                     outlined
                     flat
+                    type="text"
                   />
                   <h3 class="fontTitle">
                     Correo:
@@ -172,6 +192,9 @@
                     solo
                     outlined
                     flat
+                    required
+                    type="email"
+                    :rules="correoRule"
                   />
                   <h3 class="fontTitle">
                     Telefono:
@@ -183,6 +206,9 @@
                     solo
                     outlined
                     flat
+                    required
+                    type="text"
+                    :rules="requiredRule"
                   />
                   <h3 class="fontTitle">
                     Carrera:
@@ -195,7 +221,10 @@
                     solo
                     outlined
                     flat
+                    required
+                    type="text"
                     class="fontTitle"
+                    :rules="requiredRule"
                   />
                   <h3 class="fontTitle">
                     Contraseña:
@@ -207,17 +236,22 @@
                     solo
                     outlined
                     flat
+                    required
+                    type="password"
+                    :rules="passwordRule"
                   />
                   <h3 class="fontTitle">
                     Confirmar contraseña:
                   </h3>
                   <v-text-field
-                    v-model="confirmarContrasena"
                     class="fontTitle"
                     dense
                     solo
                     outlined
                     flat
+                    required
+                    type="password"
+                    :rules="passwordConfirmRule"
                   />
                   <h3 class="fontTitle">
                     Sexo:
@@ -230,10 +264,12 @@
                     solo
                     outlined
                     flat
+                    required
                     class="fontTitle"
+                    :rules="requiredRule"
                   />
                   <h3 class="fontTitle">
-                    Fecha de necimiento:
+                    Fecha de nacimiento:
                   </h3>
                   <v-menu
                     v-model="showFechaNacimiento"
@@ -253,7 +289,9 @@
                         solo
                         outlined
                         flat
+                        required
                         append-icon="mdi-menu-down"
+                        :rules="requiredRule"
                         v-on="on"
                         @click:clear="fechaNacimiento = null"
                       />
@@ -347,7 +385,9 @@
               class="mb-12"
               color="grey lighten-1"
               height="200px"
-            />
+            >
+              HOLA MUNDO
+            </v-card>
 
             <v-btn
               color="primary"
@@ -413,10 +453,13 @@ export default {
   name: 'Login',
   data () {
     return {
+      // VARIABLES PARA LOGIN
       correoLogin: null,
       contrasenaLogin: null,
       checkbox: false,
 
+      // VARIABLES PARA FORMULARIO DE REGISTRO
+      formRegistro: false,
       nombre: null,
       apaterno: null,
       amaterno: null,
@@ -424,10 +467,10 @@ export default {
       telefono: null,
       carrera: null,
       contrasena: null,
-      confirmarContrasena: null,
       sexo: null,
       maxDate: null,
       fechaNacimiento: null,
+      showFechaNacimiento: false,
       itemsGenero: ['Hombre', 'Mujer', 'Otro', 'Prefiero no decir'],
       itemsCarrera: [
         'Arquitectura',
@@ -502,13 +545,28 @@ export default {
         'Ciencias de la Actividad Física y Salud',
         'Médico Cirujano'
       ],
+      requiredRule: [
+        v => !!v || 'CAMPO REQUERIDO'
+      ],
+      passwordRule: [
+        v => (v && v.length > 7) || 'LA CONTRASEÑA DEBE DE TENER MINIMO 8 CARACTERES'
+      ],
+      passwordConfirmRule: [
+        v => v === this.contrasena || 'LAS CONTRASEÑAS NO COINCIDEN'
+      ],
+      correoRule: [
+        v => /.+@ugto\.mx$/.test(v) || 'EMAIL INCORRECTO SOLO CORREO INSTITUCIONAL'
+      ],
+
+      // VARIABLES DE FOOTER
       icons: [
         'mdi-facebook',
         'mdi-twitter',
         'mdi-instagram'
       ],
+
+      // VARIABLES PARA OLVIDE MI CONTRASEÑA
       showPassword: false,
-      showFechaNacimiento: false,
       e1: 1
     }
   },
@@ -534,23 +592,35 @@ export default {
     },
 
     signUp () {
-      const newUser = [
-        // eslint-disable-next-line camelcase
-        {
-          usu_nombre: this.nombre,
-          usu_apaterno: this.apaterno,
-          usu_amaterno: this.amaterno,
-          usu_correo: this.correo,
-          usu_telefono: this.telefono,
-          usu_carrera: this.carrera,
-          usu_password: this.constrasena,
-          usu_sexo: this.sexo,
-          usu_fechaNacimiento: this.fechaNacimiento
+      this.formRegistro = this.$refs.formRegistro.validate()
+      if (this.formRegistro) {
+        const data = {
+          nombre: this.nombre,
+          apaterno: this.apaterno,
+          amaterno: this.amaterno,
+          sexo: this.sexo,
+          email: this.correo,
+          password: this.contrasena,
+          telefono: this.telefono,
+          carrera: this.carrera,
+          fechaNac: this.fechaNacimiento
         }
-      ]
-
-      // eslint-disable-next-line no-console
-      console.log('NUEVO USUARIO => ', newUser[0])
+        const url = '/signup'
+        this.$axios.post(url, data)
+          .then((res) => {
+            if (res.data.message === 'USUARIO REGISTRADO SATISFACTORIAMENTE') {
+              // eslint-disable-next-line no-console
+              console.log('REGISTRADO CORRECTAMENTE')
+            } else {
+              // eslint-disable-next-line no-console
+              console.log('ERROR AL REGISTRARSE')
+            }
+          })
+          .catch((error) => {
+            // eslint-disable-next-line no-console
+            console.log('ERROR EN REGISTRO => ', error)
+          })
+      }
     }
   }
 }
@@ -571,5 +641,10 @@ export default {
   top: 50%;
   left: 30%;
   transform: translate(-50%, -50%);
+}
+
+.textLogo {
+  text-shadow: 0 0 20px rgba(0,0,0,0.97);
+  color: white;
 }
 </style>
