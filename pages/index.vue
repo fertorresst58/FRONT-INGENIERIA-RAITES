@@ -451,6 +451,7 @@ moment.locale('es')
 
 export default {
   name: 'Login',
+
   data () {
     return {
       // VARIABLES PARA LOGIN
