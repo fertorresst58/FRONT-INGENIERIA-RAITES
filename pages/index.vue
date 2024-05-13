@@ -183,6 +183,7 @@
                     outlined
                     flat
                     type="text"
+                    :rules="requiredRule"
                   />
                   <h3 class="fontTitle">
                     Correo:
