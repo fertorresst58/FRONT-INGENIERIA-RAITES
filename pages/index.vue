@@ -3,6 +3,7 @@
     <!-- BARRA DE ARRIBA -->
     <v-app-bar
       app
+      absolute
       prominent
       style="height: 146px;"
       flat
@@ -106,6 +107,7 @@
                 justify="center"
                 align="center"
                 class="d-flex flex-column"
+                style="width: 400px !important;"
               >
                 <span
                   class="text-h4 font-weight-bold mb-4 dark fontTitle textLogo"
@@ -117,7 +119,7 @@
                   class="subheading fontSubtitle textLogo my-4"
                   style="font-size: 25px !important;"
                 >
-                  La mejor aplicacion para solicitar tu ride, foraneo!
+                  La mejor aplicacion para solicitar tu ride!
                 </span>
               </v-col>
             </v-row>
@@ -441,16 +443,23 @@
         </v-stepper-items>
       </v-stepper>
     </v-dialog>
+
+    <ui-snackbar />
   </v-app>
 </template>
 
 <script>
 import moment from 'moment'
+import { mapState } from 'vuex'
 import 'moment/locale/es'
+import UiSnackbar from '~/components/ui-snackbar.vue'
 moment.locale('es')
 
 export default {
-  name: 'Login',
+  name: 'IndexPage',
+  components: {
+    UiSnackbar
+  },
 
   data () {
     return {
@@ -573,8 +582,17 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      showAlert: state => state.showAlert
+    }),
+
     formatearFecha () {
       return this.fechaNacimiento ? moment(this.fechaNacimiento, 'YYYY-MM-DD').format('dddd, DD [de] MMMM [de] YYYY') : ''
+    }
+  },
+
+  watch: {
+    showAlert () {
     }
   },
 
@@ -583,13 +601,31 @@ export default {
   },
 
   methods: {
-    login () {
-      // eslint-disable-next-line no-console
-      console.log('EMAIL => ', this.correoLogin)
-      // eslint-disable-next-line no-console
-      console.log('PASSWORD => ', this.contrasenaLogin)
-      // eslint-disable-next-line no-console
-      console.log('CHECKBOX => ', this.checkbox)
+    async login () {
+      const sendData = {
+        email: this.correoLogin,
+        password: this.contrasenaLogin
+      }
+
+      await this.$auth.loginWith('local', {
+        data: sendData
+      }).then(async (res) => {
+        const result = await res.data
+        if (result.message === 'success') {
+          this.$store.commit('setToken', result.token)
+          this.$store.commit('modifySnackbar', true)
+          this.$store.commit('modifyColor', 'green darken-4')
+          this.$store.commit('modifyText', 'LOGIN EXITOSO')
+          this.$store.commit('modifyTimeout', '1500')
+          this.$store.commit('modifyIcon', 'mdi-check')
+          setTimeout(() => {
+            this.$router.push('/home')
+          }, 2000)
+        }
+      }).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.log('ERROR -> ', error)
+      })
     },
 
     signUp () {
@@ -612,6 +648,16 @@ export default {
             if (res.data.message === 'USUARIO REGISTRADO SATISFACTORIAMENTE') {
               // eslint-disable-next-line no-console
               console.log('REGISTRADO CORRECTAMENTE')
+
+              this.$store.commit('modifyAlert', true)
+              this.$store.commit('modifyColor', 'green darken-4')
+              this.$store.commit('modifyIcon', 'mdi-check-circle')
+              this.$store.commit('modifyType', 'success')
+              this.$store.commit('modifyText', res.data.message)
+              // setTimeout(() => {
+              //   this.$store.commit('modifyAlert', false)
+              //   this.showDialog = false
+              // }, 1000)
             } else {
               // eslint-disable-next-line no-console
               console.log('ERROR AL REGISTRARSE')
@@ -647,5 +693,9 @@ export default {
 .textLogo {
   text-shadow: 0 0 20px rgba(0,0,0,0.97);
   color: white;
+}
+
+.alerta {
+  z-index: 1000;
 }
 </style>

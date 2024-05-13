@@ -73,6 +73,7 @@
     <v-main>
       <v-container>
         <Nuxt />
+        <ui-snackbar v-if="showAlert" class="alerta" />
       </v-container>
     </v-main>
 
@@ -97,8 +98,16 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import UiSnackbar from '~/components/ui-snackbar.vue'
+
 export default {
   name: 'DefaultLayout',
+
+  components: {
+    UiSnackbar
+  },
+
   data () {
     return {
       clipped: false,
@@ -133,6 +142,26 @@ export default {
         'mdi-instagram'
       ]
     }
+  },
+
+  computed: {
+    ...mapState({
+      showAlert: state => state.showAlert
+    })
+  },
+  watch: {
+    showAlert () {
+      // SE OBSERVA SI HUBO CAMBIOS
+    }
   }
 }
 </script>
+
+<style scoped>
+.alerta {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+</style>
