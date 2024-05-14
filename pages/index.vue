@@ -700,6 +700,8 @@ export default {
       e1: 1,
       telefonoRecuperacion: '',
       correoRecuperacion: '',
+      contrasenaRecuperacion: '',
+      confirmarContrasenaRecuperacion: '',
       otp: ''
     }
   },
