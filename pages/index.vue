@@ -742,16 +742,20 @@ export default {
         data: sendData
       }).then(async (res) => {
         const result = await res.data
-        if (result.message === 'success') {
+        if (result.success) {
+          console.log('🚀 ~ login ~ result:', result)
+          this.$store.commit('setUser', result.user)
           this.$store.commit('setToken', result.token)
+          console.log('User:', this.$store.state.user)
+          console.log('Token:', this.$store.state.token)
           this.$store.commit('modifySnackbar', true)
           this.$store.commit('modifyColor', 'green darken-4')
           this.$store.commit('modifyText', 'LOGIN EXITOSO')
-          this.$store.commit('modifyTimeout', '1500')
+          this.$store.commit('modifyTimeout', '1200')
           this.$store.commit('modifyIcon', 'mdi-check')
           setTimeout(() => {
             this.$router.push('/home')
-          }, 2000)
+          }, 2500)
         }
       }).catch((error) => {
         // eslint-disable-next-line no-console
@@ -776,7 +780,7 @@ export default {
         const url = '/signup'
         this.$axios.post(url, data)
           .then((res) => {
-            if (res.data.message === 'USUARIO REGISTRADO SATISFACTORIAMENTE') {
+            if (res.data.success) {
               // eslint-disable-next-line no-console
               console.log('REGISTRADO CORRECTAMENTE')
 

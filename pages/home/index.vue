@@ -108,8 +108,11 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   layout: 'home',
+  auth: true,
   data () {
     return {
       raites: [
@@ -127,7 +130,11 @@ export default {
       mostrarFiltro: false
     }
   },
+
   computed: {
+    ...mapState({
+      token: state => state.token
+    }),
     misViajesPublicados () {
       return this.raites.filter(raite => raite.estado === 'Publicado')
     },
@@ -157,6 +164,11 @@ export default {
       return raitesFiltrados
     }
   },
+
+  mounted () {
+
+  },
+
   methods: {
     filtrarRaites () {
       // Método de filtro ejecutado cuando cambian los valores de los controles de filtro

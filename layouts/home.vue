@@ -6,7 +6,7 @@
       :clipped="clipped"
       fixed
       app
-      width="15%"
+      width="20%"
     >
       <v-list>
         <v-list-item>
