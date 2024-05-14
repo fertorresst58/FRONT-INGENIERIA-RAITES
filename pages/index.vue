@@ -200,7 +200,7 @@
                     :rules="correoRule"
                   />
                   <h3 class="fontTitle">
-                    Telefono:
+                    Teléfono:
                   </h3>
                   <v-text-field
                     v-model="telefono"
@@ -210,8 +210,9 @@
                     outlined
                     flat
                     required
-                    type="text"
+                    type="number"
                     :rules="requiredRule"
+                    @input="limitarLongitud"
                   />
                   <h3 class="fontTitle">
                     Carrera:
@@ -362,6 +363,7 @@
           <v-stepper-step
             :complete="e1 > 1"
             step="1"
+            color="#0A263D"
           >
             Identificación
           </v-stepper-step>
@@ -371,13 +373,17 @@
           <v-stepper-step
             :complete="e1 > 2"
             step="2"
+            color="#0A263D"
           >
             Verificación
           </v-stepper-step>
 
           <v-divider />
 
-          <v-stepper-step step="3">
+          <v-stepper-step
+            step="3"
+            color="#0A263D"
+          >
             Cambio de contraseña
           </v-stepper-step>
         </v-stepper-header>
@@ -385,60 +391,73 @@
         <v-stepper-items>
           <v-stepper-content step="1">
             <v-card
-              class="mb-12 no-border"
+              class="no-border"
               color="white"
-              height="200px"
+              elevation="0"
             >
-              <v-card-title class="justify-center" style="font-size: 20px;">
-                Ingrese su numero de telefono y correo con el que realizo su registro
+              <v-card-title align="center" justify="center">
+                <strong class="fontTitle" style="text-transform: none;">
+                  Ingrese el número de teléfono y correo con el que realizó su registro
+                </strong>
               </v-card-title>
-              <h4 class="fontTitle">
-                Telefono:
-              </h4>
-              <v-text-field
-                v-model="telefono"
-                width="50px"
-                class="fontTitle"
-                dense
-                solo
-                outlined
-              />
-              <h4 class="fontTitle">
-                Email:
-              </h4>
-              <v-text-field
-                v-model="correo"
-                width="50px"
-                class="fontTitle"
-                dense
-                solo
-                outlined
-              />
+              <v-card-text>
+                <h4 class="fontTitle">
+                  Teléfono:
+                </h4>
+                <v-text-field
+                  v-model="telefonoRecuperacion"
+                  class="fontTitle"
+                  dense
+                  solo
+                  flat
+                  outlined
+                  type="number"
+                  @input="limitarLongitud"
+                />
+                <h4 class="fontTitle">
+                  Correo:
+                </h4>
+                <v-text-field
+                  v-model="correoRecuperacion"
+                  class="fontTitle"
+                  dense
+                  solo
+                  flat
+                  outlined
+                />
+              </v-card-text>
             </v-card>
+            <v-row>
+              <v-col cols="12" align="center" justify="center">
+                <v-btn
+                  color="#8C6E39"
+                  height="38px"
+                  class="white--text"
+                  @click="e1 = 2"
+                >
+                  Continuar
+                </v-btn>
 
-            <v-btn
-              color="primary"
-              @click="e1 = 2"
-            >
-              Continue
-            </v-btn>
-
-            <v-btn text @click="showPassword=false">
-              Cancel
-            </v-btn>
+                <v-btn text @click="showPassword=false">
+                  Cancelar
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-stepper-content>
 
           <v-stepper-content step="2">
             <v-card
-              class="mb-12 no-border"
+              class="no-border"
               align="center"
               color="white"
-              height="200px"
               flat
+              elevation="0"
             >
-              <v-card-title class="justify-center" style="font-size: 20px;">
-                Hemos enviado un codigo a su correo.
-                Por favor ingrese el codigo
+              <v-card-title align="center" justify="center">
+                <strong class="fontTitle" style="text-transform: none;">
+                  Hemos enviado un código a su correo.
+                  Por favor ingrese el código
+                </strong>
               </v-card-title>
               <v-img
                 class="justify-center"
@@ -448,73 +467,98 @@
                 height="100"
                 flat
               />
-              <h4
-                class="fontTitle"
-                align="left"
-              >
-                Codigo:
-              </h4>
-              <v-text-field
-                v-model="telefono"
-                width="50px"
-                class="fontTitle"
-                dense
-                solo
-                outlined
-              />
+
+              <v-card-text>
+                <h4
+                  class="fontTitle"
+                >
+                  Código:
+                </h4>
+                <div class="ma-auto position-relative" style="max-width: 300px">
+                  <v-otp-input
+                    v-model="otp"
+                    length="6"
+                    type="password"
+                    class="fontTitle"
+                  />
+                </div>
+              </v-card-text>
             </v-card>
 
-            <v-btn color="primary" @click="e1 = 3">
-              Continue
-            </v-btn>
-            <v-btn text @click="showPassword=false">
-              Cancel
-            </v-btn>
+            <v-row>
+              <v-col cols="12" align="center" justify="center">
+                <v-btn
+                  color="#8C6E39"
+                  height="38px"
+                  class="white--text"
+                  @click="e1 = 3"
+                >
+                  Continuar
+                </v-btn>
+
+                <v-btn text @click="showPassword=false">
+                  Cancelar
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-stepper-content>
 
           <v-stepper-content step="3">
             <v-card
-              class="mb-12 no-border"
+              class="no-border"
               color="white"
-              height="200px"
+              elevation="0"
             >
-              <v-card-title class="justify-center" style="font-size: 20px;">
-                Ingrese su nueva contraseña
+              <v-card-title align="center" justify="center">
+                <strong class="fontTitle" style="text-transform: none;">
+                  Ingrese su nueva contraseña
+                </strong>
               </v-card-title>
-              <h4 class="fontTitle">
-                Contraseña:
-              </h4>
-              <v-text-field
-                v-model="contrasena"
-                width="50px"
-                class="fontTitle"
-                dense
-                solo
-                outlined
-              />
-              <h4 class="fontTitle">
-                Confirmar Nueva Contraseña:
-              </h4>
-              <v-text-field
-                v-model="confirmarContrasena"
-                width="50px"
-                class="fontTitle"
-                dense
-                solo
-                outlined
-              />
+
+              <v-card-text>
+                <h4 class="fontTitle">
+                  Contraseña:
+                </h4>
+                <v-text-field
+                  v-model="contrasenaRecuperacion"
+                  class="fontTitle"
+                  dense
+                  solo
+                  flat
+                  outlined
+                  type="email"
+                />
+                <h4 class="fontTitle">
+                  Confirmar nueva contraseña:
+                </h4>
+                <v-text-field
+                  v-model="confirmarContrasenaRecuperacion"
+                  class="fontTitle"
+                  dense
+                  solo
+                  flat
+                  outlined
+                  type="number"
+                />
+              </v-card-text>
             </v-card>
 
-            <v-btn
-              color="primary"
-              @click="e1 = 1"
-            >
-              Continue
-            </v-btn>
+            <v-row>
+              <v-col cols="12" align="center" justify="center">
+                <v-btn
+                  color="#8C6E39"
+                  height="38px"
+                  class="white--text"
+                  @click="e1 = 1"
+                >
+                  Continuar
+                </v-btn>
 
-            <v-btn text @click="showPassword=false">
-              Cancel
-            </v-btn>
+                <v-btn text @click="showPassword=false">
+                  Cancelar
+                </v-btn>
+              </v-col>
+            </v-row>
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
@@ -653,7 +697,10 @@ export default {
 
       // VARIABLES PARA OLVIDE MI CONTRASEÑA
       showPassword: false,
-      e1: 1
+      e1: 1,
+      telefonoRecuperacion: '',
+      correoRecuperacion: '',
+      otp: ''
     }
   },
 
@@ -677,6 +724,12 @@ export default {
   },
 
   methods: {
+    limitarLongitud () {
+      if (this.telefono.length > 10 || this.telefonoRecuperacion.length > 10) {
+        this.numero = this.numero.slice(0, 10)
+      }
+    },
+
     async login () {
       const sendData = {
         email: this.correoLogin,
