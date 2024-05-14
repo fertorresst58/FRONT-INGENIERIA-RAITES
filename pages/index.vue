@@ -708,7 +708,7 @@ export default {
 
   computed: {
     ...mapState({
-      showAlert: state => state.showAlert
+      showSnackbar: state => state.showSnackbar
     }),
 
     formatearFecha () {
@@ -717,8 +717,7 @@ export default {
   },
 
   watch: {
-    showAlert () {
-    }
+    showSnackbar () {}
   },
 
   created () {
@@ -743,19 +742,20 @@ export default {
       }).then(async (res) => {
         const result = await res.data
         if (result.success) {
+          // eslint-disable-next-line no-console
           console.log('🚀 ~ login ~ result:', result)
           this.$store.commit('setUser', result.user)
           this.$store.commit('setToken', result.token)
+          // eslint-disable-next-line no-console
           console.log('User:', this.$store.state.user)
+          // eslint-disable-next-line no-console
           console.log('Token:', this.$store.state.token)
           this.$store.commit('modifySnackbar', true)
           this.$store.commit('modifyColor', 'green darken-4')
           this.$store.commit('modifyText', 'LOGIN EXITOSO')
           this.$store.commit('modifyTimeout', '1200')
           this.$store.commit('modifyIcon', 'mdi-check')
-          setTimeout(() => {
-            this.$router.push('/home')
-          }, 2500)
+          this.$router.push('/home')
         }
       }).catch((error) => {
         // eslint-disable-next-line no-console

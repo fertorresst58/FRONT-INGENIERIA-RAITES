@@ -12,12 +12,12 @@
         <v-list-item>
           <v-list-item-avatar>
             <v-img
-              :src="require('@/assets/avatar.png')"
+              :src="img"
             />
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="fontTitle" color="black">
-              NOMBRE DEL USUARIO
+              {{ nombre }}
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -47,12 +47,12 @@
 
     <v-app-bar
       :clipped-left="clipped"
-      fixed
+      absolute
       app
       flat
       color="#0A263D"
     >
-      <v-app-bar-nav-icon color="white" @click.stop="drawer = !drawer" />
+      <v-app-bar-nav-icon color="#FFD300" @click.stop="drawer = !drawer" />
 
       <v-spacer />
 
@@ -65,15 +65,17 @@
       <v-btn
         elevation="0"
         color="#FFD300"
+        icon
+        @click="logOut()"
       >
-        <span class="fontTitle" style="text-transform: none;">Cerrar sesión <v-icon>mdi-logout</v-icon> </span>
+        <v-icon>mdi-logout</v-icon>
       </v-btn>
     </v-app-bar>
 
     <v-main>
       <v-container>
         <Nuxt />
-        <ui-snackbar v-if="showAlert" class="alerta" />
+        <ui-snackbar />
       </v-container>
     </v-main>
 
@@ -117,7 +119,7 @@ export default {
         {
           icon: 'mdi-account',
           title: 'Mi Perfil',
-          to: '/perfil'
+          to: '/profile'
         },
         {
           icon: 'mdi-car',
@@ -135,6 +137,12 @@ export default {
       rightDrawer: false,
       title: 'RAITES UG',
 
+      // VARIABLES PARA USUARIO
+      user: {},
+      nombre: '',
+      img: '',
+      token: '',
+
       // VARIABLES DE FOOTER
       icons: [
         'mdi-facebook',
@@ -146,12 +154,31 @@ export default {
 
   computed: {
     ...mapState({
-      showAlert: state => state.showAlert
+      showSnackbar: state => state.showSnackbar,
+      token: state => state.token
     })
   },
+
   watch: {
-    showAlert () {
+    showSnackbar () {
       // SE OBSERVA SI HUBO CAMBIOS
+    }
+  },
+
+  mounted () {
+    // SE EJECUTA CUANDO SE CARGA EL COMPONENTE
+    // AUTENTICACION
+    // if (this.$store.state.token === null) { this.$router.push('/') } else { this.obtenerDatosUsuarios() }
+
+    this.obtenerDatosUsuarios()
+  },
+
+  methods: {
+    obtenerDatosUsuarios () {
+      this.user = this.$store.state.user
+      this.token = this.$store.state.token
+      this.nombre = this.user.nombre + ' ' + this.user.apaterno + ' ' + this.user.amaterno
+      this.img = this.user.img
     }
   }
 }

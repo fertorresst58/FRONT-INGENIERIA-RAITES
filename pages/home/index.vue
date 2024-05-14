@@ -113,6 +113,7 @@ import { mapState } from 'vuex'
 export default {
   layout: 'home',
   auth: true,
+
   data () {
     return {
       raites: [
