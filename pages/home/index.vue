@@ -21,6 +21,66 @@
       </div>
     </div>
 
+    <!-- Aniadiendo mi trabajo-->
+    <v-card
+      class="mx-auto"
+      max-width="350"
+    >
+      <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title class="text-h5">
+            SILAO
+          </v-list-item-title>
+          <v-list-item-subtitle>Jueves 04 de mayo, 15:00 PM</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-card-text>
+        <v-row align="center">
+          <v-col cols="2">
+            <v-img
+              src="https://icones.pro/wp-content/uploads/2021/04/icone-cercle-rempli-bleu.png"
+              alt="Sunny image"
+              width="52"
+            />
+          </v-col>
+          <v-col
+            class="text-h4"
+            cols="10"
+          >
+            PUBLICADO
+          </v-col>
+        </v-row>
+      </v-card-text>
+
+      <v-list-item>
+        <v-list-item-icon>
+          <v-icon>mdi mdi-car-traction-control</v-icon>
+        </v-list-item-icon>
+        <v-list-item-subtitle>Puentes gemelos, central de Silao</v-list-item-subtitle>
+      </v-list-item>
+
+      <v-list-item>
+        <v-list-item-icon>
+          <v-icon>mdi mdi-hand-coin-outline</v-icon>
+        </v-list-item-icon>
+        <v-list-item-subtitle>$10.00MXN</v-list-item-subtitle>
+      </v-list-item>
+
+      <v-divider />
+
+      <v-card-actions>
+        <v-btn color="warning" dark>
+          Ver detalles
+        </v-btn>
+        <v-spacer />
+        <v-btn color="warning" dark>
+          Contactar
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+    <!-- Finalizando  mi trabajo-->
+
     <!-- Tabla de raites filtrados -->
     <div>
       <!-- Tabla de "Mis viajes publicados" -->
@@ -128,7 +188,16 @@ export default {
       filtroHora: '',
       filtroFecha: '',
       filtroDestino: '',
-      mostrarFiltro: false
+      mostrarFiltro: false,
+
+      // References
+      labels: ['SU', 'MO', 'TU', 'WED', 'TH', 'FR', 'SA'],
+      time: 0,
+      forecast: [
+        { day: 'Tuesday', icon: 'mdi-white-balance-sunny', temp: '24\xB0/12\xB0' },
+        { day: 'Wednesday', icon: 'mdi-white-balance-sunny', temp: '22\xB0/14\xB0' },
+        { day: 'Thursday', icon: 'mdi-cloud', temp: '25\xB0/15\xB0' }
+      ]
     }
   },
 
