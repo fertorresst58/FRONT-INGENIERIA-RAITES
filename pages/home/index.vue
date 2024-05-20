@@ -21,89 +21,222 @@
       </div>
     </div>
 
-    <!-- Tabla de raites filtrados -->
-    <div>
-      <!-- Tabla de "Mis viajes publicados" -->
-      <h2>Mis viajes publicados</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Estado</th>
-            <th>Lugar de Partida</th>
-            <th>Hora</th>
-            <th>Fecha</th>
-            <th>Destino</th>
-          </tr>
-        </thead>
-        <tbody>
-          <template v-for="(raite, index) in raitesFiltrados">
-            <tr v-if="raite.estado === 'Publicado'" :key="index">
-              <td :class="getClassForEstado(raite.estado)">
-                {{ raite.estado }}
-              </td>
-              <td>{{ raite.lugarPartida }}</td>
-              <td>{{ raite.hora }}</td>
-              <td>{{ raite.fecha }}</td>
-              <td>{{ raite.destino }}</td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
+    <!-- Aniadiendo mi trabajo-->
+    <!-- Tarjetas para "Mis viajes publicados"-->
+    <h2>Mis viajes publicados</h2>
+    <v-container>
+      <v-row>
+        <v-col
+          v-for="(raite, index) in misViajesPublicados"
+          :key="index"
+          cols="12"
+          sm="6"
+          md="4"
+          lg="3"
+        >
+          <v-card class="mx-auto my-2" max-width="350">
+            <v-list-item two-line>
+              <v-list-item-content>
+                <v-list-item-title class="text-h5">
+                  {{ raite.lugarPartida }}
+                </v-list-item-title>
+                <div style="display: flex; align-items: center;">
+                  <v-icon class="mr-2">
+                    mdi-calendar-clock
+                  </v-icon>
+                  <v-list-item-subtitle>{{ raite.fecha }}, {{ raite.hora }}</v-list-item-subtitle>
+                </div>
+              </v-list-item-content>
+            </v-list-item>
 
-      <!-- Tabla de "Mis viajes apartados" -->
-      <h2>Mis viajes apartados</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Estado</th>
-            <th>Lugar de Partida</th>
-            <th>Hora</th>
-            <th>Fecha</th>
-            <th>Destino</th>
-          </tr>
-        </thead>
-        <tbody>
-          <template v-for="(raite, index) in raitesFiltrados">
-            <tr v-if="raite.estado === 'Apartado'" :key="index">
-              <td :class="getClassForEstado(raite.estado)">
-                {{ raite.estado }}
-              </td>
-              <td>{{ raite.lugarPartida }}</td>
-              <td>{{ raite.hora }}</td>
-              <td>{{ raite.fecha }}</td>
-              <td>{{ raite.destino }}</td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
+            <v-card-text>
+              <v-row align="center">
+                <v-col cols="2">
+                  <v-img
+                    src="https://icones.pro/wp-content/uploads/2021/04/icone-cercle-rempli-bleu.png"
+                    alt="Sunny image"
+                    width="52"
+                  />
+                </v-col>
+                <v-col class="text-h4" cols="10">
+                  {{ raite.estado }}
+                </v-col>
+              </v-row>
+            </v-card-text>
 
-      <!-- Tabla de "Viajes disponibles" -->
-      <h2>Viajes disponibles</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Estado</th>
-            <th>Lugar de Partida</th>
-            <th>Hora</th>
-            <th>Fecha</th>
-            <th>Destino</th>
-          </tr>
-        </thead>
-        <tbody>
-          <template v-for="(raite, index) in raitesFiltrados">
-            <tr v-if="raite.estado === 'Disponible'" :key="index">
-              <td :class="getClassForEstado(raite.estado)">
-                {{ raite.estado }}
-              </td>
-              <td>{{ raite.lugarPartida }}</td>
-              <td>{{ raite.hora }}</td>
-              <td>{{ raite.fecha }}</td>
-              <td>{{ raite.destino }}</td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
-    </div>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-car-traction-control</v-icon>
+              </v-list-item-icon>
+              <v-list-item-subtitle>Pasar por: {{ raite.destino }}</v-list-item-subtitle>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-hand-coin-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-subtitle>${{ raite.precio }}.00 MXN</v-list-item-subtitle>
+            </v-list-item>
+
+            <v-divider />
+
+            <v-card-actions>
+              <v-btn color="warning" dark>
+                Ver detalles
+              </v-btn>
+              <v-spacer />
+              <v-btn color="warning" dark>
+                Contactar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <!-- Tarjetas para "Mis viajes apartados"-->
+    <h2>Mis viajes apartados</h2>
+    <v-container>
+      <v-row>
+        <v-col
+          v-for="(raite, index) in misViajesApartados"
+          :key="index"
+          cols="12"
+          sm="6"
+          md="4"
+          lg="3"
+        >
+          <v-card class="mx-auto my-2" max-width="350">
+            <v-list-item two-line>
+              <v-list-item-content>
+                <v-list-item-title class="text-h5">
+                  {{ raite.lugarPartida }}
+                </v-list-item-title>
+                <div style="display: flex; align-items: center;">
+                  <v-icon class="mr-2">
+                    mdi-calendar-clock
+                  </v-icon>
+                  <v-list-item-subtitle>{{ raite.fecha }}, {{ raite.hora }}</v-list-item-subtitle>
+                </div>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-card-text>
+              <v-row align="center">
+                <v-col cols="2">
+                  <v-img
+                    src="https://somosrecreoaguasanta.cl/wp-content/uploads/2023/03/Circulo-Amarillo.png"
+                    alt="Sunny image"
+                    width="52"
+                  />
+                </v-col>
+                <v-col class="text-h4" cols="10">
+                  {{ raite.estado }}
+                </v-col>
+              </v-row>
+            </v-card-text>
+
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-car-traction-control</v-icon>
+              </v-list-item-icon>
+              <v-list-item-subtitle>Pasar por: {{ raite.destino }}</v-list-item-subtitle>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-hand-coin-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-subtitle>${{ raite.precio }}.00 MXN</v-list-item-subtitle>
+            </v-list-item>
+
+            <v-divider />
+
+            <v-card-actions>
+              <v-btn color="warning" dark>
+                Ver detalles
+              </v-btn>
+              <v-spacer />
+              <v-btn color="warning" dark>
+                Contactar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <!-- Tarjetas para "Viajes Disponibles"-->
+    <h2>Viajes Disponibles</h2>
+    <v-container>
+      <v-row>
+        <v-col
+          v-for="(raite, index) in viajesDisponibles"
+          :key="index"
+          cols="12"
+          sm="6"
+          md="4"
+          lg="3"
+        >
+          <v-card class="mx-auto my-2" max-width="350">
+            <v-list-item two-line>
+              <v-list-item-content>
+                <v-list-item-title class="text-h5">
+                  {{ raite.lugarPartida }}
+                </v-list-item-title>
+                <div style="display: flex; align-items: center;">
+                  <v-icon class="mr-2">
+                    mdi-calendar-clock
+                  </v-icon>
+                  <v-list-item-subtitle>{{ raite.fecha }}, {{ raite.hora }}</v-list-item-subtitle>
+                </div>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-card-text>
+              <v-row align="center">
+                <v-col cols="2">
+                  <v-img
+                    src="https://icones.pro/wp-content/uploads/2021/04/icone-cercle-rempli-vert.png"
+                    alt="Sunny image"
+                    width="52"
+                  />
+                </v-col>
+                <v-col class="text-h4" cols="10">
+                  {{ raite.estado }}
+                </v-col>
+              </v-row>
+            </v-card-text>
+
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-car-traction-control</v-icon>
+              </v-list-item-icon>
+              <v-list-item-subtitle>Pasar por: {{ raite.destino }}</v-list-item-subtitle>
+            </v-list-item>
+
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-hand-coin-outline</v-icon>
+              </v-list-item-icon>
+              <v-list-item-subtitle>${{ raite.precio }}.00 MXN</v-list-item-subtitle>
+            </v-list-item>
+
+            <v-divider />
+
+            <v-card-actions>
+              <v-btn color="warning" dark>
+                Ver detalles
+              </v-btn>
+              <v-spacer />
+              <v-btn color="warning" dark>
+                Contactar
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -117,18 +250,36 @@ export default {
   data () {
     return {
       raites: [
-        { estado: 'Publicado', lugarPartida: 'A', hora: '08:00', fecha: '2024-05-09', destino: 'B' },
-        { estado: 'Publicado', lugarPartida: 'C', hora: '09:30', fecha: '2024-05-10', destino: 'D' },
-        { estado: 'Apartado', lugarPartida: 'E', hora: '10:45', fecha: '2024-05-11', destino: 'F' },
-        { estado: 'Apartado', lugarPartida: 'G', hora: '12:15', fecha: '2024-05-12', destino: 'H' },
-        { estado: 'Disponible', lugarPartida: 'T', hora: '12:15', fecha: '2024-05-12', destino: 'K' },
-        { estado: 'Disponible', lugarPartida: 'Y', hora: '12:15', fecha: '2024-05-12', destino: 'L' }
+        { estado: 'Publicado', lugarPartida: 'Mérida', hora: '13:14', fecha: '2024-06-07', destino: 'Oaxaca', precio: 500 },
+        { estado: 'Publicado', lugarPartida: 'Puebla', hora: '05:49', fecha: '2024-05-26', destino: 'Oaxaca', precio: 450 },
+        { estado: 'Publicado', lugarPartida: 'Cancún', hora: '10:13', fecha: '2024-05-13', destino: 'Oaxaca', precio: 550 },
+        { estado: 'Publicado', lugarPartida: 'Zacatecas', hora: '06:34', fecha: '2024-06-04', destino: 'Monterrey', precio: 350 },
+        { estado: 'Publicado', lugarPartida: 'Oaxaca', hora: '19:23', fecha: '2024-05-24', destino: 'Veracruz', precio: 400 },
+        { estado: 'Apartado', lugarPartida: 'Oaxaca', hora: '01:18', fecha: '2024-05-11', destino: 'Tijuana', precio: 600 },
+        { estado: 'Apartado', lugarPartida: 'Veracruz', hora: '16:33', fecha: '2024-05-20', destino: 'Monterrey', precio: 400 },
+        { estado: 'Apartado', lugarPartida: 'Mérida', hora: '02:43', fecha: '2024-05-31', destino: 'Zacatecas', precio: 480 },
+        { estado: 'Apartado', lugarPartida: 'Monterrey', hora: '13:52', fecha: '2024-05-09', destino: 'Veracruz', precio: 420 },
+        { estado: 'Apartado', lugarPartida: 'Puebla', hora: '15:08', fecha: '2024-06-05', destino: 'Ciudad de México', precio: 350 },
+        { estado: 'Disponible', lugarPartida: 'Mérida', hora: '09:57', fecha: '2024-05-13', destino: 'Veracruz', precio: 450 },
+        { estado: 'Disponible', lugarPartida: 'Cancún', hora: '06:19', fecha: '2024-05-12', destino: 'Mérida', precio: 500 },
+        { estado: 'Disponible', lugarPartida: 'Puebla', hora: '05:34', fecha: '2024-05-21', destino: 'Mazatlán', precio: 550 },
+        { estado: 'Disponible', lugarPartida: 'Mazatlán', hora: '02:30', fecha: '2024-05-27', destino: 'Puebla', precio: 350 },
+        { estado: 'Disponible', lugarPartida: 'Durango', hora: '05:26', fecha: '2024-05-18', destino: 'Oaxaca', precio: 500 }
         // Agrega más objetos de raites según sea necesario
       ],
       filtroHora: '',
       filtroFecha: '',
       filtroDestino: '',
-      mostrarFiltro: false
+      mostrarFiltro: false,
+
+      // References
+      labels: ['SU', 'MO', 'TU', 'WED', 'TH', 'FR', 'SA'],
+      time: 0,
+      forecast: [
+        { day: 'Tuesday', icon: 'mdi-white-balance-sunny', temp: '24\xB0/12\xB0' },
+        { day: 'Wednesday', icon: 'mdi-white-balance-sunny', temp: '22\xB0/14\xB0' },
+        { day: 'Thursday', icon: 'mdi-cloud', temp: '25\xB0/15\xB0' }
+      ]
     }
   },
 
