@@ -124,7 +124,7 @@ export default {
         {
           icon: 'mdi-car',
           title: 'Mis Viajes',
-          to: '/mis-viajes'
+          to: '/travel'
         },
         {
           icon: 'mdi-message',
