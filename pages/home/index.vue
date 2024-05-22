@@ -1,154 +1,171 @@
 <template>
-  <v-app id="app">
-    <v-container>
-      <!-- Barra de herramientas con el ícono de filtro -->
-      <v-toolbar flat>
-        <v-toolbar-title>Viajes</v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn color="blue" class="mr-3" @click="nuevoViaje">
-          Nuevo Viaje
-        </v-btn>
-        <v-menu
-          offset-y
-          bottom
-          :close-on-content-click="false"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn icon v-bind="attrs" v-on="on">
-              <v-icon>mdi-filter-variant</v-icon>
-            </v-btn>
+  <div>
+    <div class="filtro-button" @click="toggleFiltro">
+      <i class="fas fa-filter" /> Filtrar
+    </div>
+    <!-- Controles de filtro -->
+    <div v-show="mostrarFiltro" class="filtro-controls">
+      <div class="filtro-menu">
+        <div>
+          <label for="hora">Hora:</label>
+          <input id="hora" v-model="filtroHora" type="text" @input="filtrarRaites">
+        </div>
+        <div>
+          <label for="fecha">Fecha:</label>
+          <input id="fecha" v-model="filtroFecha" type="text" @input="filtrarRaites">
+        </div>
+        <div>
+          <label for="destino">Destino:</label>
+          <input id="destino" v-model="filtroDestino" type="text" @input="filtrarRaites">
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de raites filtrados -->
+    <div>
+      <!-- Tabla de "Mis viajes publicados" -->
+      <h2>Mis viajes publicados</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Estado</th>
+            <th>Lugar de Partida</th>
+            <th>Hora</th>
+            <th>Fecha</th>
+            <th>Destino</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template v-for="(raite, index) in raitesFiltrados">
+            <tr v-if="raite.estado === 'Publicado'" :key="index">
+              <td :class="getClassForEstado(raite.estado)">
+                {{ raite.estado }}
+              </td>
+              <td>{{ raite.lugarPartida }}</td>
+              <td>{{ raite.hora }}</td>
+              <td>{{ raite.fecha }}</td>
+              <td>{{ raite.destino }}</td>
+            </tr>
           </template>
-          <v-card>
-            <v-list>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title>Filtrar por Fecha</v-list-item-title>
-                  <v-container>
-                    <v-row>
-                      <v-col>
-                        <v-text-field
-                          label="Desde"
-                          type="date"
-                          class="date-field"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                    <v-row>
-                      <v-col>
-                        <v-text-field
-                          label="Hasta"
-                          type="date"
-                          class="date-field"
-                        ></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-list-item-content>
-              </v-list-item>
-              <v-divider></v-divider>
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title>Filtrar por Destino</v-list-item-title>
-                  <v-text-field label="Destino"></v-text-field>
-                </v-list-item-content>
-              </v-list-item>
-              <!-- Agrega más opciones de filtro según sea necesario -->
-            </v-list>
-          </v-card>
-        </v-menu>
-      </v-toolbar>
+        </tbody>
+      </table>
 
-      <v-card class="treeview-card">
-        <v-card-title>
-          <span class="treeview-titlemvp">Mis Viajes Publicados</span>
-        </v-card-title>
-        <v-card-text>
-          <v-treeview :items="publicadosData">
-            <template #prepend="{ item }">
-              <v-icon>{{ item.icon }}</v-icon>
-            </template>
-            <template #label="{ item }">
-              {{ item.name }}
-            </template>
-          </v-treeview>
-        </v-card-text>
-      </v-card>
+      <!-- Tabla de "Mis viajes apartados" -->
+      <h2>Mis viajes apartados</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Estado</th>
+            <th>Lugar de Partida</th>
+            <th>Hora</th>
+            <th>Fecha</th>
+            <th>Destino</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template v-for="(raite, index) in raitesFiltrados">
+            <tr v-if="raite.estado === 'Apartado'" :key="index">
+              <td :class="getClassForEstado(raite.estado)">
+                {{ raite.estado }}
+              </td>
+              <td>{{ raite.lugarPartida }}</td>
+              <td>{{ raite.hora }}</td>
+              <td>{{ raite.fecha }}</td>
+              <td>{{ raite.destino }}</td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
 
-      <v-card class="treeview-card">
-        <v-card-title>
-          <span class="treeview-titlemva">Mis Viajes Apartados</span>
-        </v-card-title>
-        <v-card-text>
-          <v-treeview :items="apartadosData">
-            <template #prepend="{ item }">
-              <v-icon>{{ item.icon }}</v-icon>
-            </template>
-            <template #label="{ item }">
-              {{ item.name }}
-            </template>
-          </v-treeview>
-        </v-card-text>
-      </v-card>
-
-      <v-card class="treeview-card">
-        <v-card-title>
-          <span class="treeview-titlemvd">Mis Viajes Disponibles</span>
-        </v-card-title>
-        <v-card-text>
-          <v-treeview :items="disponiblesData">
-            <template #prepend="{ item }">
-              <v-icon>{{ item.icon }}</v-icon>
-            </template>
-            <template #label="{ item }">
-              {{ item.name }}
-            </template>
-          </v-treeview>
-        </v-card-text>
-      </v-card>
-    </v-container>
-  </v-app>
+      <!-- Tabla de "Viajes disponibles" -->
+      <h2>Viajes disponibles</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Estado</th>
+            <th>Lugar de Partida</th>
+            <th>Hora</th>
+            <th>Fecha</th>
+            <th>Destino</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template v-for="(raite, index) in raitesFiltrados">
+            <tr v-if="raite.estado === 'Disponible'" :key="index">
+              <td :class="getClassForEstado(raite.estado)">
+                {{ raite.estado }}
+              </td>
+              <td>{{ raite.lugarPartida }}</td>
+              <td>{{ raite.hora }}</td>
+              <td>{{ raite.fecha }}</td>
+              <td>{{ raite.destino }}</td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   layout: 'home',
+  auth: true,
+
   data () {
     return {
-      publicadosData: [
-        {
-          id: 1,
-          name: 'Viaje Publicado 1',
-          icon: 'mdi-folder',
-          children: [
-            { id: 2, name: 'Detalle 1', icon: 'mdi-file-outline' },
-            { id: 3, name: 'Detalle 2', icon: 'mdi-file-outline' }
-          ]
-        }
+      raites: [
+        { estado: 'Publicado', lugarPartida: 'A', hora: '08:00', fecha: '2024-05-09', destino: 'B' },
+        { estado: 'Publicado', lugarPartida: 'C', hora: '09:30', fecha: '2024-05-10', destino: 'D' },
+        { estado: 'Apartado', lugarPartida: 'E', hora: '10:45', fecha: '2024-05-11', destino: 'F' },
+        { estado: 'Apartado', lugarPartida: 'G', hora: '12:15', fecha: '2024-05-12', destino: 'H' },
+        { estado: 'Disponible', lugarPartida: 'T', hora: '12:15', fecha: '2024-05-12', destino: 'K' },
+        { estado: 'Disponible', lugarPartida: 'Y', hora: '12:15', fecha: '2024-05-12', destino: 'L' }
+        // Agrega más objetos de raites según sea necesario
       ],
-      apartadosData: [
-        {
-          id: 4,
-          name: 'Viaje Apartado 1',
-          icon: 'mdi-folder',
-          children: [
-            { id: 5, name: 'Detalle 1', icon: 'mdi-file-outline' },
-            { id: 6, name: 'Detalle 2', icon: 'mdi-file-outline' }
-          ]
-        }
-      ],
-      disponiblesData: [
-        {
-          id: 7,
-          name: 'Viaje Disponible 1',
-          icon: 'mdi-folder',
-          children: [
-            { id: 8, name: 'Detalle 1', icon: 'mdi-file-outline' },
-            { id: 9, name: 'Detalle 2', icon: 'mdi-file-outline' }
-          ]
-        }
-      ]
+      filtroHora: '',
+      filtroFecha: '',
+      filtroDestino: '',
+      mostrarFiltro: false
     }
   },
+  computed: {
+    misViajesPublicados () {
+      return this.raites.filter(raite => raite.estado === 'Publicado')
+    },
+    misViajesApartados () {
+      return this.raites.filter(raite => raite.estado === 'Apartado')
+    },
+    viajesDisponibles () {
+      return this.raites.filter(raite => raite.estado === 'Disponible')
+    },
+    raitesFiltrados () {
+      let raitesFiltrados = this.raites
+
+      // Filtrar por hora
+      if (this.filtroHora) {
+        raitesFiltrados = raitesFiltrados.filter(raite => raite.hora.includes(this.filtroHora))
+      }
+
+      // Filtrar por fecha
+      if (this.filtroFecha) {
+        raitesFiltrados = raitesFiltrados.filter(raite => raite.fecha.includes(this.filtroFecha))
+      }
+
+      // Filtrar por destino
+      if (this.filtroDestino) {
+        raitesFiltrados = raitesFiltrados.filter(raite => raite.destino.includes(this.filtroDestino))
+      }
+      return raitesFiltrados
+    }
+  },
+
+  mounted () {
+
+  },
+
   methods: {
     nuevoViaje () {
       // Acción para el botón "Nuevo Viaje"
