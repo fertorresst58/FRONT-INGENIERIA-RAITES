@@ -1,242 +1,298 @@
 <template>
   <div>
-    <div class="filtro-button" @click="toggleFiltro">
-      <i class="fas fa-filter" /> Filtrar
-    </div>
-    <!-- Controles de filtro -->
-    <div v-show="mostrarFiltro" class="filtro-controls">
-      <div class="filtro-menu">
-        <div>
-          <label for="hora">Hora:</label>
-          <input id="hora" v-model="filtroHora" type="text" @input="filtrarRaites">
-        </div>
-        <div>
-          <label for="fecha">Fecha:</label>
-          <input id="fecha" v-model="filtroFecha" type="text" @input="filtrarRaites">
-        </div>
-        <div>
-          <label for="destino">Destino:</label>
-          <input id="destino" v-model="filtroDestino" type="text" @input="filtrarRaites">
-        </div>
-      </div>
-    </div>
+    <v-expansion-panels
+      v-model="panel"
+      class="expansion-panels"
+      multiple
+    >
+      <!-- Tarjetas para "Mis viajes publicados"-->
+      <v-expansion-panel>
+        <v-expansion-panel-header><h2>Mis viajes publicados</h2></v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <div class="filtro-button" @click="toggleFiltro">
+            <i class="fas fa-filter" /> Filtrar
+          </div>
+          <!-- Controles de filtro -->
+          <div v-show="mostrarFiltro" class="filtro-controls">
+            <div class="filtro-menu">
+              <div>
+                <label for="hora">Hora:</label>
+                <input id="hora" v-model="filtroHora" type="text" @input="filtrarRaites">
+              </div>
+              <div>
+                <label for="fecha">Fecha:</label>
+                <input id="fecha" v-model="filtroFecha" type="text" @input="filtrarRaites">
+              </div>
+              <div>
+                <label for="destino">Destino:</label>
+                <input id="destino" v-model="filtroDestino" type="text" @input="filtrarRaites">
+              </div>
+            </div>
+          </div>
+          <v-container>
+            <v-row>
+              <v-col
+                v-for="(raite, index) in misViajesPublicados"
+                :key="index"
+                cols="12"
+                sm="6"
+                md="4"
+                lg="3"
+              >
+                <v-card class="mx-auto my-2" max-width="350">
+                  <v-list-item two-line>
+                    <v-list-item-content>
+                      <v-list-item-title class="text-h5">
+                        {{ raite.lugarPartida }}
+                      </v-list-item-title>
+                      <div style="display: flex; align-items: center;">
+                        <v-icon class="mr-2">
+                          mdi-calendar-clock
+                        </v-icon>
+                        <v-list-item-subtitle>{{ raite.fecha }}, {{ raite.hora }}</v-list-item-subtitle>
+                      </div>
+                    </v-list-item-content>
+                  </v-list-item>
 
-    <!-- Aniadiendo mi trabajo-->
-    <!-- Tarjetas para "Mis viajes publicados"-->
-    <h2>Mis viajes publicados</h2>
-    <v-container>
-      <v-row>
-        <v-col
-          v-for="(raite, index) in misViajesPublicados"
-          :key="index"
-          cols="12"
-          sm="6"
-          md="4"
-          lg="3"
-        >
-          <v-card class="mx-auto my-2" max-width="350">
-            <v-list-item two-line>
-              <v-list-item-content>
-                <v-list-item-title class="text-h5">
-                  {{ raite.lugarPartida }}
-                </v-list-item-title>
-                <div style="display: flex; align-items: center;">
-                  <v-icon class="mr-2">
-                    mdi-calendar-clock
-                  </v-icon>
-                  <v-list-item-subtitle>{{ raite.fecha }}, {{ raite.hora }}</v-list-item-subtitle>
-                </div>
-              </v-list-item-content>
-            </v-list-item>
+                  <v-card-text>
+                    <v-row align="center">
+                      <v-col cols="2">
+                        <v-img
+                          src="https://icones.pro/wp-content/uploads/2021/04/icone-cercle-rempli-bleu.png"
+                          alt="Sunny image"
+                          width="52"
+                        />
+                      </v-col>
+                      <v-col class="text-h4" cols="10">
+                        {{ raite.estado }}
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
 
-            <v-card-text>
-              <v-row align="center">
-                <v-col cols="2">
-                  <v-img
-                    src="https://icones.pro/wp-content/uploads/2021/04/icone-cercle-rempli-bleu.png"
-                    alt="Sunny image"
-                    width="52"
-                  />
-                </v-col>
-                <v-col class="text-h4" cols="10">
-                  {{ raite.estado }}
-                </v-col>
-              </v-row>
-            </v-card-text>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon>mdi-car-traction-control</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-subtitle>Pasar por: {{ raite.destino }}</v-list-item-subtitle>
+                  </v-list-item>
 
-            <v-list-item>
-              <v-list-item-icon>
-                <v-icon>mdi-car-traction-control</v-icon>
-              </v-list-item-icon>
-              <v-list-item-subtitle>Pasar por: {{ raite.destino }}</v-list-item-subtitle>
-            </v-list-item>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon>mdi-hand-coin-outline</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-subtitle>${{ raite.precio }}.00 MXN</v-list-item-subtitle>
+                  </v-list-item>
 
-            <v-list-item>
-              <v-list-item-icon>
-                <v-icon>mdi-hand-coin-outline</v-icon>
-              </v-list-item-icon>
-              <v-list-item-subtitle>${{ raite.precio }}.00 MXN</v-list-item-subtitle>
-            </v-list-item>
+                  <v-divider />
 
-            <v-divider />
+                  <v-card-actions>
+                    <v-btn color="warning" dark>
+                      Ver detalles
+                    </v-btn>
+                    <v-spacer />
+                    <v-btn color="warning" dark>
+                      Contactar
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
 
-            <v-card-actions>
-              <v-btn color="warning" dark>
-                Ver detalles
-              </v-btn>
-              <v-spacer />
-              <v-btn color="warning" dark>
-                Contactar
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
+      <!-- Tarjetas para "Mis viajes apartados"-->
+      <v-expansion-panel>
+        <v-expansion-panel-header><h2>Mis viajes apartados</h2></v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <div class="filtro-button" @click="toggleFiltro">
+            <i class="fas fa-filter" /> Filtrar
+          </div>
+          <!-- Controles de filtro -->
+          <div v-show="mostrarFiltro" class="filtro-controls">
+            <div class="filtro-menu">
+              <div>
+                <label for="hora">Hora:</label>
+                <input id="hora" v-model="filtroHora" type="text" @input="filtrarRaites">
+              </div>
+              <div>
+                <label for="fecha">Fecha:</label>
+                <input id="fecha" v-model="filtroFecha" type="text" @input="filtrarRaites">
+              </div>
+              <div>
+                <label for="destino">Destino:</label>
+                <input id="destino" v-model="filtroDestino" type="text" @input="filtrarRaites">
+              </div>
+            </div>
+          </div>
+          <v-container>
+            <v-row>
+              <v-col
+                v-for="(raite, index) in misViajesApartados"
+                :key="index"
+                cols="12"
+                sm="6"
+                md="4"
+                lg="3"
+              >
+                <v-card class="mx-auto my-2" max-width="350">
+                  <v-list-item two-line>
+                    <v-list-item-content>
+                      <v-list-item-title class="text-h5">
+                        {{ raite.lugarPartida }}
+                      </v-list-item-title>
+                      <div style="display: flex; align-items: center;">
+                        <v-icon class="mr-2">
+                          mdi-calendar-clock
+                        </v-icon>
+                        <v-list-item-subtitle>{{ raite.fecha }}, {{ raite.hora }}</v-list-item-subtitle>
+                      </div>
+                    </v-list-item-content>
+                  </v-list-item>
 
-    <!-- Tarjetas para "Mis viajes apartados"-->
-    <h2>Mis viajes apartados</h2>
-    <v-container>
-      <v-row>
-        <v-col
-          v-for="(raite, index) in misViajesApartados"
-          :key="index"
-          cols="12"
-          sm="6"
-          md="4"
-          lg="3"
-        >
-          <v-card class="mx-auto my-2" max-width="350">
-            <v-list-item two-line>
-              <v-list-item-content>
-                <v-list-item-title class="text-h5">
-                  {{ raite.lugarPartida }}
-                </v-list-item-title>
-                <div style="display: flex; align-items: center;">
-                  <v-icon class="mr-2">
-                    mdi-calendar-clock
-                  </v-icon>
-                  <v-list-item-subtitle>{{ raite.fecha }}, {{ raite.hora }}</v-list-item-subtitle>
-                </div>
-              </v-list-item-content>
-            </v-list-item>
+                  <v-card-text>
+                    <v-row align="center">
+                      <v-col cols="2">
+                        <v-img
+                          src="https://somosrecreoaguasanta.cl/wp-content/uploads/2023/03/Circulo-Amarillo.png"
+                          alt="Sunny image"
+                          width="52"
+                        />
+                      </v-col>
+                      <v-col class="text-h4" cols="10">
+                        {{ raite.estado }}
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
 
-            <v-card-text>
-              <v-row align="center">
-                <v-col cols="2">
-                  <v-img
-                    src="https://somosrecreoaguasanta.cl/wp-content/uploads/2023/03/Circulo-Amarillo.png"
-                    alt="Sunny image"
-                    width="52"
-                  />
-                </v-col>
-                <v-col class="text-h4" cols="10">
-                  {{ raite.estado }}
-                </v-col>
-              </v-row>
-            </v-card-text>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon>mdi-car-traction-control</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-subtitle>Pasar por: {{ raite.destino }}</v-list-item-subtitle>
+                  </v-list-item>
 
-            <v-list-item>
-              <v-list-item-icon>
-                <v-icon>mdi-car-traction-control</v-icon>
-              </v-list-item-icon>
-              <v-list-item-subtitle>Pasar por: {{ raite.destino }}</v-list-item-subtitle>
-            </v-list-item>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon>mdi-hand-coin-outline</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-subtitle>${{ raite.precio }}.00 MXN</v-list-item-subtitle>
+                  </v-list-item>
 
-            <v-list-item>
-              <v-list-item-icon>
-                <v-icon>mdi-hand-coin-outline</v-icon>
-              </v-list-item-icon>
-              <v-list-item-subtitle>${{ raite.precio }}.00 MXN</v-list-item-subtitle>
-            </v-list-item>
+                  <v-divider />
 
-            <v-divider />
+                  <v-card-actions>
+                    <v-btn color="warning" dark>
+                      Ver detalles
+                    </v-btn>
+                    <v-spacer />
+                    <v-btn color="warning" dark>
+                      Contactar
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
 
-            <v-card-actions>
-              <v-btn color="warning" dark>
-                Ver detalles
-              </v-btn>
-              <v-spacer />
-              <v-btn color="warning" dark>
-                Contactar
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
+      <!-- Tarjetas para "Viajes Disponibles"-->
+      <v-expansion-panel>
+        <v-expansion-panel-header><h2>Viajes Disponibles</h2></v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <div class="filtro-button" @click="toggleFiltro">
+            <i class="fas fa-filter" /> Filtrar
+          </div>
+          <!-- Controles de filtro -->
+          <div v-show="mostrarFiltro" class="filtro-controls">
+            <div class="filtro-menu">
+              <div>
+                <label for="hora">Hora:</label>
+                <input id="hora" v-model="filtroHora" type="text" @input="filtrarRaites">
+              </div>
+              <div>
+                <label for="fecha">Fecha:</label>
+                <input id="fecha" v-model="filtroFecha" type="text" @input="filtrarRaites">
+              </div>
+              <div>
+                <label for="destino">Destino:</label>
+                <input id="destino" v-model="filtroDestino" type="text" @input="filtrarRaites">
+              </div>
+            </div>
+          </div>
+          <v-container>
+            <v-row>
+              <v-col
+                v-for="(raite, index) in viajesDisponibles"
+                :key="index"
+                cols="12"
+                sm="6"
+                md="4"
+                lg="3"
+              >
+                <v-card class="mx-auto my-2" max-width="350">
+                  <v-list-item two-line>
+                    <v-list-item-content>
+                      <v-list-item-title class="text-h5">
+                        {{ raite.lugarPartida }}
+                      </v-list-item-title>
+                      <div style="display: flex; align-items: center;">
+                        <v-icon class="mr-2">
+                          mdi-calendar-clock
+                        </v-icon>
+                        <v-list-item-subtitle>{{ raite.fecha }}, {{ raite.hora }}</v-list-item-subtitle>
+                      </div>
+                    </v-list-item-content>
+                  </v-list-item>
 
-    <!-- Tarjetas para "Viajes Disponibles"-->
-    <h2>Viajes Disponibles</h2>
-    <v-container>
-      <v-row>
-        <v-col
-          v-for="(raite, index) in viajesDisponibles"
-          :key="index"
-          cols="12"
-          sm="6"
-          md="4"
-          lg="3"
-        >
-          <v-card class="mx-auto my-2" max-width="350">
-            <v-list-item two-line>
-              <v-list-item-content>
-                <v-list-item-title class="text-h5">
-                  {{ raite.lugarPartida }}
-                </v-list-item-title>
-                <div style="display: flex; align-items: center;">
-                  <v-icon class="mr-2">
-                    mdi-calendar-clock
-                  </v-icon>
-                  <v-list-item-subtitle>{{ raite.fecha }}, {{ raite.hora }}</v-list-item-subtitle>
-                </div>
-              </v-list-item-content>
-            </v-list-item>
+                  <v-card-text>
+                    <v-row align="center">
+                      <v-col cols="2">
+                        <v-img
+                          src="https://icones.pro/wp-content/uploads/2021/04/icone-cercle-rempli-vert.png"
+                          alt="Sunny image"
+                          width="52"
+                        />
+                      </v-col>
+                      <v-col class="text-h4" cols="10">
+                        {{ raite.estado }}
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
 
-            <v-card-text>
-              <v-row align="center">
-                <v-col cols="2">
-                  <v-img
-                    src="https://icones.pro/wp-content/uploads/2021/04/icone-cercle-rempli-vert.png"
-                    alt="Sunny image"
-                    width="52"
-                  />
-                </v-col>
-                <v-col class="text-h4" cols="10">
-                  {{ raite.estado }}
-                </v-col>
-              </v-row>
-            </v-card-text>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon>mdi-car-traction-control</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-subtitle>Pasar por: {{ raite.destino }}</v-list-item-subtitle>
+                  </v-list-item>
 
-            <v-list-item>
-              <v-list-item-icon>
-                <v-icon>mdi-car-traction-control</v-icon>
-              </v-list-item-icon>
-              <v-list-item-subtitle>Pasar por: {{ raite.destino }}</v-list-item-subtitle>
-            </v-list-item>
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon>mdi-hand-coin-outline</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-subtitle>${{ raite.precio }}.00 MXN</v-list-item-subtitle>
+                  </v-list-item>
 
-            <v-list-item>
-              <v-list-item-icon>
-                <v-icon>mdi-hand-coin-outline</v-icon>
-              </v-list-item-icon>
-              <v-list-item-subtitle>${{ raite.precio }}.00 MXN</v-list-item-subtitle>
-            </v-list-item>
+                  <v-divider />
 
-            <v-divider />
-
-            <v-card-actions>
-              <v-btn color="warning" dark>
-                Ver detalles
-              </v-btn>
-              <v-spacer />
-              <v-btn color="warning" dark>
-                Contactar
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
+                  <v-card-actions>
+                    <v-btn color="warning" dark>
+                      Ver detalles
+                    </v-btn>
+                    <v-spacer />
+                    <v-btn color="warning" dark>
+                      Contactar
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
   </div>
 </template>
 
@@ -367,6 +423,7 @@ export default {
   border-radius: 5px;
   padding: 10px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2000;
 }
 
 .filtro-menu {
@@ -375,17 +432,20 @@ export default {
   border-radius: 5px;
   padding: 10px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2000;
 }
 
 /* Estilos para los elementos dentro del menú desplegable */
 .filtro-menu div {
   margin-bottom: 10px;
+  z-index: 2001;
 }
 
 .filtro-menu label {
   display: inline-block;
   width: 80px;
   font-weight: bold;
+  z-index: 2002;
 }
 
 .filtro-menu input {
@@ -393,6 +453,7 @@ export default {
   padding: 5px;
   border: 1px solid #ccc;
   border-radius: 3px;
+  z-index: 2003;
 }
 
 /* Estilos opcionales para la tabla */
@@ -422,4 +483,10 @@ th {
 .estado-disponible {
   background-color: lightgreen;
 }
+
+.expansion-panels {
+  max-width: 90%; /* Cambia esto según el ancho deseado */
+  margin: 0 auto; /* Centra el componente horizontalmente */
+}
+
 </style>
