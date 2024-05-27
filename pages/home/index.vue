@@ -293,6 +293,56 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
+    <v-dialog v-model="dialogDetalles" max-width="600px">
+    <v-stepper v-model="pasoActual">
+      <v-stepper-header>
+        <v-stepper-step :complete="pasoActual > 1" step="1">Detalles del viaje</v-stepper-step>
+        <v-divider></v-divider>
+        <v-stepper-step :complete="pasoActual > 2" step="2">Equipaje</v-stepper-step>
+        <v-divider></v-divider>
+        <v-stepper-step step="3">Personas</v-stepper-step>
+      </v-stepper-header>
+
+      <v-stepper-items>
+        <v-stepper-content step="1">
+          <v-card>
+            <v-card-text>
+              <h3 v-if="detallesViaje">{{ detallesViaje.lugarPartida }}</h3>
+              <p v-if="detallesViaje">Hora de salida: {{ detallesViaje.hora }}</p>
+              <p v-if="detallesViaje">Fecha: {{ detallesViaje.fecha }}</p>
+              <p v-if="detallesViaje">Destino: {{ detallesViaje.destino }}</p>
+              <p v-if="detallesViaje">Precio: ${{ detallesViaje.precio }} MXN</p>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="primary" @click="pasoActual = 2">Siguiente</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-stepper-content>
+
+        <v-stepper-content step="2">
+          <v-card>
+            <v-card-text>
+              <v-select v-model="equipajeSeleccionado" :items="opcionesEquipaje" label="Selecciona el equipaje"></v-select>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="primary" @click="pasoActual = 3">Siguiente</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-stepper-content>
+
+        <v-stepper-content step="3">
+          <v-card>
+            <v-card-text>
+              <v-counter v-model="numerPersonas" :rules="reglas"></v-counter>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="primary" @click="dialogDetalles = false">Finalizar</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-stepper-content>
+      </v-stepper-items>
+    </v-stepper>
+  </v-dialog>
   </div>
 </template>
 
@@ -305,6 +355,15 @@ export default {
 
   data () {
     return {
+      dialogDetalles: false,
+      pasoActual: 1,
+      detallesViaje: {},
+      equipajeSeleccionado: null,
+      opcionesEquipaje: ['Equipaje de mano', 'Maleta grande', 'Maleta mediana'],
+      numerPersonas: 1,
+      reglas: [
+        value => value > 0 || 'El número de personas debe ser mayor a 0'
+      ],
       raites: [
         { estado: 'Publicado', lugarPartida: 'Mérida', hora: '13:14', fecha: '2024-06-07', destino: 'Oaxaca', precio: 500 },
         { estado: 'Publicado', lugarPartida: 'Puebla', hora: '05:49', fecha: '2024-05-26', destino: 'Oaxaca', precio: 450 },
@@ -378,6 +437,10 @@ export default {
   },
 
   methods: {
+    abrirDialogoDetalles (raite) {
+      this.detallesViaje = raite
+      this.dialogDetalles = true
+    },
     filtrarRaites () {
       // Método de filtro ejecutado cuando cambian los valores de los controles de filtro
     },
