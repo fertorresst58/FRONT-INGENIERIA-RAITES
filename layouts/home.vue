@@ -117,14 +117,19 @@ export default {
       fixed: false,
       items: [
         {
+          icon: 'mdi-home',
+          title: 'Home',
+          to: '/home'
+        },
+        {
           icon: 'mdi-account',
           title: 'Mi Perfil',
           to: '/profile'
         },
         {
-          icon: 'mdi-car',
-          title: 'Mis Viajes',
-          to: '/travel'
+          icon: 'mdi-routes',
+          title: 'Mi Historial',
+          to: '/history'
         },
         {
           icon: 'mdi-message',
@@ -168,7 +173,7 @@ export default {
   mounted () {
     // SE EJECUTA CUANDO SE CARGA EL COMPONENTE
     // AUTENTICACION
-    // if (this.$store.state.token === null) { this.$router.push('/') } else { this.obtenerDatosUsuarios() }
+    if (this.$store.state.token === null) { this.$router.push('/') } else { this.obtenerDatosUsuarios() }
 
     this.obtenerDatosUsuarios()
   },

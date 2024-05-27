@@ -212,7 +212,7 @@
                     required
                     type="number"
                     :rules="requiredRule"
-                    @input="limitarLongitud"
+                    max="9999999999"
                   />
                   <h3 class="fontTitle">
                     Carrera:
