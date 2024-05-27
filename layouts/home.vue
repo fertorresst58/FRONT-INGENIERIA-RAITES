@@ -173,7 +173,7 @@ export default {
   mounted () {
     // SE EJECUTA CUANDO SE CARGA EL COMPONENTE
     // AUTENTICACION
-    if (this.$store.state.token === null) { this.$router.push('/') } else { this.obtenerDatosUsuarios() }
+    // if (this.$store.state.token === null) { this.$router.push('/') } else { this.obtenerDatosUsuarios() }
 
     this.obtenerDatosUsuarios()
   },
