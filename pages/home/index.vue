@@ -353,10 +353,6 @@ export default {
       this.$axios.get(url, { params })
         .then((res) => {
           if (res.data.success) {
-            console.log('Viajes Publicados:', res.data.viajesPublicados)
-            console.log('Viajes Apartados:', res.data.viajesReservados)
-            console.log('Viajes Disponibles:', res.data.viajes)
-
             this.misViajesPublicados = res.data.viajesPublicados
             this.misViajesApartados = res.data.viajesReservados
             this.viajesDisponibles = res.data.viajes

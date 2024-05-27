@@ -5,7 +5,6 @@ export const state = () => ({
   mensaje: '',
   icon: '',
   user: {
-    id: 1
   },
   token: null
 })
