@@ -117,14 +117,19 @@ export default {
       fixed: false,
       items: [
         {
+          icon: 'mdi-home',
+          title: 'Home',
+          to: '/home'
+        },
+        {
           icon: 'mdi-account',
           title: 'Mi Perfil',
           to: '/profile'
         },
         {
-          icon: 'mdi-car',
-          title: 'Mis Viajes',
-          to: '/travel'
+          icon: 'mdi-routes',
+          title: 'Mi Historial',
+          to: '/history'
         },
         {
           icon: 'mdi-message',

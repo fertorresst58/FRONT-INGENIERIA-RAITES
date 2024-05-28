@@ -90,29 +90,41 @@
             color="#8C6E39"
             height="38px"
             class="white--text"
+            @clic="dialogProfile=true"
           >
             <span>EDITAR PERFIL</span>
           </v-btn>
           <v-spacer />
         </v-card-actions>
       </v-card>
+
+      <v-dialog v-model="dialogProfile" persistent width="700" class="pa-0 ma-0">
+        <edit-profile />
+      </v-dialog>
     </v-row>
   </v-col>
 </template>
 
 <script>
+import editProfile from '@/components/ui-editprofile.vue'
+
 export default {
+  components: {
+    editProfile
+  },
+
   layout: 'home',
   auth: true,
   data () {
     return {
-      user: {}
+      user: {},
+      dialogProfile: true
     }
   },
 
   mounted () {
     // SE EJECUTA CUANDO SE CARGA EL COMPONENTE
-    // AUTENTICACION
+    // AUTENTICACIÓN
     // if (this.$store.state.token === null) { this.$router.push('/') } else { this.obtenerDatosUsuarios() }
     this.obtenerDatosUsuarios()
   },

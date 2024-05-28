@@ -212,7 +212,23 @@
                     required
                     type="number"
                     :rules="requiredRule"
-                    @input="limitarLongitud"
+                    max="9999999999"
+                  />
+                  <h3 class="fontTitle">
+                    Campus:
+                  </h3>
+                  <v-select
+                    v-model="campus"
+                    :items="itemsCampus"
+                    label="Selecciona tu campus"
+                    dense
+                    solo
+                    outlined
+                    flat
+                    required
+                    type="text"
+                    class="fontTitle"
+                    :rules="requiredRule"
                   />
                   <h3 class="fontTitle">
                     Carrera:
@@ -311,6 +327,19 @@
                       @change="showFechaNacimiento = false"
                     />
                   </v-menu>
+                  <h3 class="fontTitle">
+                    Ciudad de residencia:
+                  </h3>
+                  <v-text-field
+                    v-model="ciudad"
+                    class="fontTitle"
+                    dense
+                    solo
+                    outlined
+                    flat
+                    type="text"
+                    :rules="requiredRule"
+                  />
                 </v-form>
               </v-card-text>
 
@@ -595,13 +624,21 @@ export default {
       amaterno: null,
       correo: null,
       telefono: null,
+      campus: null,
       carrera: null,
       contrasena: null,
       sexo: null,
       maxDate: null,
       fechaNacimiento: null,
+      ciudad: null,
       showFechaNacimiento: false,
       itemsGenero: ['Hombre', 'Mujer', 'Otro', 'Prefiero no decir'],
+      itemsCampus: [
+        'Celaya-Salvatierra',
+        'Guanajuato',
+        'Irapauto-Salamanca',
+        'Leon'
+      ],
       itemsCarrera: [
         'Arquitectura',
         'Artes Escénicas',
@@ -774,8 +811,10 @@ export default {
           email: this.correo,
           password: this.contrasena,
           telefono: this.telefono,
-          carrera: this.carrera,
-          fechaNac: this.fechaNacimiento
+          campus: this.campus,
+          carrera: this.carrera, // Campos qe faltan de agregar en el back
+          fechaNac: this.fechaNacimiento,
+          ciudad: this.ciudad // Campos qe faltan de agregar en el back
         }
         const url = '/signup'
         this.$axios.post(url, data)
