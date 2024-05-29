@@ -613,8 +613,8 @@ export default {
   data () {
     return {
       // VARIABLES PARA LOGIN
-      correoLogin: null,
-      contrasenaLogin: null,
+      correoLogin: 'admin@ugto.mx',
+      contrasenaLogin: 'adminadmin',
       checkbox: false,
 
       // VARIABLES PARA FORMULARIO DE REGISTRO
@@ -792,7 +792,7 @@ export default {
           this.$store.commit('modifyText', 'LOGIN EXITOSO')
           this.$store.commit('modifyTimeout', '1200')
           this.$store.commit('modifyIcon', 'mdi-check')
-          this.$router.push('/home')
+          this.$router.push('/history')
         }
       }).catch((error) => {
         // eslint-disable-next-line no-console

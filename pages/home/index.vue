@@ -256,7 +256,6 @@
                         />
                       </v-col>
                       <v-col class="text-h4" cols="10">
-                      
                         {{ raite.disponible }}
                       </v-col>
                     </v-row>
@@ -295,56 +294,78 @@
       </v-expansion-panel>
     </v-expansion-panels>
     <v-dialog v-model="dialogDetalles" max-width="600px">
-    <v-stepper v-model="pasoActual">
-      <v-stepper-header>
-        <v-stepper-step :complete="pasoActual > 1" step="1">Detalles del viaje</v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step :complete="pasoActual > 2" step="2">Equipaje</v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step step="3">Personas</v-stepper-step>
-      </v-stepper-header>
+      <v-stepper v-model="pasoActual">
+        <v-stepper-header>
+          <v-stepper-step :complete="pasoActual > 1" step="1">
+            Detalles del viaje
+          </v-stepper-step>
+          <v-divider />
+          <v-stepper-step :complete="pasoActual > 2" step="2">
+            Equipaje
+          </v-stepper-step>
+          <v-divider />
+          <v-stepper-step step="3">
+            Personas
+          </v-stepper-step>
+        </v-stepper-header>
 
-      <v-stepper-items>
-        <v-stepper-content step="1">
-          <v-card>
-            <v-card-text>
-              <h3 v-if="detallesViaje">{{ detallesViaje.lugarPartida }}</h3>
-              <p v-if="detallesViaje">Hora de salida: {{ detallesViaje.hora }}</p>
-              <p v-if="detallesViaje">Fecha: {{ detallesViaje.fecha }}</p>
-              <p v-if="detallesViaje">Destino: {{ detallesViaje.destino }}</p>
-              <p v-if="detallesViaje">Precio: ${{ detallesViaje.precio }} MXN</p>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" @click="pasoActual = 2">Siguiente</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-stepper-content>
+        <v-stepper-items>
+          <v-stepper-content step="1">
+            <v-card>
+              <v-card-text>
+                <h3 v-if="detallesViaje">
+                  {{ detallesViaje.lugarPartida }}
+                </h3>
+                <p v-if="detallesViaje">
+                  Hora de salida: {{ detallesViaje.hora }}
+                </p>
+                <p v-if="detallesViaje">
+                  Fecha: {{ detallesViaje.fecha }}
+                </p>
+                <p v-if="detallesViaje">
+                  Destino: {{ detallesViaje.destino }}
+                </p>
+                <p v-if="detallesViaje">
+                  Precio: ${{ detallesViaje.precio }} MXN
+                </p>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="pasoActual = 2">
+                  Siguiente
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-stepper-content>
 
-        <v-stepper-content step="2">
-          <v-card>
-            <v-card-text>
-              <v-select v-model="equipajeSeleccionado" :items="opcionesEquipaje" label="Selecciona el equipaje"></v-select>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" @click="pasoActual = 3">Siguiente</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-stepper-content>
+          <v-stepper-content step="2">
+            <v-card>
+              <v-card-text>
+                <v-select v-model="equipajeSeleccionado" :items="opcionesEquipaje" label="Selecciona el equipaje" />
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="pasoActual = 3">
+                  Siguiente
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-stepper-content>
 
-        <v-stepper-content step="3">
-          <v-card>
-            <v-card-text>
-              <v-counter v-model="numerPersonas" :rules="reglas"></v-counter>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" @click="dialogDetalles = false">Finalizar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-stepper-content>
-      </v-stepper-items>
-    </v-stepper>
-  </v-dialog>
- </div>
+          <v-stepper-content step="3">
+            <v-card>
+              <v-card-text>
+                <v-counter v-model="numerPersonas" :rules="reglas" />
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="dialogDetalles = false">
+                  Finalizar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-stepper-content>
+        </v-stepper-items>
+      </v-stepper>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
@@ -406,9 +427,8 @@ export default {
     recuperarDatos () {
       const url = '/home'
       const id = this.$store.state.user.id
-      const params = {
-        id
-      }
+      const params = { id }
+
       // solicitud get que pasa un objeto con el ID del usuario
       this.$axios.get(url, { params })
         .then((res) => {
@@ -418,6 +438,7 @@ export default {
             this.viajesDisponibles = res.data.viajes
           }
         })
+    }, // <-- Se cerró correctamente el método aquí
     abrirDialogoDetalles (raite) {
       this.detallesViaje = raite
       this.dialogDetalles = true
@@ -442,6 +463,7 @@ export default {
     }
   }
 }
+
 </script>
 
 <style scoped>

@@ -5,14 +5,14 @@
       class="expansion-panels"
       multiple
     >
-      <!-- Tarjetas para "Mis viajes publicados"-->
+      <!-- Tarjetas para "Viajes sin reseniar"-->
       <v-expansion-panel>
         <v-expansion-panel-header><h2>Viajes sin reseñar</h2></v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-container>
             <v-row>
               <v-col
-                v-for="(raite, index) in misViajesPasados"
+                v-for="(raite, index) in misViajesSinReseniar"
                 :key="index"
                 cols="12"
                 sm="6"
@@ -66,7 +66,7 @@
                   <v-divider />
 
                   <v-card-actions>
-                    <v-btn color="warning" dark>
+                    <v-btn color="warning" dark @click="showDetalles(raite)">
                       Ver detalles
                     </v-btn>
                     <v-spacer />
@@ -80,8 +80,81 @@
           </v-container>
         </v-expansion-panel-content>
       </v-expansion-panel>
+
+    <!-- Tarjetas para "Viajes reseniados"-->
+    <v-expansion-panel>
+        <v-expansion-panel-header><h2>Viajes reseñados</h2></v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-container>
+            <v-row>
+              <v-col
+                v-for="(raite, index) in misViajesReseniados"
+                :key="index"
+                cols="12"
+                sm="6"
+                md="4"
+                lg="3"
+              >
+                <v-card class="mx-auto my-2" max-width="350">
+                  <v-list-item two-line>
+                    <v-list-item-content>
+                      <v-list-item-title class="text-h5">
+                        {{ raite.inicio }}
+                      </v-list-item-title>
+                      <div style="display: flex; align-items: center;">
+                        <v-icon class="mr-2">
+                          mdi-calendar-clock
+                        </v-icon>
+                        <v-list-item-subtitle>{{ raite.fecha }}, {{ raite.hora }}</v-list-item-subtitle>
+                      </div>
+                    </v-list-item-content>
+                  </v-list-item>
+
+                  <v-card-text>
+                    <v-row align="center">
+                      <v-col cols="2">
+                        <v-img
+                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoqzh_OZTGcMc5tZXeC5jNHUjI6B3VEOErabOVMjQ7gQ&s"
+                          alt="Sunny image"
+                          width="52"
+                        />
+                      </v-col>
+                      <v-col class="text-h4" cols="10">
+                        Finalizado
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon>mdi-car-traction-control</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-subtitle>Pasar por: {{ raite.destino }}</v-list-item-subtitle>
+                  </v-list-item>
+
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon>mdi-hand-coin-outline</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-subtitle>${{ raite.precio }}.00 MXN</v-list-item-subtitle>
+                  </v-list-item>
+
+                  <v-divider />
+
+                  <v-card-actions>
+                    <v-btn color="warning" block dark @click="showDetalles(raite)">
+                      Ver detalles
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
     </v-expansion-panels>
-    <v-dialog v-model="dialogReview" max-width="600px">
+
+    <v-dialog v-model="dialogReview" persistent max-width="600px">
       <v-toolbar
         color="#0A263D"
         dark
@@ -133,6 +206,128 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialogDetalles" max-width="600px">
+      <v-toolbar color="#0A263D" dark>
+        <v-card-title class="text-h5">
+          Detalles del viaje
+        </v-card-title>
+      </v-toolbar>
+      <v-card
+        class="elevation-16 mx-auto"
+        width="auto"
+        style="overflow: hidden;"
+      >
+        <v-row class="mt-2">
+          <v-col cols="12" sm="6">
+            <v-row align="center" no-gutters>
+              <v-col>
+                <v-text-field
+                  v-model="this.lugarPartida"
+                  label="Lugar de inicio"
+                  readonly
+                  class="pa-3"
+                  prepend-icon="mdi mdi-car-arrow-right"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-text-field
+              v-model="this.lugarDestino"
+              label="Lugar de Destino"
+              readonly
+              class="pa-3"
+              prepend-icon="mdi mdi-flag-checkered"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row class="mt-2">
+          <v-col cols="8" sm="4">
+            <v-row align="center" no-gutters>
+              <v-col>
+                <v-text-field
+                  v-model="this.precioPersona"
+                  label="Precio"
+                  readonly
+                  class="pa-3"
+                  prepend-icon="mdi mdi-currency-usd"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-text-field
+              v-model="this.conductor"
+              label="Conductor"
+              readonly
+              class="pa-3"
+              prepend-icon="mdi mdi-card-account-details-outline"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row class="mt-2">
+          <v-col cols="8" sm="4">
+            <v-row align="center" no-gutters>
+              <v-col>
+                <v-text-field
+                  v-model="this.fechaInicio"
+                  label="Fecha"
+                  readonly
+                  class="pa-3"
+                  prepend-icon="mdi mdi-calendar-month"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="8" sm="4">
+            <v-text-field
+              value="10:00"
+              v-model="this.horaInicio"
+              readonly
+              class="pa-3"
+              prepend-icon="mdi mdi-clock-outline"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+        <v-row v-if="this.calificacionPuesto != ''" class="mt-2">
+          <v-col cols="8" sm="4">
+            <v-row align="center" no-gutters widht="auto">
+              <v-col>
+                <div class="text-h6 pa-2">
+                  Calificacion
+                </div>
+                <v-rating
+                  v-model="this.calificacionPuesto"
+                  color="yellow darken-3"
+                  background-color="grey darken-1"
+                  empty-icon="$ratingFull"
+                  hover
+                  readonly
+                ></v-rating>
+              </v-col>
+            </v-row>
+          </v-col>
+          <v-col cols="8" sm="4">
+            <v-textarea
+              v-model="this.comentarioPuesto"
+              outlined
+              name="comentario"
+              label="Comentario"
+              persistent
+              readonly
+            ></v-textarea>
+          </v-col>
+        </v-row>
+        <v-divider></v-divider>
+        <v-card-actions class="justify-space-between">
+          <v-btn text block @click="dialogDetalles=false">
+            Cerrar
+          </v-btn>
+          <v-btn color="primary" text>
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -148,11 +343,21 @@ export default {
       detallesViaje: {},
       id: [],
       misViajesApartados: [],
-      misViajesPasados: [],
+      misViajesSinReseniar: [],
+      misViajesReseniados: [],
       dialogReview: false,
       comentario: '',
       calificacion: 0,
-      viajeID: ''
+      viajeID: '',
+      dialogDetalles: false,
+      lugarPartida: '',
+      lugarDestino: '',
+      fechaInicio: '',
+      horaInicio: '',
+      precioPersona: '',
+      calificacionPuesto: '4',
+      comentarioPuesto: 'Estuvo bien, pero no tan bien',
+      conductor: 'Pedrito'
     }
   },
 
@@ -164,6 +369,14 @@ export default {
   },
 
   methods: {
+    showDetalles (raite) {
+      this.lugarPartida = raite.inicio
+      this.lugarDestino = raite.destino
+      this.fechaInicio = raite.fecha
+      this.horaInicio = raite.hora
+      this.precioPersona = raite.precio
+      this.dialogDetalles = true
+    },
     dialogReviewFunction (id) {
       this.viajeID = id
       this.dialogReview = true
@@ -175,14 +388,16 @@ export default {
       this.dialogReview = false
     },
     reviewNow () {
-      // Logica para generar la review
-      const ahora = new Date()
-      const fechaActual = ahora.toISOString().split('T')[0]
-      console.log('Calificacion: ', this.calificacion)
-      console.log('Comentario: ', this.comentario)
-      console.log('Fecha de hoy: ', fechaActual)
-      console.log('Viaje ID: ', this.viajeID)
-      this.resetReview()
+      if (this.calificacion > 0) {
+        // Logica para generar la review
+        const ahora = new Date()
+        const fechaActual = ahora.toISOString().split('T')[0]
+        console.log('Calificacion: ', this.calificacion)
+        console.log('Comentario: ', this.comentario)
+        console.log('Fecha de hoy: ', fechaActual)
+        console.log('Viaje ID: ', this.viajeID)
+        this.resetReview()
+      }
     },
     recuperarDatos () {
       const url = '/home'
@@ -199,17 +414,22 @@ export default {
         })
     },
     filtrarViajesPasados () {
-      const misViajesPasados = []
+      const misViajesSinReseniar = []
+      const misViajesReseniados = []
       const ahora = new Date()
       const fechaActual = ahora.toISOString().split('T')[0] // Formato año-mes-día
       const horaActual = ahora.toTimeString().split(' ')[0] // Formato hora:minuto:segundo
 
       this.misViajesApartados.forEach((viaje) => {
         if (viaje.fecha < fechaActual || (viaje.fecha === fechaActual && viaje.hora < horaActual)) {
-          misViajesPasados.push(viaje)
+          misViajesSinReseniar.push(viaje)
+          misViajesReseniados.push(viaje)
+        } else if (viaje.fecha < fechaActual || (viaje.fecha === fechaActual && viaje.hora < horaActual)) {
+          console.log('jja')
         }
       })
-      this.misViajesPasados = misViajesPasados
+      this.misViajesSinReseniar = misViajesSinReseniar
+      this.misViajesReseniados = misViajesReseniados
     }
   }
 }
