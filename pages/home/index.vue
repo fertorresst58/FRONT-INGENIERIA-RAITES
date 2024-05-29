@@ -7,25 +7,32 @@
     >
       <!-- Tarjetas para "Mis viajes publicados"-->
       <v-expansion-panel>
-        <v-expansion-panel-header><h2>Mis viajes publicados</h2></v-expansion-panel-header>
+        <v-expansion-panel-header>
+          <h2>Mis viajes publicados</h2>
+        </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <div class="filtro-button" @click="toggleFiltro">
-            <i class="fas fa-filter" /> Filtrar
-          </div>
-          <!-- Controles de filtro -->
-          <div v-show="mostrarFiltro" class="filtro-controls">
-            <div class="filtro-menu">
-              <div>
-                <label for="hora">Hora:</label>
-                <input id="hora" v-model="filtroHora" type="text" @input="filtrarRaites">
-              </div>
-              <div>
-                <label for="fecha">Fecha:</label>
-                <input id="fecha" v-model="filtroFecha" type="text" @input="filtrarRaites">
-              </div>
-              <div>
-                <label for="destino">Destino:</label>
-                <input id="destino" v-model="filtroDestino" type="text" @input="filtrarRaites">
+          <div v-if="panel.includes(0)">
+            <div class="filtro-button" @click="toggleFiltro('publicados')">
+              <v-icon>mdi-filter</v-icon> Filtrar
+            </div>
+            <div v-show="mostrarMenuFiltro.publicados" class="filtro-controls">
+              <div class="filtro-menu">
+                <div>
+                  <label for="horaPublicados">Hora:</label>
+                  <input id="horaPublicados" v-model="filtroHoraPublicados" type="text" @input="filtrarViajes('publicados')">
+                </div>
+                <div>
+                  <label for="fechaPublicados">Fecha:</label>
+                  <input id="fechaPublicados" v-model="filtroFechaPublicados" type="text" @input="filtrarViajes('publicados')">
+                </div>
+                <div>
+                  <label for="destinoPublicados">Destino:</label>
+                  <input id="destinoPublicados" v-model="filtroDestinoPublicados" type="text" @input="filtrarViajes('publicados')">
+                </div>
+                <div>
+                  <label for="precioPublicados">Precio:</label>
+                  <input id="precioPublicados" v-model="filtroPrecioPublicados" type="text" @input="filtrarViajes('publicados')">
+                </div>
               </div>
             </div>
           </div>
@@ -43,7 +50,7 @@
                   <v-list-item two-line>
                     <v-list-item-content>
                       <v-list-item-title class="text-h5">
-                        {{ raite.lugarPartida }}
+                        {{ raite.inicio }}
                       </v-list-item-title>
                       <div style="display: flex; align-items: center;">
                         <v-icon class="mr-2">
@@ -64,7 +71,7 @@
                         />
                       </v-col>
                       <v-col class="text-h4" cols="10">
-                        {{ raite.estado }}
+                        {{ raite.disponible }}
                       </v-col>
                     </v-row>
                   </v-card-text>
@@ -86,9 +93,55 @@
                   <v-divider />
 
                   <v-card-actions>
-                    <v-btn color="warning" dark>
+                    <v-btn color="warning" dark @click="mostrarDetalles(raite)">
                       Ver detalles
                     </v-btn>
+                    <v-dialog v-model="showStepperpublicados" width="50%">
+                      <v-stepper v-model="e1">
+                        <v-stepper-header>
+                          <v-stepper-step :complete="e1 > 1" step="1" color="#0A263D">
+                            Detalles del viaje
+                          </v-stepper-step>
+                        </v-stepper-header>
+
+                        <v-stepper-items>
+                          <!-- Paso 1: Detalles del viaje -->
+                          <v-stepper-content step="1">
+                            <v-card class="no-border" color="white" elevation="0">
+                              <v-card-title class="fontTitle">
+                                Detalles del viaje
+                              </v-card-title>
+                              <v-card-text>
+                                <!-- Aquí puedes agregar más detalles específicos del viaje -->
+                                <p v-if="detallesViaje">
+                                  Descripcion del viaje: {{ detallesViaje.descripcion }}
+                                </p>
+                                <p v-if="detallesViaje">
+                                  Fecha y hora del viaje: el {{ detallesViaje.fecha }}, a las {{ detallesViaje.hora }}
+                                </p>
+                                <p v-if="detallesViaje">
+                                  Inicio del viaje en: {{ detallesViaje.inicio }}
+                                </p>
+                                <p v-if="detallesViaje">
+                                  Destino del viaje: {{ detallesViaje.destino }}
+                                </p>
+                                <p v-if="detallesViaje">
+                                  Precio del viaje por persona: ${{ detallesViaje.precio }} MXN
+                                </p>
+                                <p>
+                                  Cupo: 4
+                                </p>
+                              </v-card-text>
+                            </v-card>
+                            <div class="button-container">
+                              <v-btn align="center" justify="center" color="#8C6E39" class="white--text" @click="showStepperpublicados = false">
+                                Salir
+                              </v-btn>
+                            </div>
+                          </v-stepper-content>
+                        </v-stepper-items>
+                      </v-stepper>
+                    </v-dialog>
                     <v-spacer />
                     <v-btn color="warning" dark>
                       Contactar
@@ -103,25 +156,32 @@
 
       <!-- Tarjetas para "Mis viajes apartados"-->
       <v-expansion-panel>
-        <v-expansion-panel-header><h2>Mis viajes apartados</h2></v-expansion-panel-header>
+        <v-expansion-panel-header>
+          <h2>Mis viajes apartados</h2>
+        </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <div class="filtro-button" @click="toggleFiltro">
-            <i class="fas fa-filter" /> Filtrar
-          </div>
-          <!-- Controles de filtro -->
-          <div v-show="mostrarFiltro" class="filtro-controls">
-            <div class="filtro-menu">
-              <div>
-                <label for="hora">Hora:</label>
-                <input id="hora" v-model="filtroHora" type="text" @input="filtrarRaites">
-              </div>
-              <div>
-                <label for="fecha">Fecha:</label>
-                <input id="fecha" v-model="filtroFecha" type="text" @input="filtrarRaites">
-              </div>
-              <div>
-                <label for="destino">Destino:</label>
-                <input id="destino" v-model="filtroDestino" type="text" @input="filtrarRaites">
+          <div v-if="panel.includes(1)">
+            <div class="filtro-button" @click="toggleFiltro('apartados')">
+              <v-icon>mdi-filter</v-icon> Filtrar
+            </div>
+            <div v-show="mostrarMenuFiltro.apartados" class="filtro-controls">
+              <div class="filtro-menu">
+                <div>
+                  <label for="horaApartados">Hora:</label>
+                  <input id="horaApartados" v-model="filtroHoraApartados" type="text" @input="filtrarViajes('apartados')">
+                </div>
+                <div>
+                  <label for="fechaApartados">Fecha:</label>
+                  <input id="fechaApartados" v-model="filtroFechaApartados" type="text" @input="filtrarViajes('apartados')">
+                </div>
+                <div>
+                  <label for="destinoApartados">Destino:</label>
+                  <input id="destinoApartados" v-model="filtroDestinoApartados" type="text" @input="filtrarViajes('apartados')">
+                </div>
+                <div>
+                  <label for="precioApartados">Precio:</label>
+                  <input id="precioApartados" v-model="filtroPrecioApartados" type="text" @input="filtrarViajes('apartados')">
+                </div>
               </div>
             </div>
           </div>
@@ -139,7 +199,7 @@
                   <v-list-item two-line>
                     <v-list-item-content>
                       <v-list-item-title class="text-h5">
-                        {{ raite.lugarPartida }}
+                        {{ raite.inicio }}
                       </v-list-item-title>
                       <div style="display: flex; align-items: center;">
                         <v-icon class="mr-2">
@@ -160,7 +220,7 @@
                         />
                       </v-col>
                       <v-col class="text-h4" cols="10">
-                        {{ raite.estado }}
+                        {{ raite.disponible }}
                       </v-col>
                     </v-row>
                   </v-card-text>
@@ -182,9 +242,58 @@
                   <v-divider />
 
                   <v-card-actions>
-                    <v-btn color="warning" dark>
+                    <v-btn color="warning" dark @click="mostrarDetalles(raite)">
                       Ver detalles
                     </v-btn>
+                    <v-dialog v-model="showStepperpublicados" width="50%">
+                      <v-stepper v-model="e1">
+                        <v-stepper-header>
+                          <v-stepper-step :complete="e1 > 1" step="1" color="#0A263D">
+                            Detalles del viaje
+                          </v-stepper-step>
+                        </v-stepper-header>
+
+                        <v-stepper-items>
+                          <!-- Paso 1: Detalles del viaje -->
+                          <v-stepper-content step="1">
+                            <v-card class="no-border" color="white" elevation="0">
+                              <v-card-title class="fontTitle">
+                                Detalles del viaje
+                              </v-card-title>
+                              <v-card-text>
+                                <!-- Aquí puedes agregar más detalles específicos del viaje -->
+                                <p v-if="detallesViaje">
+                                  Descripcion del viaje: {{ detallesViaje.descripcion }}
+                                </p>
+                                <p v-if="detallesViaje">
+                                  Fecha y hora del viaje: el {{ detallesViaje.fecha }}, a las {{ detallesViaje.hora }}
+                                </p>
+                                <p v-if="detallesViaje">
+                                  Inicio del viaje en: {{ detallesViaje.inicio }}
+                                </p>
+                                <p v-if="detallesViaje">
+                                  Destino del viaje: {{ detallesViaje.destino }}
+                                </p>
+                                <p v-if="detallesViaje">
+                                  Precio del viaje por persona: ${{ detallesViaje.precio }} MXN
+                                </p>
+                                <p>
+                                  Cupo: 4
+                                </p>
+                                <p>
+                                  Luagres reservados: 2
+                                </p>
+                              </v-card-text>
+                            </v-card>
+                            <div class="button-container">
+                              <v-btn align="center" justify="center" color="#8C6E39" class="white--text" @click="showStepperpublicados = false">
+                                Salir
+                              </v-btn>
+                            </div>
+                          </v-stepper-content>
+                        </v-stepper-items>
+                      </v-stepper>
+                    </v-dialog>
                     <v-spacer />
                     <v-btn color="warning" dark>
                       Contactar
@@ -199,25 +308,32 @@
 
       <!-- Tarjetas para "Viajes Disponibles"-->
       <v-expansion-panel>
-        <v-expansion-panel-header><h2>Viajes Disponibles</h2></v-expansion-panel-header>
+        <v-expansion-panel-header>
+          <h2>Viajes disponibles</h2>
+        </v-expansion-panel-header>
         <v-expansion-panel-content>
-          <div class="filtro-button" @click="toggleFiltro">
-            <i class="fas fa-filter" /> Filtrar
-          </div>
-          <!-- Controles de filtro -->
-          <div v-show="mostrarFiltro" class="filtro-controls">
-            <div class="filtro-menu">
-              <div>
-                <label for="hora">Hora:</label>
-                <input id="hora" v-model="filtroHora" type="text" @input="filtrarRaites">
-              </div>
-              <div>
-                <label for="fecha">Fecha:</label>
-                <input id="fecha" v-model="filtroFecha" type="text" @input="filtrarRaites">
-              </div>
-              <div>
-                <label for="destino">Destino:</label>
-                <input id="destino" v-model="filtroDestino" type="text" @input="filtrarRaites">
+          <div v-if="panel.includes(2)">
+            <div class="filtro-button" @click="toggleFiltro('disponibles')">
+              <v-icon>mdi-filter</v-icon> Filtrar
+            </div>
+            <div v-show="mostrarMenuFiltro.disponibles" class="filtro-controls">
+              <div class="filtro-menu">
+                <div>
+                  <label for="horaDisponibles">Hora:</label>
+                  <input id="horaDisponibles" v-model="filtroHoraDisponibles" type="text" @input="filtrarViajes('disponibles')">
+                </div>
+                <div>
+                  <label for="fechaDisponibles">Fecha:</label>
+                  <input id="fechaDisponibles" v-model="filtroFechaDisponibles" type="text" @input="filtrarViajes('disponibles')">
+                </div>
+                <div>
+                  <label for="destinoDisponibles">Destino:</label>
+                  <input id="destinoDisponibles" v-model="filtroDestinoDisponibles" type="text" @input="filtrarViajes('disponibles')">
+                </div>
+                <div>
+                  <label for="precioDisponibles">Precio:</label>
+                  <input id="precioDisponibles" v-model="filtroPrecioDisponibles" type="text" @input="filtrarViajes('disponibles')">
+                </div>
               </div>
             </div>
           </div>
@@ -235,7 +351,7 @@
                   <v-list-item two-line>
                     <v-list-item-content>
                       <v-list-item-title class="text-h5">
-                        {{ raite.lugarPartida }}
+                        {{ raite.inicio }}
                       </v-list-item-title>
                       <div style="display: flex; align-items: center;">
                         <v-icon class="mr-2">
@@ -256,7 +372,7 @@
                         />
                       </v-col>
                       <v-col class="text-h4" cols="10">
-                        {{ raite.estado }}
+                        {{ raite.disponible }}
                       </v-col>
                     </v-row>
                   </v-card-text>
@@ -278,9 +394,107 @@
                   <v-divider />
 
                   <v-card-actions>
-                    <v-btn color="warning" dark>
+                    <v-btn color="warning" dark @click="openStepper(raite)">
                       Ver detalles
                     </v-btn>
+                    <v-dialog v-model="showStepper" width="50%">
+                      <v-stepper v-model="e1">
+                        <v-stepper-header>
+                          <v-stepper-step :complete="e1 > 1" step="1" color="#0A263D">
+                            Detalles del viaje
+                          </v-stepper-step>
+                          <v-divider />
+                          <v-stepper-step :complete="e1 > 2" step="2" color="#0A263D">
+                            Información del pasajero
+                          </v-stepper-step>
+                          <v-divider />
+                          <v-stepper-step step="3" color="#0A263D">
+                            Resumen de pago
+                          </v-stepper-step>
+                        </v-stepper-header>
+
+                        <v-stepper-items>
+                          <!-- Paso 1: Detalles del viaje -->
+                          <v-stepper-content step="1">
+                            <v-card class="no-border" color="white" elevation="0">
+                              <v-card-title class="fontTitle">
+                                Detalles del viaje
+                              </v-card-title>
+                              <v-card-text>
+                                <!-- Aquí puedes agregar más detalles específicos del viaje -->
+                                <p v-if="detallesViaje">
+                                  Descripcion del viaje: {{ detallesViaje.descripcion }}
+                                </p>
+                                <p v-if="detallesViaje">
+                                  Fecha y hora del viaje: el {{ detallesViaje.fecha }}, a las {{ detallesViaje.hora }}
+                                </p>
+                                <p v-if="detallesViaje">
+                                  Inicio del viaje en: {{ detallesViaje.inicio }}
+                                </p>
+                                <p v-if="detallesViaje">
+                                  Destino del viaje: {{ detallesViaje.destino }}
+                                </p>
+                                <p v-if="detallesViaje">
+                                  Precio del viaje por persona: ${{ detallesViaje.precio }} MXN
+                                </p>
+                              </v-card-text>
+                            </v-card>
+                            <div class="button-container">
+                              <v-btn align="center" justify="center" color="#8C6E39" class="white--text" @click="e1 = 2">
+                                Continuar
+                              </v-btn>
+                            </div>
+                          </v-stepper-content>
+
+                          <!-- Paso 2: Información del pasajero -->
+                          <v-stepper-content step="2">
+                            <v-card class="no-border" color="white" elevation="0">
+                              <v-card-title class="fontTitle">
+                                Información del pasajero
+                              </v-card-title>
+                              <v-card-text>
+                                <v-text-field v-model="numeroPersonas" label="Número de personas" type="number" />
+                                <v-text-field v-model="equipaje" label="Cantidad de equipaje (kg)" type="number" />
+                              </v-card-text>
+                            </v-card>
+                            <div class="button-container">
+                              <v-btn color="#8C6E39" class="white--text" @click="e1 = 1">
+                                Atrás
+                              </v-btn>
+                              <v-btn color="#8C6E39" class="white--text" @click="e1 = 3">
+                                Continuar
+                              </v-btn>
+                            </div>
+                          </v-stepper-content>
+
+                          <!-- Paso 3: Resumen de pago -->
+                          <v-stepper-content step="3">
+                            <v-card class="no-border" color="white" elevation="0">
+                              <v-card-title class="fontTitle">
+                                Resumen de pago
+                              </v-card-title>
+                              <v-card-text>
+                                <p>Número de personas: {{ numeroPersonas }}</p>
+                                <p>Equipaje: {{ equipaje }} kg</p>
+                                <p>Precio total: ${{ totalPrice }} MXN</p>
+                                <!-- Aquí puedes agregar más detalles sobre el pago -->
+                              </v-card-text>
+                            </v-card>
+                            <div class="button-container">
+                              <v-btn color="#8C6E39" class="white--text" @click="e1 = 2">
+                                Atrás
+                              </v-btn>
+                              <v-btn color="#8C6E39" class="white--text" @click="realizarPago">
+                                Pagar
+                              </v-btn>
+                              <v-btn color="#8C6E39" class="white--text" @click="showStepper = false">
+                                Cancelar
+                              </v-btn>
+                            </div>
+                          </v-stepper-content>
+                        </v-stepper-items>
+                      </v-stepper>
+                    </v-dialog>
                     <v-spacer />
                     <v-btn color="warning" dark>
                       Contactar
@@ -293,171 +507,214 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
-    <v-dialog v-model="dialogDetalles" max-width="600px">
-    <v-stepper v-model="pasoActual">
-      <v-stepper-header>
-        <v-stepper-step :complete="pasoActual > 1" step="1">Detalles del viaje</v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step :complete="pasoActual > 2" step="2">Equipaje</v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step step="3">Personas</v-stepper-step>
-      </v-stepper-header>
-
-      <v-stepper-items>
-        <v-stepper-content step="1">
-          <v-card>
-            <v-card-text>
-              <h3 v-if="detallesViaje">{{ detallesViaje.lugarPartida }}</h3>
-              <p v-if="detallesViaje">Hora de salida: {{ detallesViaje.hora }}</p>
-              <p v-if="detallesViaje">Fecha: {{ detallesViaje.fecha }}</p>
-              <p v-if="detallesViaje">Destino: {{ detallesViaje.destino }}</p>
-              <p v-if="detallesViaje">Precio: ${{ detallesViaje.precio }} MXN</p>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" @click="pasoActual = 2">Siguiente</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-stepper-content>
-
-        <v-stepper-content step="2">
-          <v-card>
-            <v-card-text>
-              <v-select v-model="equipajeSeleccionado" :items="opcionesEquipaje" label="Selecciona el equipaje"></v-select>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" @click="pasoActual = 3">Siguiente</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-stepper-content>
-
-        <v-stepper-content step="3">
-          <v-card>
-            <v-card-text>
-              <v-counter v-model="numerPersonas" :rules="reglas"></v-counter>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" @click="dialogDetalles = false">Finalizar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-stepper-content>
-      </v-stepper-items>
-    </v-stepper>
-  </v-dialog>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
   layout: 'home',
   auth: true,
-
   data () {
     return {
-      dialogDetalles: false,
-      pasoActual: 1,
-      detallesViaje: {},
-      equipajeSeleccionado: null,
-      opcionesEquipaje: ['Equipaje de mano', 'Maleta grande', 'Maleta mediana'],
-      numerPersonas: 1,
-      reglas: [
-        value => value > 0 || 'El número de personas debe ser mayor a 0'
-      ],
-      raites: [
-        { estado: 'Publicado', lugarPartida: 'Mérida', hora: '13:14', fecha: '2024-06-07', destino: 'Oaxaca', precio: 500 },
-        { estado: 'Publicado', lugarPartida: 'Puebla', hora: '05:49', fecha: '2024-05-26', destino: 'Oaxaca', precio: 450 },
-        { estado: 'Publicado', lugarPartida: 'Cancún', hora: '10:13', fecha: '2024-05-13', destino: 'Oaxaca', precio: 550 },
-        { estado: 'Publicado', lugarPartida: 'Zacatecas', hora: '06:34', fecha: '2024-06-04', destino: 'Monterrey', precio: 350 },
-        { estado: 'Publicado', lugarPartida: 'Oaxaca', hora: '19:23', fecha: '2024-05-24', destino: 'Veracruz', precio: 400 },
-        { estado: 'Apartado', lugarPartida: 'Oaxaca', hora: '01:18', fecha: '2024-05-11', destino: 'Tijuana', precio: 600 },
-        { estado: 'Apartado', lugarPartida: 'Veracruz', hora: '16:33', fecha: '2024-05-20', destino: 'Monterrey', precio: 400 },
-        { estado: 'Apartado', lugarPartida: 'Mérida', hora: '02:43', fecha: '2024-05-31', destino: 'Zacatecas', precio: 480 },
-        { estado: 'Apartado', lugarPartida: 'Monterrey', hora: '13:52', fecha: '2024-05-09', destino: 'Veracruz', precio: 420 },
-        { estado: 'Apartado', lugarPartida: 'Puebla', hora: '15:08', fecha: '2024-06-05', destino: 'Ciudad de México', precio: 350 },
-        { estado: 'Disponible', lugarPartida: 'Mérida', hora: '09:57', fecha: '2024-05-13', destino: 'Veracruz', precio: 450 },
-        { estado: 'Disponible', lugarPartida: 'Cancún', hora: '06:19', fecha: '2024-05-12', destino: 'Mérida', precio: 500 },
-        { estado: 'Disponible', lugarPartida: 'Puebla', hora: '05:34', fecha: '2024-05-21', destino: 'Mazatlán', precio: 550 },
-        { estado: 'Disponible', lugarPartida: 'Mazatlán', hora: '02:30', fecha: '2024-05-27', destino: 'Puebla', precio: 350 },
-        { estado: 'Disponible', lugarPartida: 'Durango', hora: '05:26', fecha: '2024-05-18', destino: 'Oaxaca', precio: 500 }
-        // Agrega más objetos de raites según sea necesario
-      ],
-      filtroHora: '',
-      filtroFecha: '',
-      filtroDestino: '',
-      mostrarFiltro: false,
-
-      // References
-      labels: ['SU', 'MO', 'TU', 'WED', 'TH', 'FR', 'SA'],
-      time: 0,
-      forecast: [
-        { day: 'Tuesday', icon: 'mdi-white-balance-sunny', temp: '24\xB0/12\xB0' },
-        { day: 'Wednesday', icon: 'mdi-white-balance-sunny', temp: '22\xB0/14\xB0' },
-        { day: 'Thursday', icon: 'mdi-cloud', temp: '25\xB0/15\xB0' }
-      ]
+      showStepper: false,
+      showStepperpublicados: false,
+      e1: 1,
+      equipaje: 0,
+      cupo: 4,
+      totalPago: 0,
+      viajeDetalles: 'Detalles específicos del viaje...',
+      numeroPersonas: 0,
+      mostrarMenuFiltro: {
+        publicados: false,
+        apartados: false,
+        disponibles: false
+      },
+      panel: [0, 1, 2],
+      filtroHoraPublicados: '',
+      filtroFechaPublicados: '',
+      filtroDestinoPublicados: '',
+      filtroPrecioPublicados: '',
+      filtroHoraApartados: '',
+      filtroFechaApartados: '',
+      filtroDestinoApartados: '',
+      filtroPrecioApartados: '',
+      filtroHoraDisponibles: '',
+      filtroFechaDisponibles: '',
+      filtroDestinoDisponibles: '',
+      filtroPrecioDisponibles: '',
+      misViajesPublicadosOriginal: [],
+      misViajesApartadosOriginal: [],
+      viajesDisponiblesOriginal: [],
+      id: [],
+      viajes: [],
+      misViajesPublicados: [],
+      misViajesApartados: [],
+      viajesDisponibles: [],
+      todosViajesPublicados: [],
+      todosViajesApartados: [],
+      todosViajesDisponibles: []
     }
   },
-
   computed: {
-    ...mapState({
-      token: state => state.token
-    }),
-    misViajesPublicados () {
-      return this.raites.filter(raite => raite.estado === 'Publicado')
-    },
-    misViajesApartados () {
-      return this.raites.filter(raite => raite.estado === 'Apartado')
-    },
-    viajesDisponibles () {
-      return this.raites.filter(raite => raite.estado === 'Disponible')
-    },
-    raitesFiltrados () {
-      let raitesFiltrados = this.raites
-
-      // Filtrar por hora
-      if (this.filtroHora) {
-        raitesFiltrados = raitesFiltrados.filter(raite => raite.hora.includes(this.filtroHora))
-      }
-
-      // Filtrar por fecha
-      if (this.filtroFecha) {
-        raitesFiltrados = raitesFiltrados.filter(raite => raite.fecha.includes(this.filtroFecha))
-      }
-
-      // Filtrar por destino
-      if (this.filtroDestino) {
-        raitesFiltrados = raitesFiltrados.filter(raite => raite.destino.includes(this.filtroDestino))
-      }
-      return raitesFiltrados
+    totalPrice () {
+      const costoPorPersonas = Number(this.numeroPersonas) * Number(this.totalPago)
+      const costoPorEquipaje = Number(this.equipaje) * 5
+      return costoPorPersonas + costoPorEquipaje
     }
   },
-
-  mounted () {
-
+  created () {
+    this.cargarViajes()
   },
-
+  mounted () {
+    this.recuperarDatos()
+  },
   methods: {
-    abrirDialogoDetalles (raite) {
+    openStepper (raite) {
+      this.totalPago = raite.precio
+      this.numeroPersonas = 1 // O cualquier valor por defecto
+      this.showStepper = true
       this.detallesViaje = raite
-      this.dialogDetalles = true
     },
-    filtrarRaites () {
-      // Método de filtro ejecutado cuando cambian los valores de los controles de filtro
+    mostrarDetalles (raite) {
+      this.detallesViaje = raite
+      this.showStepperpublicados = true
     },
-    toggleFiltro () {
-      this.mostrarFiltro = !this.mostrarFiltro
+    cargarViajes () {
+      const viajesPublicados = [/* ...datos de viajes publicados... */]
+      const viajesApartados = [/* ...datos de viajes apartados... */]
+      const viajesDisponibles = [/* ...datos de viajes disponibles... */]
+
+      this.misViajesPublicados = viajesPublicados
+      this.misViajesApartados = viajesApartados
+      this.viajesDisponibles = viajesDisponibles
+
+      // Guardamos las listas originales
+      this.misViajesPublicadosOriginal = [...viajesPublicados]
+      this.misViajesApartadosOriginal = [...viajesApartados]
+      this.viajesDisponiblesOriginal = [...viajesDisponibles]
     },
-    getClassForEstado (estado) {
-      switch (estado) {
-        case 'Publicado':
-          return 'estado-publicado'
-        case 'Apartado':
-          return 'estado-apartado'
-        case 'Disponible':
-          return 'estado-disponible'
-        default:
-          return ''
+    filtrarViajes (tipo) {
+      let viajes = []
+      switch (tipo) {
+        case 'publicados':
+          viajes = this.misViajesPublicados
+          break
+        case 'apartados':
+          viajes = this.misViajesApartados
+          break
+        case 'disponibles':
+          viajes = this.viajesDisponibles
+          break
       }
+
+      const viajesFiltrados = viajes.filter((viaje) => {
+        const hora = this[`filtroHora${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`]
+        const fecha = this[`filtroFecha${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`]
+        const destino = this[`filtroDestino${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`]
+        const precio = this[`filtroPrecio${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`]
+
+        // Aplicar filtros si están definidos
+        if (hora && !viaje.hora.toLowerCase().includes(hora.toLowerCase())) {
+          return false
+        }
+        if (fecha && !viaje.fecha.toLowerCase().includes(fecha.toLowerCase())) {
+          return false
+        }
+        if (destino && !viaje.destino.toLowerCase().includes(destino.toLowerCase())) {
+          return false
+        }
+        if (precio && !viaje.precio.toString().includes(precio)) {
+          return false
+        }
+        return true
+      })
+
+      switch (tipo) {
+        case 'publicados':
+          this.misViajesPublicados = viajesFiltrados
+          break
+        case 'apartados':
+          this.misViajesApartados = viajesFiltrados
+          break
+        case 'disponibles':
+          this.viajesDisponibles = viajesFiltrados
+          break
+      }
+    },
+    realizarPago () {
+      // Lógica para realizar el pago
+      console.log('Pago realizado')
+      this.showStepper = false
+    },
+    recuperarDatos () {
+      const url = '/home'
+      const id = this.$store.state.user.id
+      const params = {
+        id
+      }
+      // solicitud get que pasa un objeto con el ID del usuario
+      this.$axios.get(url, { params })
+        .then((res) => {
+          if (res.data.success) {
+            this.misViajesPublicados = res.data.viajesPublicados
+            this.misViajesPublicados = res.data.viajesPublicados
+            this.misViajesApartados = res.data.viajesReservados
+            this.viajesDisponibles = res.data.viajes
+            this.viajes = [...res.data.viajesPublicados, ...res.data.viajesReservados, ...res.data.viajes]
+            // Almacena todos los viajes para restablecer después del filtro
+            this.todosViajesPublicados = [...res.data.viajesPublicados]
+            this.todosViajesApartados = [...res.data.viajesReservados]
+            this.todosViajesDisponibles = [...res.data.viajes]
+          }
+        })
+    },
+    toggleFiltro (tipo) {
+      this.mostrarMenuFiltro[tipo] = !this.mostrarMenuFiltro[tipo]
+      if (!this.mostrarMenuFiltro[tipo]) {
+        this.restablecerFiltros(tipo)
+      }
+    },
+    restablecerViajes (tipo) {
+      if (tipo === 'publicados') {
+        this.misViajesPublicados = [...this.misViajesPublicadosOriginal]
+      } else if (tipo === 'apartados') {
+        this.misViajesApartados = [...this.misViajesApartadosOriginal]
+      } else if (tipo === 'disponibles') {
+        this.viajesDisponibles = [...this.viajesDisponiblesOriginal]
+      }
+    },
+    restablecerFiltros (tipo) {
+      this[`filtroHora${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`] = ''
+      this[`filtroFecha${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`] = ''
+      this[`filtroDestino${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`] = ''
+      this[`filtroPrecio${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`] = ''
+
+      switch (tipo) {
+        case 'publicados':
+          this.misViajesPublicados = [...this.todosViajesPublicados]
+          break
+        case 'apartados':
+          this.misViajesApartados = [...this.todosViajesApartados]
+          break
+        case 'disponibles':
+          this.viajesDisponibles = [...this.todosViajesDisponibles]
+          break
+      }
+    },
+    getClassForEstado (tipo) {
+      let viajesFiltrados = []
+      switch (tipo) {
+        case 'publicados':
+          viajesFiltrados = this.misViajesPublicados
+          break
+        case 'apartados':
+          viajesFiltrados = this.misViajesApartados
+          break
+        case 'disponibles':
+          viajesFiltrados = this.viajesDisponibles
+          break
+      }
+      return viajesFiltrados
     }
   }
 }
@@ -465,37 +722,32 @@ export default {
 
 <style scoped>
 .filtro-button {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background-color: #ffffff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 8px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  background-color: #8C6E39;
+  padding: 10px;
+  border-radius: 5px;
+  color: white;
+  margin-bottom: 10px;
 }
 
-/* Estilos para los controles de filtro */
 .filtro-controls {
-  position: absolute;
-  top: 60px;
-  right: 20px;
-  background-color: #ffffff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .filtro-menu {
-  background-color: #ffffff;
-  border: 1px solid #ccc;
+  background-color: #fff;
+  padding: 15px;
   border-radius: 5px;
-  padding: 10px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 2000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.expansion-panels {
+  margin-top: 20px;
 }
 
 /* Estilos para los elementos dentro del menú desplegable */
@@ -550,6 +802,16 @@ th {
 .expansion-panels {
   max-width: 90%; /* Cambia esto según el ancho deseado */
   margin: 0 auto; /* Centra el componente horizontalmente */
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.button-container .v-btn {
+  margin: 0 8px;
 }
 
 </style>
