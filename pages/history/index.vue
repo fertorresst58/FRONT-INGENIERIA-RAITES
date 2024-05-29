@@ -167,6 +167,7 @@
         class="elevation-16 mx-auto"
         width="auto"
       >
+      <v-form ref="form" v-model="validForm">
         <v-card-text>
           <div class="text-h6 pa-2">
             Calificacion
@@ -191,6 +192,7 @@
             persistent
           ></v-textarea>
         </v-card-text>
+      </v-form>
         <v-divider></v-divider>
         <v-card-actions class="justify-space-between">
           <v-btn text @click="resetReview()">
@@ -345,6 +347,7 @@ export default {
       misViajesApartados: [],
       misViajesSinReseniar: [],
       misViajesReseniados: [],
+      validForm: false,
       dialogReview: false,
       comentario: '',
       calificacion: 0,
@@ -389,13 +392,29 @@ export default {
     },
     reviewNow () {
       if (this.calificacion > 0) {
-        // Logica para generar la review
         const ahora = new Date()
         const fechaActual = ahora.toISOString().split('T')[0]
-        console.log('Calificacion: ', this.calificacion)
-        console.log('Comentario: ', this.comentario)
-        console.log('Fecha de hoy: ', fechaActual)
-        console.log('Viaje ID: ', this.viajeID)
+        const userID = this.$store.state.user.id
+        const sendData = {
+          viaje: this.viajeID,
+          usuario: userID,
+          puntuacion: this.calificacion,
+          comentario: this.comentario,
+          fecha: fechaActual
+        }
+        console.log(sendData)
+        const url = '/history'
+        this.$axios.post(url, sendData)
+          .then((res) => {
+            if (res.data.success) {
+              console.log('REVIEW REGISTRADA EXITOSAMENTE')
+            } else {
+              console.log('ERROR AL REGISTRAR REVIEW')
+            }
+          })
+          .catch((error) => {
+            console.log('ERROR EN REGISTRO => ', error)
+          })
         this.resetReview()
       }
     },
