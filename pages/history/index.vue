@@ -291,7 +291,7 @@
             ></v-text-field>
           </v-col>
         </v-row>
-        <v-row v-if="this.calificacionPuesto != ''" class="mt-2">
+        <v-row v-if="this.calificacionPuesto != 0" class="mt-2">
           <v-col cols="8" sm="4">
             <v-row align="center" no-gutters widht="auto">
               <v-col>
@@ -358,9 +358,8 @@ export default {
       fechaInicio: '',
       horaInicio: '',
       precioPersona: '',
-      calificacionPuesto: '4',
-      comentarioPuesto: 'Estuvo bien, pero no tan bien',
-      conductor: 'Pedrito'
+      calificacionPuesto: '',
+      comentarioPuesto: ''
     }
   },
 
@@ -373,11 +372,21 @@ export default {
 
   methods: {
     showDetalles (raite) {
+      console.log('DATA RAITE => ', raite)
       this.lugarPartida = raite.inicio
       this.lugarDestino = raite.destino
       this.fechaInicio = raite.fecha
       this.horaInicio = raite.hora
       this.precioPersona = raite.precio
+      if (raite.review) {
+        this.calificacionPuesto = raite.review.puntuacion
+        if (raite.review.comentario) {
+          this.comentarioPuesto = raite.review.comentario
+        }
+      } else {
+        this.calificacionPuesto = 0
+        this.comentarioPuesto = ''
+      }
       this.dialogDetalles = true
     },
     dialogReviewFunction (id) {
@@ -418,6 +427,26 @@ export default {
         this.resetReview()
       }
     },
+    async findReview (viajeId) {
+      const userID = this.$store.state.user.id
+      const viajeID = viajeId
+      const sendData = {
+        viaje: viajeID,
+        usuario: userID
+      }
+      const url = '/history/findReview'
+
+      try {
+        const res = await this.$axios.post(url, sendData)
+        if (res.data.success === true) {
+          return res.data
+        } else {
+          return null
+        }
+      } catch (error) {
+        return null
+      }
+    },
     recuperarDatos () {
       const url = '/home'
       const id = this.$store.state.user.id
@@ -432,21 +461,27 @@ export default {
           }
         })
     },
-    filtrarViajesPasados () {
+    async filtrarViajesPasados () {
       const misViajesSinReseniar = []
       const misViajesReseniados = []
       const ahora = new Date()
       const fechaActual = ahora.toISOString().split('T')[0] // Formato año-mes-día
       const horaActual = ahora.toTimeString().split(' ')[0] // Formato hora:minuto:segundo
 
-      this.misViajesApartados.forEach((viaje) => {
+      for (const viaje of this.misViajesApartados) {
+        const result = await this.findReview(viaje.id)
+        console.log('Resultado => ', result)
         if (viaje.fecha < fechaActual || (viaje.fecha === fechaActual && viaje.hora < horaActual)) {
-          misViajesSinReseniar.push(viaje)
-          misViajesReseniados.push(viaje)
-        } else if (viaje.fecha < fechaActual || (viaje.fecha === fechaActual && viaje.hora < horaActual)) {
-          console.log('jja')
+          viaje.review = result.review
+          if (result.review === null) {
+            console.log('VIAJE SIN RESENIAR=> ', viaje)
+            misViajesSinReseniar.push(viaje)
+          } else {
+            console.log('VIAJE RESENIADO=> ', viaje)
+            misViajesReseniados.push(viaje)
+          }
         }
-      })
+      }
       this.misViajesSinReseniar = misViajesSinReseniar
       this.misViajesReseniados = misViajesReseniados
     }
