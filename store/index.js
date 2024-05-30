@@ -4,7 +4,8 @@ export const state = () => ({
   timeout: null,
   mensaje: '',
   icon: '',
-  user: {},
+  user: {
+  },
   token: null
 })
 
