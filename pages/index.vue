@@ -792,7 +792,7 @@ export default {
           this.$store.commit('modifyText', 'LOGIN EXITOSO')
           this.$store.commit('modifyTimeout', '1200')
           this.$store.commit('modifyIcon', 'mdi-check')
-          this.$router.push('/history')
+          this.$router.push('/home')
         }
       }).catch((error) => {
         // eslint-disable-next-line no-console

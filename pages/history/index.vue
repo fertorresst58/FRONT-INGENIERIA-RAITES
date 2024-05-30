@@ -81,8 +81,8 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
 
-    <!-- Tarjetas para "Viajes reseniados"-->
-    <v-expansion-panel>
+      <!-- Tarjetas para "Viajes reseniados"-->
+      <v-expansion-panel>
         <v-expansion-panel-header><h2>Viajes reseñados</h2></v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-container>
@@ -159,41 +159,41 @@
         color="#0A263D"
         dark
       >
-      <v-card-title class="text-h5">
-        Reseña tu viaje
-      </v-card-title>
+        <v-card-title class="text-h5">
+          Reseña tu viaje
+        </v-card-title>
       </v-toolbar>
       <v-card
         class="elevation-16 mx-auto"
         width="auto"
       >
-      <v-form ref="form" v-model="validForm">
-        <v-card-text>
-          <div class="text-h6 pa-2">
-            Calificacion
-          </div>
-          <v-rating
-            v-model="calificacion"
-            color="yellow darken-3"
-            background-color="grey darken-1"
-            empty-icon="$ratingFull"
-            hover
-          ></v-rating>
-        </v-card-text>
-        <v-card-text>
-          <div class="text-h6 pa-2">
-            Comentarios
-          </div>
-          <v-textarea
-            v-model="comentario"
-            outlined
-            name="comentario"
-            label="¡Sé amable!"
-            persistent
-          ></v-textarea>
-        </v-card-text>
-      </v-form>
-        <v-divider></v-divider>
+        <v-form ref="form" v-model="validForm">
+          <v-card-text>
+            <div class="text-h6 pa-2">
+              Calificacion
+            </div>
+            <v-rating
+              v-model="calificacion"
+              color="yellow darken-3"
+              background-color="grey darken-1"
+              empty-icon="$ratingFull"
+              hover
+            />
+          </v-card-text>
+          <v-card-text>
+            <div class="text-h6 pa-2">
+              Comentarios
+            </div>
+            <v-textarea
+              v-model="comentario"
+              outlined
+              name="comentario"
+              label="¡Sé amable!"
+              persistent
+            />
+          </v-card-text>
+        </v-form>
+        <v-divider />
         <v-card-actions class="justify-space-between">
           <v-btn text @click="resetReview()">
             No, gracias
@@ -224,23 +224,23 @@
             <v-row align="center" no-gutters>
               <v-col>
                 <v-text-field
-                  v-model="this.lugarPartida"
+                  v-model="lugarPartida"
                   label="Lugar de inicio"
                   readonly
                   class="pa-3"
                   prepend-icon="mdi mdi-car-arrow-right"
-                ></v-text-field>
+                />
               </v-col>
             </v-row>
           </v-col>
           <v-col cols="12" sm="6">
             <v-text-field
-              v-model="this.lugarDestino"
+              v-model="lugarDestino"
               label="Lugar de Destino"
               readonly
               class="pa-3"
               prepend-icon="mdi mdi-flag-checkered"
-            ></v-text-field>
+            />
           </v-col>
         </v-row>
         <v-row class="mt-2">
@@ -248,23 +248,23 @@
             <v-row align="center" no-gutters>
               <v-col>
                 <v-text-field
-                  v-model="this.precioPersona"
+                  v-model="precioPersona"
                   label="Precio"
                   readonly
                   class="pa-3"
                   prepend-icon="mdi mdi-currency-usd"
-                ></v-text-field>
+                />
               </v-col>
             </v-row>
           </v-col>
           <v-col cols="12" sm="6">
             <v-text-field
-              v-model="this.conductor"
+              v-model="conductor"
               label="Conductor"
               readonly
               class="pa-3"
               prepend-icon="mdi mdi-card-account-details-outline"
-            ></v-text-field>
+            />
           </v-col>
         </v-row>
         <v-row class="mt-2">
@@ -272,26 +272,26 @@
             <v-row align="center" no-gutters>
               <v-col>
                 <v-text-field
-                  v-model="this.fechaInicio"
+                  v-model="fechaInicio"
                   label="Fecha"
                   readonly
                   class="pa-3"
                   prepend-icon="mdi mdi-calendar-month"
-                ></v-text-field>
+                />
               </v-col>
             </v-row>
           </v-col>
           <v-col cols="8" sm="4">
             <v-text-field
+              v-model="horaInicio"
               value="10:00"
-              v-model="this.horaInicio"
               readonly
               class="pa-3"
               prepend-icon="mdi mdi-clock-outline"
-            ></v-text-field>
+            />
           </v-col>
         </v-row>
-        <v-row v-if="this.calificacionPuesto != 0" class="mt-2">
+        <v-row v-if="calificacionPuesto != 0" class="mt-2">
           <v-col cols="8" sm="4">
             <v-row align="center" no-gutters widht="auto">
               <v-col>
@@ -299,34 +299,33 @@
                   Calificacion
                 </div>
                 <v-rating
-                  v-model="this.calificacionPuesto"
+                  v-model="calificacionPuesto"
                   color="yellow darken-3"
                   background-color="grey darken-1"
                   empty-icon="$ratingFull"
                   hover
                   readonly
-                ></v-rating>
+                />
               </v-col>
             </v-row>
           </v-col>
           <v-col cols="8" sm="4">
             <v-textarea
-              v-model="this.comentarioPuesto"
+              v-model="comentarioPuesto"
               outlined
               name="comentario"
               label="Comentario"
               persistent
               readonly
-            ></v-textarea>
+            />
           </v-col>
         </v-row>
-        <v-divider></v-divider>
+        <v-divider />
         <v-card-actions class="justify-space-between">
           <v-btn text block @click="dialogDetalles=false">
             Cerrar
           </v-btn>
-          <v-btn color="primary" text>
-          </v-btn>
+          <v-btn color="primary" text />
         </v-card-actions>
       </v-card>
     </v-dialog>
