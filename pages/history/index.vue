@@ -359,7 +359,8 @@ export default {
       horaInicio: '',
       precioPersona: '',
       calificacionPuesto: '',
-      comentarioPuesto: ''
+      comentarioPuesto: '',
+      conductor: ''
     }
   },
 
@@ -378,6 +379,7 @@ export default {
       this.fechaInicio = raite.fecha
       this.horaInicio = raite.hora
       this.precioPersona = raite.precio
+      this.conductor = raite.conductor
       if (raite.review) {
         this.calificacionPuesto = raite.review.puntuacion
         if (raite.review.comentario) {
@@ -447,6 +449,25 @@ export default {
         return null
       }
     },
+    async findDriver (viajeId) {
+      const viajeID = viajeId
+      const sendData = {
+        viaje: viajeID
+      }
+      const url = '/user/findUserByViaje'
+
+      try {
+        const res = await this.$axios.post(url, sendData)
+        if (res.data.success === true) {
+          console.log('Data => ', res.data)
+          return res.data
+        } else {
+          return null
+        }
+      } catch (error) {
+        return null
+      }
+    },
     recuperarDatos () {
       const url = '/home'
       const id = this.$store.state.user.id
@@ -469,15 +490,16 @@ export default {
       const horaActual = ahora.toTimeString().split(' ')[0] // Formato hora:minuto:segundo
 
       for (const viaje of this.misViajesApartados) {
-        const result = await this.findReview(viaje.id)
-        console.log('Resultado => ', result)
+        const resultReview = await this.findReview(viaje.id)
+        const resultDriver = await this.findDriver(viaje.id)
+        console.log('Viaje id => ', viaje.id)
+        console.log('Result driver => ', resultDriver)
         if (viaje.fecha < fechaActual || (viaje.fecha === fechaActual && viaje.hora < horaActual)) {
-          viaje.review = result.review
-          if (result.review === null) {
-            console.log('VIAJE SIN RESENIAR=> ', viaje)
+          viaje.review = resultReview.review
+          viaje.conductor = resultDriver.user.nombre + ' ' + resultDriver.user.apaterno + ' ' + resultDriver.user.amaterno
+          if (resultReview.review === null) {
             misViajesSinReseniar.push(viaje)
           } else {
-            console.log('VIAJE RESENIADO=> ', viaje)
             misViajesReseniados.push(viaje)
           }
         }
