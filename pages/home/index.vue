@@ -29,6 +29,7 @@
               </div>
             </div>
           </div>
+
           <v-container>
             <v-row>
               <v-col
@@ -39,7 +40,7 @@
                 md="4"
                 lg="3"
               >
-                <v-card class="mx-auto my-2" max-width="350">
+                <v-card class="mx-auto my-2 fontText" max-width="350" elevation="0">
                   <v-list-item two-line>
                     <v-list-item-content>
                       <v-list-item-title class="text-h5">
@@ -54,6 +55,8 @@
                     </v-list-item-content>
                   </v-list-item>
 
+                  <v-divider />
+
                   <v-card-text>
                     <v-row align="center">
                       <v-col cols="2">
@@ -66,8 +69,11 @@
                       <v-col class="text-h4" cols="10">
                         {{ raite.estado }}
                       </v-col>
+                      <v-divider />
                     </v-row>
                   </v-card-text>
+
+                  <v-divider />
 
                   <v-list-item>
                     <v-list-item-icon>
@@ -86,13 +92,25 @@
                   <v-divider />
 
                   <v-card-actions>
-                    <v-btn color="warning" dark>
-                      Ver detalles
-                    </v-btn>
-                    <v-spacer />
-                    <v-btn color="warning" dark>
-                      Contactar
-                    </v-btn>
+                    <v-col cols="12">
+                      <v-btn
+                        class="mb-3"
+                        block
+                        color="#8C6E39"
+                        height="38px"
+                        @click="dialogDetalles=true"
+                      >
+                        <span class="fontTitle" style="text-transform: none; color: white">Ver detalles</span>
+                      </v-btn>
+                      <v-btn
+                        block
+                        color="#8C6E39"
+                        height="38px"
+                        @click="signUp()"
+                      >
+                        <span class="fontTitle" style="text-transform: none; color: white">Contactar</span>
+                      </v-btn>
+                    </v-col>
                   </v-card-actions>
                 </v-card>
               </v-col>
@@ -182,7 +200,7 @@
                   <v-divider />
 
                   <v-card-actions>
-                    <v-btn color="warning" dark>
+                    <v-btn color="warning" dark @click="dialogDetalles=true">
                       Ver detalles
                     </v-btn>
                     <v-spacer />
@@ -278,7 +296,7 @@
                   <v-divider />
 
                   <v-card-actions>
-                    <v-btn color="warning" dark>
+                    <v-btn color="warning" dark @click="dialogDetalles=true">
                       Ver detalles
                     </v-btn>
                     <v-spacer />
@@ -293,56 +311,79 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
+
     <v-dialog v-model="dialogDetalles" max-width="600px">
-    <v-stepper v-model="pasoActual">
-      <v-stepper-header>
-        <v-stepper-step :complete="pasoActual > 1" step="1">Detalles del viaje</v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step :complete="pasoActual > 2" step="2">Equipaje</v-stepper-step>
-        <v-divider></v-divider>
-        <v-stepper-step step="3">Personas</v-stepper-step>
-      </v-stepper-header>
+      <v-stepper v-model="pasoActual">
+        <v-stepper-header>
+          <v-stepper-step :complete="pasoActual > 1" step="1">
+            Detalles del viaje
+          </v-stepper-step>
+          <v-divider />
+          <v-stepper-step :complete="pasoActual > 2" step="2">
+            Equipaje
+          </v-stepper-step>
+          <v-divider />
+          <v-stepper-step step="3">
+            Personas
+          </v-stepper-step>
+        </v-stepper-header>
 
-      <v-stepper-items>
-        <v-stepper-content step="1">
-          <v-card>
-            <v-card-text>
-              <h3 v-if="detallesViaje">{{ detallesViaje.lugarPartida }}</h3>
-              <p v-if="detallesViaje">Hora de salida: {{ detallesViaje.hora }}</p>
-              <p v-if="detallesViaje">Fecha: {{ detallesViaje.fecha }}</p>
-              <p v-if="detallesViaje">Destino: {{ detallesViaje.destino }}</p>
-              <p v-if="detallesViaje">Precio: ${{ detallesViaje.precio }} MXN</p>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" @click="pasoActual = 2">Siguiente</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-stepper-content>
+        <v-stepper-items>
+          <v-stepper-content step="1">
+            <v-card>
+              <v-card-text>
+                <h3 v-if="detallesViaje">
+                  {{ detallesViaje.lugarPartida }}
+                </h3>
+                <p v-if="detallesViaje">
+                  Hora de salida: {{ detallesViaje.hora }}
+                </p>
+                <p v-if="detallesViaje">
+                  Fecha: {{ detallesViaje.fecha }}
+                </p>
+                <p v-if="detallesViaje">
+                  Destino: {{ detallesViaje.destino }}
+                </p>
+                <p v-if="detallesViaje">
+                  Precio: ${{ detallesViaje.precio }} MXN
+                </p>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="pasoActual = 2">
+                  Siguiente
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-stepper-content>
 
-        <v-stepper-content step="2">
-          <v-card>
-            <v-card-text>
-              <v-select v-model="equipajeSeleccionado" :items="opcionesEquipaje" label="Selecciona el equipaje"></v-select>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" @click="pasoActual = 3">Siguiente</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-stepper-content>
+          <v-stepper-content step="2">
+            <v-card>
+              <v-card-text>
+                <v-select v-model="equipajeSeleccionado" :items="opcionesEquipaje" label="Selecciona el equipaje" />
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="pasoActual = 3">
+                  Siguiente
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-stepper-content>
 
-        <v-stepper-content step="3">
-          <v-card>
-            <v-card-text>
-              <v-counter v-model="numerPersonas" :rules="reglas"></v-counter>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" @click="dialogDetalles = false">Finalizar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-stepper-content>
-      </v-stepper-items>
-    </v-stepper>
-  </v-dialog>
+          <v-stepper-content step="3">
+            <v-card>
+              <v-card-text>
+                <v-counter v-model="numerPersonas" :rules="reglas" />
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="dialogDetalles = false">
+                  Finalizar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-stepper-content>
+        </v-stepper-items>
+      </v-stepper>
+    </v-dialog>
   </div>
 </template>
 
@@ -465,22 +506,22 @@ export default {
 
 <style scoped>
 .filtro-button {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background-color: #ffffff;
-  border: 1px solid #ccc;
+  position: relative;
+  background-color: #8C6E39;
+  color: white;
+  border: none;
   border-radius: 5px;
   padding: 8px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  width: 65px;
+  text-align: center;
 }
 
 /* Estilos para los controles de filtro */
 .filtro-controls {
   position: absolute;
-  top: 60px;
-  right: 20px;
+  top: 92px;
+  left: 32px;
   background-color: #ffffff;
   border: 1px solid #ccc;
   border-radius: 5px;
