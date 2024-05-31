@@ -33,7 +33,7 @@
           <v-container>
             <v-row>
               <v-col
-                v-for="(raite, index) in misViajesPublicados"
+                v-for="(raite, index) in viajesFiltrados(misViajesPublicados)"
                 :key="index"
                 cols="12"
                 sm="6"
@@ -146,7 +146,7 @@
           <v-container>
             <v-row>
               <v-col
-                v-for="(raite, index) in misViajesApartados"
+                v-for="(raite, index) in viajesFiltrados(misViajesApartados)"
                 :key="index"
                 cols="12"
                 sm="6"
@@ -242,7 +242,7 @@
           <v-container>
             <v-row>
               <v-col
-                v-for="(raite, index) in viajesDisponibles"
+                v-for="(raite, index) in viajesFiltrados(viajesDisponibles)"
                 :key="index"
                 cols="12"
                 sm="6"
@@ -312,6 +312,7 @@
       </v-expansion-panel>
     </v-expansion-panels>
 
+    <!-- Dialogo para detalles del viaje -->
     <v-dialog v-model="dialogDetalles" max-width="600px">
       <v-stepper v-model="pasoActual">
         <v-stepper-header>
@@ -388,7 +389,6 @@
 </template>
 
 <script>
-
 export default {
   layout: 'home',
   auth: true,
@@ -416,39 +416,16 @@ export default {
     }
   },
 
-  computed: {
-    raitesFiltrados () {
-      let raitesFiltrados = this.raites
-
-      // Filtrar por hora
-      if (this.filtroHora) {
-        raitesFiltrados = raitesFiltrados.filter(raite => raite.hora.includes(this.filtroHora))
-      }
-
-      // Filtrar por fecha
-      if (this.filtroFecha) {
-        raitesFiltrados = raitesFiltrados.filter(raite => raite.fecha.includes(this.filtroFecha))
-      }
-
-      // Filtrar por destino
-      if (this.filtroDestino) {
-        raitesFiltrados = raitesFiltrados.filter(raite => raite.destino.includes(this.filtroDestino))
-      }
-      return raitesFiltrados
-    }
-  },
-
   mounted () {
     this.recuperarDatos()
   },
 
   methods: {
     recuperarDatos () {
-      const url = '/home'
+      const url = '/home/'
       const id = this.$store.state.user.id
-      const params = {
-        id
-      }
+      const params = { id }
+
       // solicitud get que pasa un objeto con el ID del usuario
       this.$axios.get(url, { params })
         .then((res) => {
@@ -458,8 +435,8 @@ export default {
             this.viajesDisponibles = res.data.viajes
           }
         })
-    },
-
+    }, // <-- Se cerró correctamente el método aquí
+    
     abrirDialogoDetalles (raite) {
       this.detallesViaje = raite
       this.dialogDetalles = true
@@ -484,6 +461,13 @@ export default {
         default:
           return ''
       }
+    },
+    viajesFiltrados (viajes) {
+      const today = new Date()
+      return viajes.filter((raite) => {
+        const tripDate = new Date(raite.fecha)
+        return tripDate >= today
+      })
     }
   }
 }
