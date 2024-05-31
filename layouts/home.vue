@@ -11,9 +11,7 @@
       <v-list>
         <v-list-item>
           <v-list-item-avatar>
-            <v-img
-              :src="img"
-            />
+            <v-img :src="img" />
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title class="fontTitle" color="black">
@@ -128,6 +126,7 @@
                   label="Lugar de salida"
                   type="text"
                   outlined
+                  :rules="[v => !!v || 'Campo requerido']"
                 />
               </v-col>
             </v-row>
@@ -138,6 +137,7 @@
                   label="Lugar de destino"
                   type="text"
                   outlined
+                  :rules="[v => !!v || 'Campo requerido']"
                 />
               </v-col>
             </v-row>
@@ -148,6 +148,8 @@
                   label="Fecha del viaje"
                   type="date"
                   outlined
+                  :min="minFecha"
+                  :rules="[v => !!v || 'Campo requerido']"
                 />
               </v-col>
               <v-col cols="3">
@@ -156,6 +158,7 @@
                   label="Hora de salida"
                   type="time"
                   outlined
+                  :rules="[v => !!v || 'Campo requerido', validateHora]"
                 />
               </v-col>
               <v-col cols="3">
@@ -165,6 +168,7 @@
                   type="number"
                   prefix="$"
                   outlined
+                  :rules="[v => !!v || 'Campo requerido']"
                 />
               </v-col>
               <v-col cols="3">
@@ -174,6 +178,7 @@
                   :items="options"
                   type="number"
                   outlined
+                  :rules="[v => !!v || 'Campo requerido']"
                 />
               </v-col>
             </v-row>
@@ -200,7 +205,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
     <!-- Dialogo para el boton de panico-->
     <v-dialog v-model="panicDialog" max-width="800px">
       <v-card>
@@ -445,10 +449,19 @@ export default {
           this.resDialog = true
         }, 4000)
       }
+    }),
+    minFecha () {
+      return new Date().toISOString().split('T')[0]
+    },
+    isFormValid () {
+      return this.Lsalida && this.Ldestino && this.Fecha && this.HoraSalida && this.Precio && this.Nasientos && this.validateHora(this.HoraSalida) === true
     }
   },
 
   mounted () {
+    // SE EJECUTA CUANDO SE CARGA EL COMPONENTE
+    // AUTENTICACION
+    if (this.$store.state.token === null) { this.$router.push('/') } else { this.obtenerDatosUsuarios() }
     this.obtenerDatosUsuarios()
   },
 
@@ -460,6 +473,7 @@ export default {
         this.$router.push(item.to)
       }
     },
+    
     publicarViaje () {
       this.validForm = this.$refs.form.validate()
       if (this.validForm) {
@@ -487,13 +501,43 @@ export default {
         alert('Faltan datos')
       }
     },
+    
+    validateHora (value) {
+      if (!value) { return true }
 
+      const today = new Date().toISOString().split('T')[0]
+      if (this.Fecha !== today) { return true }
+
+      const now = new Date()
+      const [hour, minute] = value.split(':')
+      const selectedTime = new Date()
+      selectedTime.setHours(hour, minute, 0, 0)
+
+      return selectedTime >= now || 'La hora debe ser mayor a la actual'
+    },
+    
+    cancelarViaje () {
+      this.resetForm()
+      this.dialog = false
+    },
+    
+    resetForm () {
+      this.Lsalida = ''
+      this.Ldestino = ''
+      this.Fecha = ''
+      this.HoraSalida = ''
+      this.Precio = ''
+      this.Nasientos = ''
+      this.Detalles = ''
+    },
+    
     obtenerDatosUsuarios () {
       this.user = this.$store.state.user
       this.token = this.$store.state.token
       this.nombre = this.user.nombre + ' ' + this.user.apaterno + ' ' + this.user.amaterno
       this.img = this.user.img
     },
+    
     logOut () {
       // Lógica para cerrar sesión
     }

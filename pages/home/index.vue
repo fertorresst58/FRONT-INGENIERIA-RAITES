@@ -36,17 +36,18 @@
               </div>
             </div>
           </div>
+
           <v-container>
             <v-row>
               <v-col
-                v-for="(raite, index) in misViajesPublicados"
+                v-for="(raite, index) in viajesFiltrados(misViajesPublicados)"
                 :key="index"
                 cols="12"
                 sm="6"
                 md="4"
                 lg="3"
               >
-                <v-card class="mx-auto my-2" max-width="350">
+                <v-card class="mx-auto my-2 fontText" max-width="350" elevation="0">
                   <v-list-item two-line>
                     <v-list-item-content>
                       <v-list-item-title class="text-h5">
@@ -61,6 +62,8 @@
                     </v-list-item-content>
                   </v-list-item>
 
+                  <v-divider />
+
                   <v-card-text>
                     <v-row align="center">
                       <v-col cols="2">
@@ -73,8 +76,11 @@
                       <v-col class="text-h4" cols="10">
                         {{ raite.disponible }}
                       </v-col>
+                      <v-divider />
                     </v-row>
                   </v-card-text>
+
+                  <v-divider />
 
                   <v-list-item>
                     <v-list-item-icon>
@@ -188,7 +194,7 @@
           <v-container>
             <v-row>
               <v-col
-                v-for="(raite, index) in misViajesApartados"
+                v-for="(raite, index) in viajesFiltrados(misViajesApartados)"
                 :key="index"
                 cols="12"
                 sm="6"
@@ -384,7 +390,7 @@
           <v-container>
             <v-row>
               <v-col
-                v-for="(raite, index) in viajesDisponibles"
+                v-for="(raite, index) in viajesFiltrados(viajesDisponibles)"
                 :key="index"
                 cols="12"
                 sm="6"
@@ -595,6 +601,79 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
+    <!-- Dialogo para detalles del viaje -->
+    <v-dialog v-model="dialogDetalles" max-width="600px">
+      <v-stepper v-model="pasoActual">
+        <v-stepper-header>
+          <v-stepper-step :complete="pasoActual > 1" step="1">
+            Detalles del viaje
+          </v-stepper-step>
+          <v-divider />
+          <v-stepper-step :complete="pasoActual > 2" step="2">
+            Equipaje
+          </v-stepper-step>
+          <v-divider />
+          <v-stepper-step step="3">
+            Personas
+          </v-stepper-step>
+        </v-stepper-header>
+
+        <v-stepper-items>
+          <v-stepper-content step="1">
+            <v-card>
+              <v-card-text>
+                <h3 v-if="detallesViaje">
+                  {{ detallesViaje.lugarPartida }}
+                </h3>
+                <p v-if="detallesViaje">
+                  Hora de salida: {{ detallesViaje.hora }}
+                </p>
+                <p v-if="detallesViaje">
+                  Fecha: {{ detallesViaje.fecha }}
+                </p>
+                <p v-if="detallesViaje">
+                  Destino: {{ detallesViaje.destino }}
+                </p>
+                <p v-if="detallesViaje">
+                  Precio: ${{ detallesViaje.precio }} MXN
+                </p>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="pasoActual = 2">
+                  Siguiente
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-stepper-content>
+
+          <v-stepper-content step="2">
+            <v-card>
+              <v-card-text>
+                <v-select v-model="equipajeSeleccionado" :items="opcionesEquipaje" label="Selecciona el equipaje" />
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="pasoActual = 3">
+                  Siguiente
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-stepper-content>
+
+          <v-stepper-content step="3">
+            <v-card>
+              <v-card-text>
+                <v-counter v-model="numerPersonas" :rules="reglas" />
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="dialogDetalles = false">
+                  Finalizar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-stepper-content>
+        </v-stepper-items>
+      </v-stepper>
+    </v-dialog>
   </div>
 </template>
 
@@ -644,6 +723,7 @@ export default {
       todosViajesDisponibles: []
     }
   },
+  
   computed: {
     totalPrice () {
       const costoPorPersonas = Number(this.numeroPersonas) * Number(this.totalPago)
@@ -651,12 +731,15 @@ export default {
       return costoPorPersonas + costoPorEquipaje
     }
   },
+  
   created () {
     this.cargarViajes()
   },
+  
   mounted () {
     this.recuperarDatos()
   },
+  
   methods: {
     async findAllReviews (viajeId) {
       const sendData = { viaje: viajeId }
@@ -673,6 +756,7 @@ export default {
         return []
       }
     },
+    
     async findDriver (viajeId) {
       const viajeID = viajeId
       const sendData = {
@@ -692,6 +776,7 @@ export default {
         return null
       }
     },
+    
     calculateAverageReview (reviews) {
       if (reviews.length === 0) {
         return 0
@@ -699,16 +784,19 @@ export default {
       const total = reviews.reduce((sum, review) => sum + review.puntuacion, 0)
       return total / reviews.length
     },
+    
     openStepper (raite) {
       this.totalPago = raite.precio
       this.numeroPersonas = 1 // O cualquier valor por defecto
       this.showStepper = true
       this.detallesViaje = raite
     },
+    
     mostrarDetalles (raite) {
       this.detallesViaje = raite
       this.showStepperpublicados = true
     },
+    
     cargarViajes () {
       const viajesPublicados = [/* ...datos de viajes publicados... */]
       const viajesApartados = [/* ...datos de viajes apartados... */]
@@ -723,6 +811,7 @@ export default {
       this.misViajesApartadosOriginal = [...viajesApartados]
       this.viajesDisponiblesOriginal = [...viajesDisponibles]
     },
+    
     filtrarViajes (tipo) {
       let viajes = []
       switch (tipo) {
@@ -771,11 +860,13 @@ export default {
           break
       }
     },
+    
     realizarPago () {
       // Lógica para realizar el pago
       console.log('Pago realizado')
       this.showStepper = false
     },
+    
     async recuperarDatos () {
       const url = '/home'
       const id = this.$store.state.user.id
@@ -811,12 +902,14 @@ export default {
         console.error('Error al recuperar los datos:', error)
       }
     },
+    
     toggleFiltro (tipo) {
       this.mostrarMenuFiltro[tipo] = !this.mostrarMenuFiltro[tipo]
       if (!this.mostrarMenuFiltro[tipo]) {
         this.restablecerFiltros(tipo)
       }
     },
+    
     restablecerViajes (tipo) {
       if (tipo === 'publicados') {
         this.misViajesPublicados = [...this.misViajesPublicadosOriginal]
@@ -826,6 +919,7 @@ export default {
         this.viajesDisponibles = [...this.viajesDisponiblesOriginal]
       }
     },
+    
     restablecerFiltros (tipo) {
       this[`filtroHora${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`] = ''
       this[`filtroFecha${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`] = ''
@@ -844,6 +938,7 @@ export default {
           break
       }
     },
+    
     getClassForEstado (tipo) {
       let viajesFiltrados = []
       switch (tipo) {
