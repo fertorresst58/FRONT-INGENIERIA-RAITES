@@ -449,10 +449,12 @@ export default {
           this.resDialog = true
         }, 4000)
       }
-    }),
+    },
+
     minFecha () {
       return new Date().toISOString().split('T')[0]
     },
+
     isFormValid () {
       return this.Lsalida && this.Ldestino && this.Fecha && this.HoraSalida && this.Precio && this.Nasientos && this.validateHora(this.HoraSalida) === true
     }
@@ -473,7 +475,7 @@ export default {
         this.$router.push(item.to)
       }
     },
-    
+
     publicarViaje () {
       this.validForm = this.$refs.form.validate()
       if (this.validForm) {
@@ -501,7 +503,7 @@ export default {
         alert('Faltan datos')
       }
     },
-    
+
     validateHora (value) {
       if (!value) { return true }
 
@@ -515,12 +517,12 @@ export default {
 
       return selectedTime >= now || 'La hora debe ser mayor a la actual'
     },
-    
+
     cancelarViaje () {
       this.resetForm()
       this.dialog = false
     },
-    
+
     resetForm () {
       this.Lsalida = ''
       this.Ldestino = ''
@@ -530,14 +532,14 @@ export default {
       this.Nasientos = ''
       this.Detalles = ''
     },
-    
+
     obtenerDatosUsuarios () {
       this.user = this.$store.state.user
       this.token = this.$store.state.token
       this.nombre = this.user.nombre + ' ' + this.user.apaterno + ' ' + this.user.amaterno
       this.img = this.user.img
     },
-    
+
     logOut () {
       // Lógica para cerrar sesión
     }

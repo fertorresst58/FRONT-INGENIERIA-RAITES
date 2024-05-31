@@ -712,7 +712,6 @@ export default {
       totalPago: 0,
       viajeDetalles: 'Detalles específicos del viaje...',
       numeroPersonas: 0,
-      detallesViaje: null,
       detallesViajep: null,
       detallesViajea: null,
       mostrarMenuFiltro: {
@@ -746,7 +745,7 @@ export default {
       todosViajesDisponibles: []
     }
   },
-  
+
   computed: {
     totalPrice () {
       const costoPorPersonas = Number(this.numeroPersonas) * Number(this.totalPago)
@@ -754,7 +753,7 @@ export default {
       return costoPorPersonas + costoPorEquipaje
     }
   },
-  
+
   watch: {
     value (newValue) {
       this.internalStep = newValue
@@ -763,22 +762,22 @@ export default {
       this.$emit('input', newValue)
     }
   },
-  
+
   created () {
     this.cargarViajes()
   },
-  
+
   mounted () {
     this.recuperarDatos()
   },
-  
+
   methods: {
     handleFocusIn (event) {
       // Maneja el evento focusin aquí
       // Puedes agregar lógica personalizada o dejar este método vacío
       // para evitar cualquier comportamiento no deseado
     },
-    
+
     openStepper (raite) {
       this.totalPago = raite.precio
       this.numeroPersonas = 1 // O cualquier valor por defecto
@@ -786,7 +785,7 @@ export default {
       this.detallesViaje = raite
       this.e1 = 1 // Reiniciar al primer paso cada vez que se abre el stepper
     },
-    
+
     cerrarStepper () {
       this.showStepper = false
       this.e1 = 1 // Reiniciar al primer paso cuando se cierra
@@ -794,7 +793,7 @@ export default {
       this.numeroPersonas = 0
       this.equipaje = 0
     },
-    
+
     mostrarDetallesPublicados (raite) {
       try {
         this.$nextTick(() => {
@@ -806,7 +805,7 @@ export default {
         console.error('Error al abrir el stepper:', error)
       }
     },
-    
+
     cerrarStepperPublicados () {
       try {
         this.$nextTick(() => {
@@ -819,12 +818,12 @@ export default {
         console.error('Error al cerrar el diálogo de detalles:', error)
       }
     },
-    
+
     mostrarDetallesapartados (raite) {
       this.detallesViajea = raite
       this.showStepperapartados = true
     },
-    
+
     cargarViajes () {
       const viajesPublicados = [/* ...datos de viajes publicados... */]
       const viajesApartados = [/* ...datos de viajes apartados... */]
@@ -839,7 +838,7 @@ export default {
       this.misViajesApartadosOriginal = [...viajesApartados]
       this.viajesDisponiblesOriginal = [...viajesDisponibles]
     },
-    
+
     filtrarViajes (tipo) {
       let viajes = []
       switch (tipo) {
@@ -888,13 +887,13 @@ export default {
           break
       }
     },
-    
+
     realizarPago () {
       // Lógica para realizar el pago
       console.log('Pago realizado')
       this.showStepper = false
     },
-    
+
     async recuperarDatos () {
       const url = '/home'
       const id = this.$store.state.user.id
@@ -930,14 +929,14 @@ export default {
         console.error('Error al recuperar los datos:', error)
       }
     },
-    
+
     toggleFiltro (tipo) {
       this.mostrarMenuFiltro[tipo] = !this.mostrarMenuFiltro[tipo]
       if (!this.mostrarMenuFiltro[tipo]) {
         this.restablecerFiltros(tipo)
       }
     },
-    
+
     async findAllReviews (viajeId) {
       const sendData = { viaje: viajeId }
       const url = '/history/findAllReviews'
@@ -953,7 +952,7 @@ export default {
         return []
       }
     },
-    
+
     async findDriver (viajeId) {
       const viajeID = viajeId
       const sendData = {
@@ -973,7 +972,7 @@ export default {
         return null
       }
     },
-    
+
     calculateAverageReview (reviews) {
       if (reviews.length === 0) {
         return 0
@@ -981,7 +980,7 @@ export default {
       const total = reviews.reduce((sum, review) => sum + review.puntuacion, 0)
       return total / reviews.length
     },
-    
+
     restablecerFiltros (tipo) {
       this[`filtroHora${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`] = ''
       this[`filtroFecha${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`] = ''
@@ -1000,7 +999,7 @@ export default {
           break
       }
     },
-    
+
     getClassForEstado (tipo) {
       let viajesFiltrados = []
       switch (tipo) {
