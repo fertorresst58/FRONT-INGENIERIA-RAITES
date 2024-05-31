@@ -274,7 +274,6 @@
                         />
                       </v-col>
                       <v-col class="text-h4" cols="10">
-
                         {{ raite.disponible }}
                       </v-col>
                     </v-row>
@@ -370,20 +369,22 @@
             </v-card>
           </v-stepper-content>
 
-        <v-stepper-content step="3">
-          <v-card>
-            <v-card-text>
-              <v-counter v-model="numerPersonas" :rules="reglas"></v-counter>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" @click="dialogDetalles = false">Finalizar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-stepper-content>
-      </v-stepper-items>
-    </v-stepper>
-  </v-dialog>
- </div>
+          <v-stepper-content step="3">
+            <v-card>
+              <v-card-text>
+                <v-counter v-model="numerPersonas" :rules="reglas" />
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="dialogDetalles = false">
+                  Finalizar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-stepper-content>
+        </v-stepper-items>
+      </v-stepper>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
@@ -457,16 +458,21 @@ export default {
             this.viajesDisponibles = res.data.viajes
           }
         })
+    },
+
     abrirDialogoDetalles (raite) {
       this.detallesViaje = raite
       this.dialogDetalles = true
     },
+
     filtrarRaites () {
       // Método de filtro ejecutado cuando cambian los valores de los controles de filtro
     },
+
     toggleFiltro () {
       this.mostrarFiltro = !this.mostrarFiltro
     },
+
     getClassForEstado (estado) {
       switch (estado) {
         case 'Publicado':
