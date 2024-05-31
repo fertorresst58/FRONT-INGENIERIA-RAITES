@@ -93,11 +93,11 @@
                   <v-divider />
 
                   <v-card-actions>
-                    <v-btn color="warning" dark @click="mostrarDetalles(raite)">
+                    <v-btn color="warning" dark @click="mostrarDetallesPublicados(raite)">
                       Ver detalles
                     </v-btn>
-                    <v-dialog v-model="showStepperpublicados" width="50%">
-                      <v-stepper v-model="e1">
+                    <v-dialog v-model="showStepperpublicados" width="50%" @click:outside="cerrarStepperPublicados" @keydown.esc="cerrarStepperPublicados">
+                      <custom-stepper :value="e1" @input="e1 = $event">
                         <v-stepper-header>
                           <v-stepper-step :complete="e1 > 1" step="1" color="#0A263D">
                             Detalles del viaje
@@ -113,20 +113,20 @@
                               </v-card-title>
                               <v-card-text>
                                 <!-- Aquí puedes agregar más detalles específicos del viaje -->
-                                <p v-if="detallesViaje">
-                                  Descripcion del viaje: {{ detallesViaje.descripcion }}
+                                <p v-if="detallesViajep">
+                                  Descripcion del viaje: {{ detallesViajep.descripcion }}
                                 </p>
-                                <p v-if="detallesViaje">
-                                  Fecha y hora del viaje: el {{ detallesViaje.fecha }}, a las {{ detallesViaje.hora }}
+                                <p v-if="detallesViajep">
+                                  Fecha y hora del viaje: el {{ detallesViajep.fecha }}, a las {{ detallesViajep.hora }}
                                 </p>
-                                <p v-if="detallesViaje">
-                                  Inicio del viaje en: {{ detallesViaje.inicio }}
+                                <p v-if="detallesViajep">
+                                  Inicio del viaje en: {{ detallesViajep.inicio }}
                                 </p>
                                 <p v-if="detallesViaje">
                                   Destino del viaje: {{ detallesViaje.destino }}
                                 </p>
-                                <p v-if="detallesViaje">
-                                  Precio del viaje por persona: ${{ detallesViaje.precio }} MXN
+                                <p v-if="detallesViajep">
+                                  Precio del viaje por persona: ${{ detallesViajep.precio }} MXN
                                 </p>
                                 <p>
                                   Cupo: 4
@@ -134,13 +134,13 @@
                               </v-card-text>
                             </v-card>
                             <div class="button-container">
-                              <v-btn align="center" justify="center" color="#8C6E39" class="white--text" @click="showStepperpublicados = false">
+                              <v-btn align="center" justify="center" color="#8C6E39" class="white--text" @click="cerrarStepperPublicados">
                                 Salir
                               </v-btn>
                             </div>
                           </v-stepper-content>
                         </v-stepper-items>
-                      </v-stepper>
+                      </custom-stepper>
                     </v-dialog>
                     <v-spacer />
                     <v-btn color="warning" dark>
@@ -242,10 +242,10 @@
                   <v-divider />
 
                   <v-card-actions>
-                    <v-btn color="warning" dark @click="mostrarDetalles(raite)">
+                    <v-btn color="warning" dark @click="mostrarDetallesapartados(raite)">
                       Ver detalles
                     </v-btn>
-                    <v-dialog v-model="showStepperpublicados" width="50%">
+                    <v-dialog v-model="showStepperapartados" width="50%">
                       <v-stepper v-model="e1">
                         <v-stepper-header>
                           <v-stepper-step :complete="e1 > 1" step="1" color="#0A263D">
@@ -262,20 +262,20 @@
                               </v-card-title>
                               <v-card-text>
                                 <!-- Aquí puedes agregar más detalles específicos del viaje -->
-                                <p v-if="detallesViaje">
-                                  Descripcion del viaje: {{ detallesViaje.descripcion }}
+                                <p v-if="detallesViajea">
+                                  Descripcion del viaje: {{ detallesViajea.descripcion }}
                                 </p>
-                                <p v-if="detallesViaje">
-                                  Fecha y hora del viaje: el {{ detallesViaje.fecha }}, a las {{ detallesViaje.hora }}
+                                <p v-if="detallesViajea">
+                                  Fecha y hora del viaje: el {{ detallesViajea.fecha }}, a las {{ detallesViajea.hora }}
                                 </p>
-                                <p v-if="detallesViaje">
-                                  Inicio del viaje en: {{ detallesViaje.inicio }}
+                                <p v-if="detallesViajea">
+                                  Inicio del viaje en: {{ detallesViajea.inicio }}
                                 </p>
-                                <p v-if="detallesViaje">
-                                  Destino del viaje: {{ detallesViaje.destino }}
+                                <p v-if="detallesViajea">
+                                  Destino del viaje: {{ detallesViajea.destino }}
                                 </p>
-                                <p v-if="detallesViaje">
-                                  Precio del viaje por persona: ${{ detallesViaje.precio }} MXN
+                                <p v-if="detallesViajea">
+                                  Precio del viaje por persona: ${{ detallesViajea.precio }} MXN
                                 </p>
                                 <p>
                                   Cupo: 4
@@ -286,7 +286,7 @@
                               </v-card-text>
                             </v-card>
                             <div class="button-container">
-                              <v-btn align="center" justify="center" color="#8C6E39" class="white--text" @click="showStepperpublicados = false">
+                              <v-btn align="center" justify="center" color="#8C6E39" class="white--text" @click="showStepperapartados = false">
                                 Salir
                               </v-btn>
                             </div>
@@ -397,7 +397,14 @@
                     <v-btn color="warning" dark @click="openStepper(raite)">
                       Ver detalles
                     </v-btn>
-                    <v-dialog v-model="showStepper" width="50%">
+                    <v-dialog
+                      v-if="showStepper"
+                      ref="stepperDialog"
+                      v-model="showStepper"
+                      width="50%"
+                      @click:outside="cerrarStepper"
+                      @keydown.esc="cerrarStepper"
+                    >
                       <v-stepper v-model="e1">
                         <v-stepper-header>
                           <v-stepper-step :complete="e1 > 1" step="1" color="#0A263D">
@@ -487,7 +494,7 @@
                               <v-btn color="#8C6E39" class="white--text" @click="realizarPago">
                                 Pagar
                               </v-btn>
-                              <v-btn color="#8C6E39" class="white--text" @click="showStepper = false">
+                              <v-btn color="#8C6E39" class="white--text" @click="cerrarStepper">
                                 Cancelar
                               </v-btn>
                             </div>
@@ -511,19 +518,34 @@
 </template>
 
 <script>
+import CustomStepper from '@/components/CustomStepper'
 export default {
+  components: {
+    CustomStepper
+  },
   layout: 'home',
   auth: true,
+  props: {
+    value: {
+      type: Number,
+      required: true
+    }
+  },
   data () {
     return {
+      internalStep: this.value,
       showStepper: false,
       showStepperpublicados: false,
+      showStepperapartados: false,
       e1: 1,
       equipaje: 0,
       cupo: 4,
       totalPago: 0,
       viajeDetalles: 'Detalles específicos del viaje...',
       numeroPersonas: 0,
+      detallesViaje: null,
+      detallesViajep: null,
+      detallesViajea: null,
       mostrarMenuFiltro: {
         publicados: false,
         apartados: false,
@@ -562,6 +584,14 @@ export default {
       return costoPorPersonas + costoPorEquipaje
     }
   },
+  watch: {
+    value (newValue) {
+      this.internalStep = newValue
+    },
+    internalStep (newValue) {
+      this.$emit('input', newValue)
+    }
+  },
   created () {
     this.cargarViajes()
   },
@@ -569,15 +599,51 @@ export default {
     this.recuperarDatos()
   },
   methods: {
+    handleFocusIn (event) {
+      // Maneja el evento focusin aquí
+      // Puedes agregar lógica personalizada o dejar este método vacío
+      // para evitar cualquier comportamiento no deseado
+    },
     openStepper (raite) {
       this.totalPago = raite.precio
       this.numeroPersonas = 1 // O cualquier valor por defecto
       this.showStepper = true
       this.detallesViaje = raite
+      this.e1 = 1 // Reiniciar al primer paso cada vez que se abre el stepper
     },
-    mostrarDetalles (raite) {
-      this.detallesViaje = raite
-      this.showStepperpublicados = true
+    cerrarStepper () {
+      this.showStepper = false
+      this.e1 = 1 // Reiniciar al primer paso cuando se cierra
+      this.detallesViaje = null
+      this.numeroPersonas = 0
+      this.equipaje = 0
+    },
+    mostrarDetallesPublicados (raite) {
+      try {
+        this.$nextTick(() => {
+          this.detallesViajep = raite
+          this.showStepperpublicados = true
+          this.e1 = 1
+        })
+      } catch (error) {
+        console.error('Error al abrir el stepper:', error)
+      }
+    },
+    cerrarStepperPublicados () {
+      try {
+        this.$nextTick(() => {
+          this.showStepperpublicados = false
+          if (this.$refs.stepper) {
+            this.$refs.stepper.e1 = 1 // Resetea el stepper al primer paso
+          }
+        })
+      } catch (error) {
+        console.error('Error al cerrar el diálogo de detalles:', error)
+      }
+    },
+    mostrarDetallesapartados (raite) {
+      this.detallesViajea = raite
+      this.showStepperapartados = true
     },
     cargarViajes () {
       const viajesPublicados = [/* ...datos de viajes publicados... */]
@@ -644,7 +710,7 @@ export default {
     realizarPago () {
       // Lógica para realizar el pago
       console.log('Pago realizado')
-      this.showStepper = false
+      this.cerrarStepper()
     },
     recuperarDatos () {
       const url = '/home'
