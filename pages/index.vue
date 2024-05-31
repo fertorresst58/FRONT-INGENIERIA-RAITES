@@ -613,8 +613,8 @@ export default {
   data () {
     return {
       // VARIABLES PARA LOGIN
-      correoLogin: null,
-      contrasenaLogin: null,
+      correoLogin: 'admin@ugto.mx',
+      contrasenaLogin: 'adminadmin',
       checkbox: false,
 
       // VARIABLES PARA FORMULARIO DE REGISTRO

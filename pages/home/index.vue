@@ -36,17 +36,18 @@
               </div>
             </div>
           </div>
+
           <v-container>
             <v-row>
               <v-col
-                v-for="(raite, index) in misViajesPublicados"
+                v-for="(raite, index) in viajesFiltrados(misViajesPublicados)"
                 :key="index"
                 cols="12"
                 sm="6"
                 md="4"
                 lg="3"
               >
-                <v-card class="mx-auto my-2" max-width="350">
+                <v-card class="mx-auto my-2 fontText" max-width="350" elevation="0">
                   <v-list-item two-line>
                     <v-list-item-content>
                       <v-list-item-title class="text-h5">
@@ -61,6 +62,8 @@
                     </v-list-item-content>
                   </v-list-item>
 
+                  <v-divider />
+
                   <v-card-text>
                     <v-row align="center">
                       <v-col cols="2">
@@ -73,8 +76,11 @@
                       <v-col class="text-h4" cols="10">
                         {{ raite.disponible }}
                       </v-col>
+                      <v-divider />
                     </v-row>
                   </v-card-text>
+
+                  <v-divider />
 
                   <v-list-item>
                     <v-list-item-icon>
@@ -188,7 +194,7 @@
           <v-container>
             <v-row>
               <v-col
-                v-for="(raite, index) in misViajesApartados"
+                v-for="(raite, index) in viajesFiltrados(misViajesApartados)"
                 :key="index"
                 cols="12"
                 sm="6"
@@ -283,10 +289,54 @@
                                 <p>
                                   Luagres reservados: 2
                                 </p>
+                                <h4>Reseñas</h4>
+                                <p v-if="detallesViaje">
+                                  Conductor: {{ detallesViaje.conductor }}
+                                </p>
+                                <div v-if="detallesViaje.avgReview !== undefined">
+                                  <v-rating
+                                    v-model="detallesViaje.avgReview"
+                                    color="yellow darken-3"
+                                    background-color="grey darken-1"
+                                    empty-icon="$ratingFull"
+                                    hover
+                                    readonly
+                                  />
+                                  <p>
+                                    Promedio de reseñas: {{ detallesViaje.avgReview.toFixed(2) }} / 5
+                                  </p>
+                                  <v-expansion-panels>
+                                    <v-expansion-panel>
+                                      <v-expansion-panel-header>
+                                        <h5>Todas las reseñas</h5>
+                                      </v-expansion-panel-header>
+                                      <v-expansion-panel-content>
+                                        <v-col
+                                          v-for="(review, idx) in detallesViaje.reviews"
+                                          :key="idx"
+                                        >
+                                          <div>
+                                            <v-rating
+                                              v-model="review.puntuacion"
+                                              color="yellow darken-3"
+                                              background-color="grey darken-1"
+                                              empty-icon="$ratingFull"
+                                              hover
+                                              readonly
+                                            />
+                                          </div>
+                                          <p v-if="review.comentario != null">
+                                            "{{ review.comentario }}""
+                                          </p>
+                                        </v-col>
+                                      </v-expansion-panel-content>
+                                    </v-expansion-panel>
+                                  </v-expansion-panels>
+                                </div>
                               </v-card-text>
                             </v-card>
                             <div class="button-container">
-                              <v-btn align="center" justify="center" color="#8C6E39" class="white--text" @click="showStepperapartados = false">
+                              <v-btn align="center" justify="center" color="#8C6E39" class="white--text" @click="showStepperpublicados = false">
                                 Salir
                               </v-btn>
                             </div>
@@ -340,7 +390,7 @@
           <v-container>
             <v-row>
               <v-col
-                v-for="(raite, index) in viajesDisponibles"
+                v-for="(raite, index) in viajesFiltrados(viajesDisponibles)"
                 :key="index"
                 cols="12"
                 sm="6"
@@ -444,6 +494,50 @@
                                 <p v-if="detallesViaje">
                                   Precio del viaje por persona: ${{ detallesViaje.precio }} MXN
                                 </p>
+                                <h4>Reseñas</h4>
+                                <p v-if="detallesViaje">
+                                  Conductor: {{ detallesViaje.conductor }}
+                                </p>
+                                <div v-if="detallesViaje.avgReview !== undefined">
+                                  <v-rating
+                                    v-model="detallesViaje.avgReview"
+                                    color="yellow darken-3"
+                                    background-color="grey darken-1"
+                                    empty-icon="$ratingFull"
+                                    hover
+                                    readonly
+                                  />
+                                  <p>
+                                    Promedio de reseñas: {{ detallesViaje.avgReview.toFixed(2) }} / 5
+                                  </p>
+                                  <v-expansion-panels>
+                                    <v-expansion-panel>
+                                      <v-expansion-panel-header>
+                                        <h5>Todas las reseñas</h5>
+                                      </v-expansion-panel-header>
+                                      <v-expansion-panel-content>
+                                        <v-col
+                                          v-for="(review, idx) in detallesViaje.reviews"
+                                          :key="idx"
+                                        >
+                                          <div>
+                                            <v-rating
+                                              v-model="review.puntuacion"
+                                              color="yellow darken-3"
+                                              background-color="grey darken-1"
+                                              empty-icon="$ratingFull"
+                                              hover
+                                              readonly
+                                            />
+                                          </div>
+                                          <p v-if="review.comentario != null">
+                                            "{{ review.comentario }}""
+                                          </p>
+                                        </v-col>
+                                      </v-expansion-panel-content>
+                                    </v-expansion-panel>
+                                  </v-expansion-panels>
+                                </div>
                               </v-card-text>
                             </v-card>
                             <div class="button-container">
@@ -494,7 +588,7 @@
                               <v-btn color="#8C6E39" class="white--text" @click="realizarPago">
                                 Pagar
                               </v-btn>
-                              <v-btn color="#8C6E39" class="white--text" @click="cerrarStepper">
+                              <v-btn color="#8C6E39" class="white--text" @click="showStepper = false">
                                 Cancelar
                               </v-btn>
                             </div>
@@ -514,11 +608,85 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
+    <!-- Dialogo para detalles del viaje -->
+    <v-dialog v-model="dialogDetalles" max-width="600px">
+      <v-stepper v-model="pasoActual">
+        <v-stepper-header>
+          <v-stepper-step :complete="pasoActual > 1" step="1">
+            Detalles del viaje
+          </v-stepper-step>
+          <v-divider />
+          <v-stepper-step :complete="pasoActual > 2" step="2">
+            Equipaje
+          </v-stepper-step>
+          <v-divider />
+          <v-stepper-step step="3">
+            Personas
+          </v-stepper-step>
+        </v-stepper-header>
+
+        <v-stepper-items>
+          <v-stepper-content step="1">
+            <v-card>
+              <v-card-text>
+                <h3 v-if="detallesViaje">
+                  {{ detallesViaje.lugarPartida }}
+                </h3>
+                <p v-if="detallesViaje">
+                  Hora de salida: {{ detallesViaje.hora }}
+                </p>
+                <p v-if="detallesViaje">
+                  Fecha: {{ detallesViaje.fecha }}
+                </p>
+                <p v-if="detallesViaje">
+                  Destino: {{ detallesViaje.destino }}
+                </p>
+                <p v-if="detallesViaje">
+                  Precio: ${{ detallesViaje.precio }} MXN
+                </p>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="pasoActual = 2">
+                  Siguiente
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-stepper-content>
+
+          <v-stepper-content step="2">
+            <v-card>
+              <v-card-text>
+                <v-select v-model="equipajeSeleccionado" :items="opcionesEquipaje" label="Selecciona el equipaje" />
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="pasoActual = 3">
+                  Siguiente
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-stepper-content>
+
+          <v-stepper-content step="3">
+            <v-card>
+              <v-card-text>
+                <v-counter v-model="numerPersonas" :rules="reglas" />
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="dialogDetalles = false">
+                  Finalizar
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-stepper-content>
+        </v-stepper-items>
+      </v-stepper>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import CustomStepper from '@/components/CustomStepper'
+
 export default {
   components: {
     CustomStepper
@@ -537,6 +705,7 @@ export default {
       showStepper: false,
       showStepperpublicados: false,
       showStepperapartados: false,
+      detallesViaje: {},
       e1: 1,
       equipaje: 0,
       cupo: 4,
@@ -577,6 +746,7 @@ export default {
       todosViajesDisponibles: []
     }
   },
+  
   computed: {
     totalPrice () {
       const costoPorPersonas = Number(this.numeroPersonas) * Number(this.totalPago)
@@ -584,6 +754,7 @@ export default {
       return costoPorPersonas + costoPorEquipaje
     }
   },
+  
   watch: {
     value (newValue) {
       this.internalStep = newValue
@@ -592,18 +763,22 @@ export default {
       this.$emit('input', newValue)
     }
   },
+  
   created () {
     this.cargarViajes()
   },
+  
   mounted () {
     this.recuperarDatos()
   },
+  
   methods: {
     handleFocusIn (event) {
       // Maneja el evento focusin aquí
       // Puedes agregar lógica personalizada o dejar este método vacío
       // para evitar cualquier comportamiento no deseado
     },
+    
     openStepper (raite) {
       this.totalPago = raite.precio
       this.numeroPersonas = 1 // O cualquier valor por defecto
@@ -611,6 +786,7 @@ export default {
       this.detallesViaje = raite
       this.e1 = 1 // Reiniciar al primer paso cada vez que se abre el stepper
     },
+    
     cerrarStepper () {
       this.showStepper = false
       this.e1 = 1 // Reiniciar al primer paso cuando se cierra
@@ -618,6 +794,7 @@ export default {
       this.numeroPersonas = 0
       this.equipaje = 0
     },
+    
     mostrarDetallesPublicados (raite) {
       try {
         this.$nextTick(() => {
@@ -629,6 +806,7 @@ export default {
         console.error('Error al abrir el stepper:', error)
       }
     },
+    
     cerrarStepperPublicados () {
       try {
         this.$nextTick(() => {
@@ -641,10 +819,12 @@ export default {
         console.error('Error al cerrar el diálogo de detalles:', error)
       }
     },
+    
     mostrarDetallesapartados (raite) {
       this.detallesViajea = raite
       this.showStepperapartados = true
     },
+    
     cargarViajes () {
       const viajesPublicados = [/* ...datos de viajes publicados... */]
       const viajesApartados = [/* ...datos de viajes apartados... */]
@@ -659,6 +839,7 @@ export default {
       this.misViajesApartadosOriginal = [...viajesApartados]
       this.viajesDisponiblesOriginal = [...viajesDisponibles]
     },
+    
     filtrarViajes (tipo) {
       let viajes = []
       switch (tipo) {
@@ -707,48 +888,100 @@ export default {
           break
       }
     },
+    
     realizarPago () {
       // Lógica para realizar el pago
       console.log('Pago realizado')
-      this.cerrarStepper()
+      this.showStepper = false
     },
-    recuperarDatos () {
+    
+    async recuperarDatos () {
       const url = '/home'
       const id = this.$store.state.user.id
-      const params = {
-        id
-      }
-      // solicitud get que pasa un objeto con el ID del usuario
-      this.$axios.get(url, { params })
-        .then((res) => {
-          if (res.data.success) {
-            this.misViajesPublicados = res.data.viajesPublicados
-            this.misViajesPublicados = res.data.viajesPublicados
-            this.misViajesApartados = res.data.viajesReservados
-            this.viajesDisponibles = res.data.viajes
-            this.viajes = [...res.data.viajesPublicados, ...res.data.viajesReservados, ...res.data.viajes]
-            // Almacena todos los viajes para restablecer después del filtro
-            this.todosViajesPublicados = [...res.data.viajesPublicados]
-            this.todosViajesApartados = [...res.data.viajesReservados]
-            this.todosViajesDisponibles = [...res.data.viajes]
+      const params = { id }
+
+      try {
+        const res = await this.$axios.get(url, { params })
+        if (res.data.success) {
+          this.misViajesPublicados = res.data.viajesPublicados
+          this.misViajesApartados = res.data.viajesReservados
+          this.viajesDisponibles = res.data.viajes
+
+          // Procesar cada viaje para obtener su promedio de reseñas
+          for (const viaje of [...this.misViajesApartados, ...this.viajesDisponibles]) {
+            const reviews = await this.findAllReviews(viaje.id)
+            const avgReview = this.calculateAverageReview(reviews)
+            const resultDriver = await this.findDriver(viaje.id)
+            const conductor = resultDriver.user.nombre + ' ' + resultDriver.user.apaterno + ' ' + resultDriver.user.amaterno
+            // const driver = resultDriver.user.nombre + ' ' + resultDriver.user.apaterno + ' ' + resultDriver.user.amaterno
+            this.$set(viaje, 'reviews', reviews)
+            this.$set(viaje, 'avgReview', avgReview) // Asigna el promedio de reseñas al objeto viaje
+            this.$set(viaje, 'conductor', conductor)
           }
-        })
+          console.log('Viajes apartados => ', this.misViajesApartados)
+          console.log('Viajes disponibles => ', this.viajesDisponibles)
+
+          // Almacena todos los viajes para restablecer después del filtro
+          this.todosViajesPublicados = [...res.data.viajesPublicados]
+          this.todosViajesApartados = [...res.data.viajesReservados]
+          this.todosViajesDisponibles = [...res.data.viajes]
+        }
+      } catch (error) {
+        console.error('Error al recuperar los datos:', error)
+      }
     },
+    
     toggleFiltro (tipo) {
       this.mostrarMenuFiltro[tipo] = !this.mostrarMenuFiltro[tipo]
       if (!this.mostrarMenuFiltro[tipo]) {
         this.restablecerFiltros(tipo)
       }
     },
-    restablecerViajes (tipo) {
-      if (tipo === 'publicados') {
-        this.misViajesPublicados = [...this.misViajesPublicadosOriginal]
-      } else if (tipo === 'apartados') {
-        this.misViajesApartados = [...this.misViajesApartadosOriginal]
-      } else if (tipo === 'disponibles') {
-        this.viajesDisponibles = [...this.viajesDisponiblesOriginal]
+    
+    async findAllReviews (viajeId) {
+      const sendData = { viaje: viajeId }
+      const url = '/history/findAllReviews'
+      try {
+        const res = await this.$axios.post(url, sendData)
+        if (res.data.success === true) {
+          return res.data.reviews
+        } else {
+          return []
+        }
+      } catch (error) {
+        console.error('Error =>', error)
+        return []
       }
     },
+    
+    async findDriver (viajeId) {
+      const viajeID = viajeId
+      const sendData = {
+        viaje: viajeID
+      }
+      const url = '/user/findUserByViaje'
+
+      try {
+        const res = await this.$axios.post(url, sendData)
+        if (res.data.success === true) {
+          console.log('Data => ', res.data)
+          return res.data
+        } else {
+          return null
+        }
+      } catch (error) {
+        return null
+      }
+    },
+    
+    calculateAverageReview (reviews) {
+      if (reviews.length === 0) {
+        return 0
+      }
+      const total = reviews.reduce((sum, review) => sum + review.puntuacion, 0)
+      return total / reviews.length
+    },
+    
     restablecerFiltros (tipo) {
       this[`filtroHora${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`] = ''
       this[`filtroFecha${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`] = ''
@@ -767,6 +1000,7 @@ export default {
           break
       }
     },
+    
     getClassForEstado (tipo) {
       let viajesFiltrados = []
       switch (tipo) {
