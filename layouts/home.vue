@@ -41,6 +41,18 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item @click="panicDialog = true">
+          <v-list-item-action>
+            <v-icon style="color: red;">
+              mdi mdi-shield-alert-outline
+            </v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title class="fontTitle" style="color: red;">
+              Botón de Pánico
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -103,7 +115,10 @@
           Publicar Viaje
         </v-card-title>
         <v-card-text class="pt-5">
-          <v-form ref="form">
+          <v-form
+            ref="form"
+            v-model="validForm"
+          >
             <v-row>
               <v-col cols="12">
                 <v-text-field
@@ -171,7 +186,7 @@
               <v-col cols="12">
                 <v-text-field
                   v-model="Detalles"
-                  label="Comentarios"
+                  label="Detalles adicionales"
                   type="text"
                   outlined
                 />
@@ -181,17 +196,158 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="red" style="color: white;" @click="cancelarViaje">
+          <v-btn color="red" style="color: white;" @click="dialog = false">
             Cancelar
           </v-btn>
-          <v-btn
-            color="#8C6E39"
-            style="color: white;"
-            :disabled="!isFormValid"
-            @click="publicarViaje"
-          >
+          <v-btn color="#8C6E39" style="color: white;" @click="publicarViaje">
             Publicar
           </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <!-- Dialogo para el boton de panico-->
+    <v-dialog v-model="panicDialog" max-width="800px">
+      <v-card>
+        <v-card-title class="pa-3 d-flex justify-center" style="background-color: #0A263D; color: white;">
+          ¡Botón de Pánico!
+        </v-card-title>
+        <v-card-text>
+          <v-row justify="center" class="text-center mb-2">
+            <v-col cols="12" class="d-flex justify-center">
+              <v-img
+                src="https://img.freepik.com/vector-premium/signo-exclamacion-blanco-circulo-rojo-aislado-sobre-fondo-blanco_120819-332.jpg"
+                max-width="400"
+                max-height="400"
+                contain
+                class="overflow-hidden"
+              />
+            </v-col>
+          </v-row>
+          <v-row justify="center" class="text-center mt-0">
+            <v-card-text>
+              <h1 class="my-1">
+                Estás a punto de activar el
+              </h1>
+              <h1 class="my-2">
+                boton de pánico
+              </h1>
+              <h3 class="my-1">
+                Esto hará que tu ubicación sea enviada inmediatamente
+              </h3>
+              <h3 class="my-1">
+                a las fuerzas del orden.
+              </h3>
+              <h2 class="my-2">
+                ¿Estás seguro de que quieres proceder?
+              </h2>
+            </v-card-text>
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-row justify="space-between" no-gutters class="w-100">
+            <v-col cols="5">
+              <v-btn block color="green" style="color: white;" @click="panicDialog = false">
+                Cancelar
+              </v-btn>
+            </v-col>
+            <v-col cols="5">
+              <v-btn block color="red" style="color: white;" @click="sendDialog = true">
+                Activar
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="sendDialog" persistent max-width="800px">
+      <v-card>
+        <v-card-title class="pa-3 d-flex justify-center" style="background-color: #0A263D; color: white;">
+          ¡Enviando Datos!
+        </v-card-title>
+        <v-card-text>
+          <v-row justify="center" class="text-center mb-2">
+            <v-col cols="12" class="d-flex justify-center">
+              <v-img
+                src="https://img.freepik.com/vector-premium/avion-papel-vectorial-viaje-simbolo-ruta-ilustracion-vector-avion-papel-dibujado-mano-aislado-esquema-avion-doodle-dibujado-mano-icono-avion-papel-lineal-negro_379823-1323.jpg"
+                max-width="400"
+                max-height="400"
+                contain
+                class="overflow-hidden"
+              />
+            </v-col>
+          </v-row>
+          <v-row justify="center" class="text-center mb-2">
+            <v-col cols="4" class="d-flex justify-center">
+              <v-progress-linear
+                color="deep-purple accent-4"
+                indeterminate
+                rounded
+                height="6"
+              />
+            </v-col>
+          </v-row>
+          <v-row justify="center" class="text-center mt-0">
+            <v-card-text>
+              <h1 class="my-1">
+                Enviando datos a unidades
+              </h1>
+              <h1 class="my-2">
+                de emergencia
+              </h1>
+              <h3 class="my-1">
+                Por favor, conserva la calma.
+              </h3>
+              <h3 class="my-1">
+                La ayuda está en camino.
+              </h3>
+            </v-card-text>
+          </v-row>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="resDialog" persistent max-width="800px">
+      <v-card>
+        <v-card-title class="pa-3 d-flex justify-center" style="background-color: #0A263D; color: white;">
+          Respuesta de emergencia
+        </v-card-title>
+        <v-card-text>
+          <v-row justify="center" class="text-center mb-2">
+            <v-col cols="12" class="d-flex justify-center">
+              <v-img
+                src="https://previews.123rf.com/images/petrdlouhy/petrdlouhy1407/petrdlouhy140700066/30115728-polic%C3%ADa-sonriente-joven-en-gafas-de-sol-muestra-los-pulgares-para-arriba.jpg"
+                max-width="400"
+                max-height="400"
+                contain
+                class="overflow-hidden"
+              />
+            </v-col>
+          </v-row>
+          <v-row justify="center" class="text-center mt-0">
+            <v-card-text>
+              <h1 class="my-1">
+                A las fuerzas del orden
+              </h1>
+              <h1 class="my-2">
+                les valió verga
+              </h1>
+              <h3 class="my-1">
+                Échele ganas, joven.
+              </h3>
+              <h3 class="my-1">
+                Usted puede.
+              </h3>
+            </v-card-text>
+          </v-row>
+        </v-card-text>
+        <v-card-actions>
+          <v-row no-gutters class="w-100">
+            <v-btn block color="red" style="color: white;" @click="resDialog = false">
+              Cerrar
+            </v-btn>
+          </v-row>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -215,6 +371,9 @@ export default {
       drawer: false,
       dialog: false,
       fixed: false,
+      panicDialog: false,
+      sendDialog: false,
+      resDialog: false,
       items: [
         {
           icon: 'mdi-home',
@@ -269,7 +428,8 @@ export default {
       HoraSalida: '',
       Precio: '',
       Nasientos: '',
-      Detalles: ''
+      Detalles: '',
+      validForm: false
     }
   },
 
@@ -277,6 +437,18 @@ export default {
     ...mapState({
       showSnackbar: state => state.showSnackbar,
       token: state => state.token
+    })
+  },
+
+  watch: {
+    sendDialog (val) {
+      if (val) {
+        setTimeout(() => {
+          this.panicDialog = false
+          this.sendDialog = false
+          this.resDialog = true
+        }, 4000)
+      }
     }),
     minFecha () {
       return new Date().toISOString().split('T')[0]
@@ -290,7 +462,6 @@ export default {
     // SE EJECUTA CUANDO SE CARGA EL COMPONENTE
     // AUTENTICACION
     if (this.$store.state.token === null) { this.$router.push('/') } else { this.obtenerDatosUsuarios() }
-
     this.obtenerDatosUsuarios()
   },
 
@@ -302,6 +473,35 @@ export default {
         this.$router.push(item.to)
       }
     },
+    
+    publicarViaje () {
+      this.validForm = this.$refs.form.validate()
+      if (this.validForm) {
+        const id = this.$store.state.user.id
+        const sendData = {
+          inicio: this.Lsalida,
+          destino: this.Ldestino,
+          fecha: this.Fecha,
+          precio: this.Precio,
+          capacidad: this.Nasientos,
+          descripcion: this.Detalles
+        }
+        const params = { id }
+
+        const url = '/home'
+        this.$axios.post(url, sendData, { params })
+          .then((res) => {
+            this.publicarViaje = false
+          })
+          .catch((err) => {
+            console.log('@@@ err => ', err)
+            alert('Ocurrió un error al publicar el viaje. Por favor, inténtalo de nuevo.')
+          })
+      } else {
+        alert('Faltan datos')
+      }
+    },
+    
     validateHora (value) {
       if (!value) { return true }
 
@@ -315,49 +515,12 @@ export default {
 
       return selectedTime >= now || 'La hora debe ser mayor a la actual'
     },
-    publicarViaje () {
-      if (!this.$refs.form.validate()) {
-        return
-      }
-
-      const id = this.$store.state.user.id
-      const sendData = {
-        inicio: this.Lsalida,
-        destino: this.Ldestino,
-        fecha: this.Fecha,
-        precio: this.Precio,
-        hora: this.HoraSalida,
-        capacidad: this.Nasientos,
-        descripcion: this.Detalles,
-        id
-      }
-
-      const url = '/registrarviaje'
-      // Agregar logs antes de la solicitud
-      console.log('URL:', url)
-      console.log('Datos enviados:', sendData)
-
-      this.$axios.post(url, sendData)
-        .then((res) => {
-          if (res.data.success) {
-            console.log('REGISTRO EXITOSO')
-          } else {
-            console.log('ERROR AL REGISTRAR')
-          }
-          this.resetForm()
-          this.dialog = false
-        })
-        .catch((err) => {
-          console.log('@@@ err => ', err)
-          alert('Ocurrió un error al publicar el viaje. Por favor, inténtalo de nuevo.')
-        })
-      this.resetForm()
-      this.dialog = false
-    },
+    
     cancelarViaje () {
       this.resetForm()
       this.dialog = false
     },
+    
     resetForm () {
       this.Lsalida = ''
       this.Ldestino = ''
@@ -367,12 +530,14 @@ export default {
       this.Nasientos = ''
       this.Detalles = ''
     },
+    
     obtenerDatosUsuarios () {
       this.user = this.$store.state.user
       this.token = this.$store.state.token
       this.nombre = this.user.nombre + ' ' + this.user.apaterno + ' ' + this.user.amaterno
       this.img = this.user.img
     },
+    
     logOut () {
       // Lógica para cerrar sesión
     }
