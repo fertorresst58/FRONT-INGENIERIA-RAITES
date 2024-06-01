@@ -68,7 +68,11 @@
       <v-spacer />
 
       <v-toolbar-title>
-        <span style="color: white;">{{ title }}</span>
+        <v-img
+          :src="require('@/assets/logo.png')"
+          height="70px"
+          contain
+        />
       </v-toolbar-title>
 
       <v-spacer />

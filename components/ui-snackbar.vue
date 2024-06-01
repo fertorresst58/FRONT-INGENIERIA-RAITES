@@ -6,7 +6,7 @@
     class="rounded-pill"
     @input="toggleSnackbar(false)"
   >
-    <v-row class="d-flex align-center align-content-center justify-space-between text-center px-5">
+    <v-row class="d-flex align-center align-content-center justify-center text-center px-5">
       <v-icon>{{ icon }}</v-icon>
       <strong class="ml-2">{{ mensaje }}</strong>
     </v-row>

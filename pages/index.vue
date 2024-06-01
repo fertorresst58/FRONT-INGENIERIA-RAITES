@@ -820,7 +820,7 @@ export default {
             this.$store.commit('modifyColor', 'green darken-4')
             this.$store.commit('modifyIcon', 'mdi-check-circle')
             this.$store.commit('modifyText', 'LOGIN EXITOSO')
-            // this.$router.push('/home')
+            this.$router.push('/home')
           }
         }).catch((error) => {
         // eslint-disable-next-line no-console
