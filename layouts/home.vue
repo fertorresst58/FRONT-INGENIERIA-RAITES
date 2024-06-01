@@ -107,7 +107,7 @@
         </v-card-title>
 
         <v-card-text class="py-2 white--text text-center coyoteBack">
-          {{ new Date().getFullYear() }} — <strong>Raites UG by Los Palomeros</strong>
+          {{ new Date().getFullYear() }} — <strong>BEE RAITES by Los Palomeros</strong>
         </v-card-text>
       </v-card>
     </v-footer>
@@ -459,17 +459,17 @@ export default {
   },
 
   created () {
-    // AUTENTICACION
-    if (this.$store.state.token || localStorage.getItem('token')) {
+    // AUTENTICACIÓN
+    if (this.$store.state.token !== null || localStorage.getItem('token') !== null) {
       this.obtenerDatosUsuarios()
     } else {
       this.$router.push('/')
     }
     this.minDate = moment().format('YYYY-MM-DD')
+    // this.obtenerDatosUsuarios()
   },
 
   mounted () {
-    // this.obtenerDatosUsuarios()
   },
 
   methods: {
@@ -540,9 +540,13 @@ export default {
 
     obtenerDatosUsuarios () {
       this.user = Object.keys(this.$store.state.user).length > 0 ? this.$store.state.user : JSON.parse(localStorage.getItem('user'))
+      this.$store.commit('setUser', this.user)
       this.token = this.$store.state.token ? this.$store.state.token : localStorage.getItem('token')
+      this.$store.commit('setToken', this.token)
       this.nombre = this.user.nombre + ' ' + this.user.apaterno + ' ' + this.user.amaterno
       this.img = this.user.img
+      console.log('🚀 ~ obtenerDatosUsuarios ~ this.$store.state.token:', this.$store.state.token)
+      console.log('🚀 ~ obtenerDatosUsuarios ~ this.$store.state.user:', this.$store.state.user)
     },
 
     logOut () {
