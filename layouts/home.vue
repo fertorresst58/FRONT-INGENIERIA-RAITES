@@ -81,7 +81,7 @@
         elevation="0"
         color="#FFD300"
         icon
-        @click="logOut"
+        @click="logOut()"
       >
         <v-icon>mdi-logout</v-icon>
       </v-btn>
@@ -459,18 +459,17 @@ export default {
   },
 
   created () {
+    // AUTENTICACION
+    if (this.$store.state.token || localStorage.getItem('token')) {
+      this.obtenerDatosUsuarios()
+    } else {
+      this.$router.push('/')
+    }
     this.minDate = moment().format('YYYY-MM-DD')
   },
 
   mounted () {
-    // SE EJECUTA CUANDO SE CARGA EL COMPONENTE
-    // AUTENTICACION
-    // if (this.$store.state.token === null) {
-    //   this.$router.push('/')
-    // } else {
-    //   this.obtenerDatosUsuarios()
-    // }
-    this.obtenerDatosUsuarios()
+    // this.obtenerDatosUsuarios()
   },
 
   methods: {
@@ -540,14 +539,15 @@ export default {
     },
 
     obtenerDatosUsuarios () {
-      this.user = this.$store.state.user
-      this.token = this.$store.state.token
+      this.user = Object.keys(this.$store.state.user).length > 0 ? this.$store.state.user : JSON.parse(localStorage.getItem('user'))
+      this.token = this.$store.state.token ? this.$store.state.token : localStorage.getItem('token')
       this.nombre = this.user.nombre + ' ' + this.user.apaterno + ' ' + this.user.amaterno
       this.img = this.user.img
     },
 
     logOut () {
-      // Lógica para cerrar sesión
+      localStorage.clear()
+      this.$routes.push('/')
     }
   }
 }

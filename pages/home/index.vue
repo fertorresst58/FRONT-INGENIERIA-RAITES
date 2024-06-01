@@ -178,14 +178,14 @@
 
       <!-- Tarjetas para "Viajes Disponibles"-->
       <v-expansion-panel>
-        <v-expansion-panel-header>
+        <v-expansion-panel-header class="coyoteBack white--text">
           <h2 class="fontTitle">
             Viajes disponibles
           </h2>
         </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-container>
-            <v-col cols="12" class="d-flex flex-column align-center justify-center">
+            <v-col cols="12" class="d-flex flex-column align-center justify-center mb-5">
               <v-row>
                 <h4 class="fontTitle">
                   Buscar destino:
@@ -260,7 +260,7 @@
                       block
                       height="38px"
                       class="black--text"
-                      @click="e1 = 1"
+                      @click="mostrarDetallesDisponibles(raite)"
                     >
                       Ver detalles
                     </v-btn>
@@ -270,9 +270,213 @@
                 <!-- STEPPER DISPONIBLES -->
                 <v-dialog
                   v-model="dialogDisponibles"
-                  width="50%"
+                  max-width="800px"
                 >
-                  STEPPER
+                  <v-stepper v-model="stepperDisponibles">
+                    <v-stepper-header
+                      class="blueBack black--text"
+                    >
+                      <v-stepper-step
+                        :complete="stepperDisponibles > 1"
+                        step="1"
+                        complete-icon="mdi-check-bold"
+                        color="#8C6E39"
+                      >
+                        <strong class="fontTitle white--text">DETALLES</strong>
+                        <small class="fontSubtitle white--text">Verifica la información</small>
+                      </v-stepper-step>
+
+                      <v-divider />
+
+                      <v-stepper-step
+                        :complete="stepperDisponibles > 2"
+                        step="2"
+                        complete-icon="mdi-check-bold"
+                        color="#8C6E39"
+                      >
+                        <strong class="fontTitle white--text">EQUIPAJE Y ASIENTOS</strong>
+                        <small class="fontSubtitle white--text">Selecciona tu equipaje</small>
+                      </v-stepper-step>
+
+                      <v-divider />
+
+                      <v-stepper-step
+                        step="3"
+                        complete-icon="mdi-check-bold"
+                        color="#8C6E39"
+                      >
+                        <strong class="fontTitle white--text">REALIZA TU PAGO</strong>
+                        <small class="fontSubtitle white--text">Solo se permiten tarjetas</small>
+                      </v-stepper-step>
+                    </v-stepper-header>
+
+                    <v-stepper-items>
+                      <v-stepper-content step="1" align="center" justify="center">
+                        <v-card
+                          class="mb-12 text-start"
+                          elevation="0"
+                          outlined
+                          width="500px"
+                        >
+                          <v-card-title class="fontTitle">
+                            <strong>DETALLES DEL VIAJE</strong>
+                          </v-card-title>
+
+                          <v-card-text class="fontText">
+                            <small>ORIGEN: </small>
+                            <strong>{{ raiteDisponibleSelected.inicio }}</strong>
+                            <br>
+                            <small>DESTINO: </small>
+                            <strong>{{ raiteDisponibleSelected.destino }}</strong>
+                            <br>
+                            <small>CONDUCTOR: </small>
+                            <strong>{{ raiteDisponibleSelected.conductor }}</strong>
+                            <br>
+                            <small>FECHA: </small>
+                            <strong>{{ formatearFecha(raiteDisponibleSelected.fecha) }}</strong>
+                            <br>
+                            <small>HORA: </small>
+                            <strong>{{ formatearHora(raiteDisponibleSelected.hora) }}</strong>
+                            <br>
+                            <small>ASIENTOS DISPONIBLES: </small>
+                            <strong>{{ raiteDisponibleSelected.capacidad }}</strong>
+                            <br>
+                            <small>PRECIO: </small>
+                            <strong>$ {{ raiteDisponibleSelected.precio }} MXN</strong>
+                            <br>
+                            <small>DESCRIPCIÓN: </small>
+                            <strong>{{ raiteDisponibleSelected.descripcion }}</strong>
+
+                            <v-divider class="mt-4"/>
+
+                            <v-card-title class="fontTitle">
+                              <strong>REVIEWS</strong>
+                            </v-card-title>
+
+                            <v-row>
+                              <v-col cols="12">
+                                <v-card>
+                                  <v-card-title class="fontTitle">
+                                    <span>Promedio de Reseñas</span>
+                                  </v-card-title>
+                                  <v-card-text>
+                                    <v-rating :value="raiteDisponibleSelected.avgReview" color="yellow darken-3" dense readonly />
+                                  </v-card-text>
+                                </v-card>
+                              </v-col>
+                            </v-row>
+                            <v-row>
+                              <v-col v-for="review in raiteDisponibleSelected.reviews" :key="review.id" cols="12" md="6">
+                                <v-card>
+                                  <v-card-title class="fontTitle">
+                                    <v-avatar>
+                                      <v-img src="https://i.pravatar.cc/58" />
+                                    </v-avatar>
+                                    <span class="ml-3">{{ review.nombre }} {{ review.apaterno }} {{ review.amaterno }}</span>
+                                  </v-card-title>
+                                  <v-card-subtitle class="fontSubtitle">
+                                    <v-rating :value="review.puntuacion" color="yellow darken-3" dense readonly />
+                                  </v-card-subtitle>
+                                  <v-card-text class="fontText">
+                                    <p>{{ review.comentario }}</p>
+                                    <small class="grey--text">{{ formatearFecha(review.fecha) }}</small>
+                                  </v-card-text>
+                                </v-card>
+                              </v-col>
+                            </v-row>
+                          </v-card-text>
+                        </v-card>
+                        <v-btn
+                          color="#FFD300"
+                          class="fontTitle"
+                          @click="stepperDisponibles = 2"
+                        >
+                          <span style="text-transform: none;">Continuar</span>
+                        </v-btn>
+
+                        <v-btn text @click="cerrarDialogDisponibles()">
+                          <span style="text-transform: none;">Atrás</span>
+                        </v-btn>
+                      </v-stepper-content>
+
+                      <v-stepper-content step="2" align="center" justify="center">
+                        <v-card
+                          class="mb-12 text-start"
+                          elevation="0"
+                          outlined
+                          width="500px"
+                        >
+                          <v-card-text class="fontText">
+                            <v-col cols="12">
+                              <v-row class="d-flex flex-column">
+                                <h3 class="fontTitle mb-10">
+                                  Selecciona la cantidad de asientos:
+                                </h3>
+                                <v-slider
+                                  v-model="asientos"
+                                  color="#0A263D"
+                                  thumb-label
+                                  :thumb-size="24"
+                                  :max="raiteDisponibleSelected.capacidad"
+                                  ticks="always"
+                                  step="1"
+                                  @input="actualizarEquipajes()"
+                                />
+                              </v-row>
+
+                              <v-row v-for="(equipaje, index) in equipajes" :key="index" class="d-flex flex-column">
+                                <h3 class="fontTitle">
+                                  Pasajero {{ index + 1 }}
+                                </h3>
+                                <v-combobox
+                                  v-model="equipajes[index]"
+                                  :items="equipajeItems"
+                                  label="Seleccione equipaje"
+                                  outlined
+                                  multiple
+                                  dense
+                                  solo
+                                  flat
+                                  class="fontText"
+                                />
+                              </v-row>
+                            </v-col>
+                          </v-card-text>
+                        </v-card>
+                        <v-btn
+                          color="#FFD300"
+                          class="fontTitle"
+                          @click="stepperDisponibles = 3"
+                        >
+                          <span style="text-transform: none;">Continuar</span>
+                        </v-btn>
+
+                        <v-btn text @click="stepperDisponibles = 1">
+                          <span style="text-transform: none;">Atrás</span>
+                        </v-btn>
+                      </v-stepper-content>
+
+                      <v-stepper-content step="3">
+                        <v-card
+                          class="mb-12"
+                          color="grey lighten-1"
+                          height="200px"
+                        />
+
+                        <v-btn
+                          color="#FFD300"
+                          class="fontTitle"
+                          @click="realizarPago()"
+                        >
+                          <span style="text-transform: none;">Continuar</span>
+                        </v-btn>
+
+                        <v-btn text @click="stepperDisponibles = 2">
+                          <span style="text-transform: none;">Atrás</span>
+                        </v-btn>
+                      </v-stepper-content>
+                    </v-stepper-items>
+                  </v-stepper>
                 </v-dialog>
               </v-col>
             </v-row>
@@ -329,9 +533,19 @@ export default {
       // VIAJES DISPONIBLES
       viajesDisponibles: [],
       search: '',
+      raiteDisponibleSelected: [],
 
       // DIALOG DISPONIBLES
-      dialogDisponibles: false
+      dialogDisponibles: true,
+      stepperDisponibles: 1,
+      asientos: 0,
+      equipajes: [],
+      equipajeItems: [
+        'Sin equipaje ($0)',
+        'Bolso de mano ($5)',
+        'Maleta de mano ($10)',
+        'Maleta de viaje ($15)'
+      ]
     }
   },
 
@@ -366,7 +580,6 @@ export default {
     },
 
     // FILTROS
-
     filtroDisponibles () {
       return this.viajesDisponibles.filter(viaje =>
         viaje.destino.toLowerCase().includes(this.search.toLowerCase())
@@ -383,7 +596,11 @@ export default {
         if (res.data.success) {
           this.misViajesPublicados = res.data.viajesPublicados
           this.misViajesApartados = res.data.viajesReservados
-          this.viajesDisponibles = res.data.viajes
+
+          const today = new Date()
+          const formattedToday = today.toISOString().split('T')[0]
+
+          this.viajesDisponibles = res.data.viajes.filter(viaje => viaje.fecha >= formattedToday)
           console.log('🚀 ~ recuperarDatos ~ this.viajesDisponibles:', this.viajesDisponibles)
 
           // Procesar cada viaje para obtener su promedio de reseñas
@@ -407,13 +624,6 @@ export default {
         }
       } catch (error) {
         console.error('Error al recuperar los datos:', error)
-      }
-    },
-
-    toggleFiltro (tipo) {
-      this.mostrarMenuFiltro[tipo] = !this.mostrarMenuFiltro[tipo]
-      if (!this.mostrarMenuFiltro[tipo]) {
-        this.restablecerFiltros(tipo)
       }
     },
 
@@ -460,6 +670,32 @@ export default {
       }
       const total = reviews.reduce((sum, review) => sum + review.puntuacion, 0)
       return total / reviews.length
+    },
+
+    mostrarDetallesDisponibles (raite) {
+      this.raiteDisponibleSelected = raite
+      this.dialogDisponibles = true
+    },
+
+    cerrarDialogDisponibles () {
+      this.dialogDisponibles = false
+      this.asiento = 0
+      this.raiteDisponibleSelected = []
+      this.equipaje = []
+    },
+
+    actualizarEquipajes () {
+      if (this.asientos > this.equipajes.length) {
+        for (let i = this.equipajes.length; i < this.asientos; i++) {
+          this.equipajes.push(null)
+        }
+      } else {
+        this.equipajes.splice(this.asientos)
+      }
+    },
+
+    realizarPago () {
+      console.log('EQUIPAJES => ', this.equipajes)
     }
   }
 }

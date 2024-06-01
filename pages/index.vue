@@ -791,12 +791,15 @@ export default {
 
   created () {
     this.maxDate = moment().subtract(18, 'years').format('YYYY-MM-DD')
+
+    if (localStorage.getItem('token')) {
+      this.$router.push('/home')
+    }
   },
 
   methods: {
     async login () {
       this.validLogin = this.$refs.formLogin.validate()
-      console.log('🚀 ~ login ~ this.validLogin:', this.validLogin)
 
       if (this.validLogin) {
         const sendData = {
@@ -809,7 +812,6 @@ export default {
         }).then(async (res) => {
           const result = await res.data
           if (result.success) {
-            console.log('🚀 ~ login ~ result:', result)
             this.$store.commit('setUser', result.user)
             this.$store.commit('setToken', result.token)
             if (this.checkboxLogin) {
@@ -854,9 +856,6 @@ export default {
         this.$axios.post(url, data)
           .then((res) => {
             if (res.data.success) {
-              // eslint-disable-next-line no-console
-              console.log('REGISTRADO CORRECTAMENTE')
-
               this.$store.commit('modifySnackbar', true)
               this.$store.commit('modifyColor', 'green darken-4')
               this.$store.commit('modifyIcon', 'mdi-check-circle')
