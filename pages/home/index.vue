@@ -536,7 +536,7 @@ export default {
       raiteDisponibleSelected: [],
 
       // DIALOG DISPONIBLES
-      dialogDisponibles: true,
+      dialogDisponibles: false,
       stepperDisponibles: 1,
       asientos: 0,
       equipajes: [],
@@ -601,7 +601,6 @@ export default {
           const formattedToday = today.toISOString().split('T')[0]
 
           this.viajesDisponibles = res.data.viajes.filter(viaje => viaje.fecha >= formattedToday)
-          console.log('🚀 ~ recuperarDatos ~ this.viajesDisponibles:', this.viajesDisponibles)
 
           // Procesar cada viaje para obtener su promedio de reseñas
           for (const viaje of [...this.misViajesApartados, ...this.viajesDisponibles]) {
@@ -614,8 +613,6 @@ export default {
             this.$set(viaje, 'avgReview', avgReview) // Asigna el promedio de reseñas al objeto viaje
             this.$set(viaje, 'conductor', conductor)
           }
-          console.log('Viajes apartados => ', this.misViajesApartados)
-          console.log('Viajes disponibles => ', this.viajesDisponibles)
 
           // Almacena todos los viajes para restablecer después del filtro
           this.todosViajesPublicados = [...res.data.viajesPublicados]
@@ -638,7 +635,8 @@ export default {
           return []
         }
       } catch (error) {
-        console.error('Error =>', error)
+        // eslint-disable-next-line no-console
+        console.error('NO SE ENCONTRARON RESEÑAS')
         return []
       }
     },
@@ -653,8 +651,6 @@ export default {
       try {
         const res = await this.$axios.post(url, sendData)
         if (res.data.success === true) {
-          // eslint-disable-next-line no-console
-          console.log('Data => ', res.data)
           return res.data
         } else {
           return null
