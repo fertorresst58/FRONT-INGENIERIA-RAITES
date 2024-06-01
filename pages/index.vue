@@ -10,66 +10,82 @@
       color="#0A263D"
       class="pt-5"
     >
-      <v-row>
+      <v-row class="d-flex justify-space-around align-content-center">
         <!-- LOGO DE LA APLICACION -->
-        <v-col cols="7">
+        <v-col md="6" class="logo">
           <v-app-bar-title>
             <v-img
-              contain
-              max-width="200"
+              max-width="360"
               max-height="100"
-              :src="require('@/assets/logo.svg')"
+              class="logo-img"
+              :src="require('@/assets/logo.png')"
             />
           </v-app-bar-title>
         </v-col>
 
         <!-- COLUMNA CORREO -->
-        <v-col cols="2" style="height: 146px;">
+        <v-col md="2" sm="4" style="height: 146px; margin-left: 20px">
           <v-row>
             <span class="fontTitle" style="color: white; font-size: 16px;">Correo:</span>
           </v-row>
           <v-row>
             <div style="width: 90%;" class="pt-1">
-              <v-text-field
-                v-model="correoLogin"
-                solo
-                flat
-                dense
-                type="email"
-                class="fontTitle"
-              />
+              <v-form
+                ref="formLogin"
+                v-model="validLogin"
+                lazy-validation
+              >
+                <v-text-field
+                  v-model="correoLogin"
+                  solo
+                  flat
+                  dense
+                  required
+                  type="email"
+                  class="fontTitle"
+                  :rules="correoRule"
+                />
+              </v-form>
             </div>
           </v-row>
           <v-row justify="start" align="start" class="flex-nowrap">
             <div class="checkbox">
-              <input v-model="checkbox" type="checkbox" class="mr-2">
+              <input v-model="checkboxLogin" type="checkbox" class="mr-2">
               <label class="fontTitle" style="font-size: 12px; color: white;">Mantenerse logueado</label>
             </div>
           </v-row>
         </v-col>
 
         <!-- COLUMNA CONTRASEÑA -->
-        <v-col cols="2" style="height: 146px;">
+        <v-col md="2" sm="4" style="height: 146px;">
           <v-row>
             <span class="fontTitle" style="color: white; font-size: 16px;">Contraseña:</span>
           </v-row>
           <v-row>
             <div style="width: 90%;" class="pt-1">
-              <v-text-field
-                v-model="contrasenaLogin"
-                solo
-                flat
-                dense
-                type="password"
-                class="fontTitle"
-              />
+              <v-form
+                ref="formLogin"
+                v-model="validLogin"
+                lazy-validation
+              >
+                <v-text-field
+                  v-model="contrasenaLogin"
+                  solo
+                  flat
+                  dense
+                  required
+                  type="password"
+                  class="fontTitle"
+                  :rules="passwordRule"
+                />
+              </v-form>
             </div>
           </v-row>
           <v-row>
             <a
               style="text-decoration: none; color: white; font-size: 12px;"
               class="fontTitle"
-              @click="showPassword = !showPassword"
+              @click="showPassword = true"
             >
               Olvide mi contraseña
             </a>
@@ -77,7 +93,7 @@
         </v-col>
 
         <!-- COLUMNA BOTON LOGIN -->
-        <v-col cols="1" style="height: 146px;" class="pl-0">
+        <v-col md="1" sm="2" style="height: 146px;" class="pl-0">
           <div class="pt-4">
             <v-btn block color="#FFD300" height="38px" width="90%" @click="login()">
               <span class="fontTitle" style="text-transform: none; color: black">Log In</span>
@@ -90,13 +106,22 @@
     <!-- MAIN -->
     <v-container fluid>
       <v-main>
+        <v-row class="blueBack hidden-md-only hidden-lg-only hidden-xl-only">
+          <v-col sm="12" align="center" justify="center">
+            <v-img
+              max-width="360"
+              max-height="100"
+              :src="require('@/assets/logo.png')"
+            />
+          </v-col>
+        </v-row>
         <v-row class="mt-0 pa-0">
           <!-- IMAGEN DE FONDO DEL MAIN -->
-          <v-col cols="7">
+          <v-col cols="7" class="logo">
             <v-img
               :src="require('@/assets/login.jpg')"
-              height="1087"
-              max-height="1087"
+              height="1263"
+              max-height="1263"
               style="filter: blur(3px);"
             />
             <v-row
@@ -111,22 +136,22 @@
               >
                 <span
                   class="text-h4 font-weight-bold mb-4 dark fontTitle textLogo"
-                  style="font-size: 70px !important;"
+                  style="font-size: 70px !important; line-height: 65px;"
                 >
-                  Raites UG
+                  BEE RAITES
                 </span>
                 <span
                   class="subheading fontSubtitle textLogo my-4"
                   style="font-size: 25px !important;"
                 >
-                  La mejor aplicacion para solicitar tu ride!
+                  La mejor aplicación para solicitar tu ride!
                 </span>
               </v-col>
             </v-row>
           </v-col>
 
           <!-- FORMULARIO PARA REGISTRO DE USUARIOS -->
-          <v-col cols="5">
+          <v-col md="5" sm="12">
             <v-card flat outlined>
               <v-card-title class="fontTitle">
                 Registrarse
@@ -142,6 +167,7 @@
                 <v-form
                   ref="formRegistro"
                   v-model="formRegistro"
+                  lazy-validation
                   @submit.prevent="submit"
                 >
                   <h3 class="fontTitle">
@@ -204,13 +230,13 @@
                   </h3>
                   <v-text-field
                     v-model="telefono"
+                    v-mask="'##########'"
                     class="fontTitle"
                     dense
                     solo
                     outlined
                     flat
                     required
-                    type="number"
                     :rules="requiredRule"
                     max="9999999999"
                   />
@@ -244,6 +270,19 @@
                     required
                     type="text"
                     class="fontTitle"
+                    :rules="requiredRule"
+                  />
+                  <h3 class="fontTitle">
+                    Ciudad de residencia:
+                  </h3>
+                  <v-text-field
+                    v-model="ciudad"
+                    class="fontTitle"
+                    dense
+                    solo
+                    outlined
+                    flat
+                    type="text"
                     :rules="requiredRule"
                   />
                   <h3 class="fontTitle">
@@ -327,19 +366,6 @@
                       @change="showFechaNacimiento = false"
                     />
                   </v-menu>
-                  <h3 class="fontTitle">
-                    Ciudad de residencia:
-                  </h3>
-                  <v-text-field
-                    v-model="ciudad"
-                    class="fontTitle"
-                    dense
-                    solo
-                    outlined
-                    flat
-                    type="text"
-                    :rules="requiredRule"
-                  />
                 </v-form>
               </v-card-text>
 
@@ -380,7 +406,7 @@
         </v-card-title>
 
         <v-card-text class="py-2 white--text text-center coyoteBack">
-          {{ new Date().getFullYear() }} — <strong>Raites UG by Los Palomeros</strong>
+          {{ new Date().getFullYear() }} — <strong>BEE RAITES by Los Palomeros</strong>
         </v-card-text>
       </v-card>
     </v-footer>
@@ -441,7 +467,6 @@
                   flat
                   outlined
                   type="number"
-                  @input="limitarLongitud"
                 />
                 <h4 class="fontTitle">
                   Correo:
@@ -599,6 +624,7 @@
 
 <script>
 import moment from 'moment'
+import { mask } from 'vue-the-mask'
 import { mapState } from 'vuex'
 import 'moment/locale/es'
 import UiSnackbar from '~/components/ui-snackbar.vue'
@@ -610,12 +636,17 @@ export default {
     UiSnackbar
   },
 
+  directives: {
+    mask
+  },
+
   data () {
     return {
       // VARIABLES PARA LOGIN
+      validLogin: false,
       correoLogin: 'admin@ugto.mx',
       contrasenaLogin: 'adminadmin',
-      checkbox: false,
+      checkboxLogin: false,
 
       // VARIABLES PARA FORMULARIO DE REGISTRO
       formRegistro: false,
@@ -636,7 +667,7 @@ export default {
       itemsCampus: [
         'Celaya-Salvatierra',
         'Guanajuato',
-        'Irapauto-Salamanca',
+        'Irapuato-Salamanca',
         'Leon'
       ],
       itemsCarrera: [
@@ -754,7 +785,8 @@ export default {
   },
 
   watch: {
-    showSnackbar () {}
+    showSnackbar () {},
+    contrasena () {}
   },
 
   created () {
@@ -762,59 +794,61 @@ export default {
   },
 
   methods: {
-    limitarLongitud () {
-      if (this.telefono.length > 10 || this.telefonoRecuperacion.length > 10) {
-        this.numero = this.numero.slice(0, 10)
-      }
-    },
-
     async login () {
-      const sendData = {
-        email: this.correoLogin,
-        password: this.contrasenaLogin
-      }
+      this.validLogin = this.$refs.formLogin.validate()
+      console.log('🚀 ~ login ~ this.validLogin:', this.validLogin)
 
-      await this.$auth.loginWith('local', {
-        data: sendData
-      }).then(async (res) => {
-        const result = await res.data
-        if (result.success) {
-          // eslint-disable-next-line no-console
-          console.log('🚀 ~ login ~ result:', result)
-          this.$store.commit('setUser', result.user)
-          this.$store.commit('setToken', result.token)
-          // eslint-disable-next-line no-console
-          console.log('User:', this.$store.state.user)
-          // eslint-disable-next-line no-console
-          console.log('Token:', this.$store.state.token)
-          this.$store.commit('modifySnackbar', true)
-          this.$store.commit('modifyColor', 'green darken-4')
-          this.$store.commit('modifyText', 'LOGIN EXITOSO')
-          this.$store.commit('modifyTimeout', '1200')
-          this.$store.commit('modifyIcon', 'mdi-check')
-          this.$router.push('/home')
+      if (this.validLogin) {
+        const sendData = {
+          email: this.correoLogin,
+          password: this.contrasenaLogin
         }
-      }).catch((error) => {
+
+        await this.$auth.loginWith('local', {
+          data: sendData
+        }).then(async (res) => {
+          const result = await res.data
+          if (result.success) {
+            console.log('🚀 ~ login ~ result:', result)
+            this.$store.commit('setUser', result.user)
+            this.$store.commit('setToken', result.token)
+            if (this.checkboxLogin) {
+              localStorage.setItem('token', result.token)
+              localStorage.setItem('user', JSON.stringify(result.user))
+            }
+            this.$store.commit('modifySnackbar', true)
+            this.$store.commit('modifyColor', 'green darken-4')
+            this.$store.commit('modifyIcon', 'mdi-check-circle')
+            this.$store.commit('modifyText', 'LOGIN EXITOSO')
+            // this.$router.push('/home')
+          }
+        }).catch((error) => {
         // eslint-disable-next-line no-console
-        console.log('ERROR -> ', error)
-      })
+          console.log('ERROR -> ', error)
+        })
+      } else {
+        this.$store.commit('modifySnackbar', true)
+        this.$store.commit('modifyColor', 'red darken-4')
+        this.$store.commit('modifyIcon', 'mdi-alert-circle')
+        this.$store.commit('modifyText', 'FALTAN DATOS POR LLENAR')
+      }
     },
 
     signUp () {
       this.formRegistro = this.$refs.formRegistro.validate()
       if (this.formRegistro) {
         const data = {
-          nombre: this.nombre,
-          apaterno: this.apaterno,
-          amaterno: this.amaterno,
-          sexo: this.sexo,
+          nombre: this.nombre.toUpperCase(),
+          apaterno: this.apaterno.toUpperCase(),
+          amaterno: this.amaterno.toUpperCase(),
+          sexo: this.sexo.toUpperCase(),
           email: this.correo,
           password: this.contrasena,
           telefono: this.telefono,
-          campus: this.campus,
-          carrera: this.carrera, // Campos qe faltan de agregar en el back
+          campus: this.campus.toUpperCase(),
+          carrera: this.carrera.toUpperCase(),
           fechaNac: this.fechaNacimiento,
-          ciudad: this.ciudad // Campos qe faltan de agregar en el back
+          ciudad: this.ciudad.toUpperCase()
         }
         const url = '/signup'
         this.$axios.post(url, data)
@@ -823,23 +857,19 @@ export default {
               // eslint-disable-next-line no-console
               console.log('REGISTRADO CORRECTAMENTE')
 
-              this.$store.commit('modifyAlert', true)
+              this.$store.commit('modifySnackbar', true)
               this.$store.commit('modifyColor', 'green darken-4')
               this.$store.commit('modifyIcon', 'mdi-check-circle')
-              this.$store.commit('modifyType', 'success')
               this.$store.commit('modifyText', res.data.message)
-              // setTimeout(() => {
-              //   this.$store.commit('modifyAlert', false)
-              //   this.showDialog = false
-              // }, 1000)
-            } else {
-              // eslint-disable-next-line no-console
-              console.log('ERROR AL REGISTRARSE')
             }
           })
           .catch((error) => {
             // eslint-disable-next-line no-console
             console.log('ERROR EN REGISTRO => ', error)
+            this.$store.commit('modifySnackbar', true)
+            this.$store.commit('modifyColor', 'red darken-4')
+            this.$store.commit('modifyIcon', 'mdi-alert-circle')
+            this.$store.commit('modifyText', 'EL CORREO YA ESTA REGISTRADO, INTENTE DE NUEVO')
           })
       }
     }
@@ -871,5 +901,16 @@ export default {
 
 .alerta {
   z-index: 1000;
+}
+
+@media (max-width: 960px) {
+  .logo {
+    display: none;
+  }
+}
+
+.logo-img {
+  position: relative;
+  top: 50%;
 }
 </style>

@@ -148,7 +148,7 @@
                   label="Fecha del viaje"
                   type="date"
                   outlined
-                  :min="minFecha"
+                  :min="minDate"
                   :rules="[v => !!v || 'Campo requerido']"
                 />
               </v-col>
@@ -355,8 +355,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import moment from 'moment'
 import UiSnackbar from '~/components/ui-snackbar.vue'
+import 'moment/locale/es'
 
 export default {
   name: 'DefaultLayout',
@@ -408,9 +409,9 @@ export default {
 
       // VARIABLES PARA USUARIO
       user: {},
+      token: '',
       nombre: '',
       img: '',
-      token: '',
 
       // VARIABLES DE FOOTER
       icons: [
@@ -424,6 +425,7 @@ export default {
       // Datos del viaje
       Lsalida: '',
       Ldestino: '',
+      minDate: '',
       Fecha: '',
       HoraSalida: '',
       Precio: '',
@@ -434,10 +436,6 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      showSnackbar: state => state.showSnackbar,
-      token: state => state.token
-    })
   },
 
   watch: {
@@ -451,19 +449,23 @@ export default {
       }
     },
 
-    minFecha () {
-      return new Date().toISOString().split('T')[0]
-    },
-
     isFormValid () {
       return this.Lsalida && this.Ldestino && this.Fecha && this.HoraSalida && this.Precio && this.Nasientos && this.validateHora(this.HoraSalida) === true
     }
   },
 
+  created () {
+    this.minDate = moment().format('YYYY-MM-DD')
+  },
+
   mounted () {
     // SE EJECUTA CUANDO SE CARGA EL COMPONENTE
     // AUTENTICACION
-    if (this.$store.state.token === null) { this.$router.push('/') } else { this.obtenerDatosUsuarios() }
+    // if (this.$store.state.token === null) {
+    //   this.$router.push('/')
+    // } else {
+    //   this.obtenerDatosUsuarios()
+    // }
     this.obtenerDatosUsuarios()
   },
 

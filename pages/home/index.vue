@@ -691,14 +691,18 @@ export default {
   components: {
     CustomStepper
   },
+
   layout: 'home',
+
   auth: true,
-  props: {
-    value: {
-      type: Number,
-      required: true
-    }
-  },
+
+  // props: {
+  //   value: {
+  //     type: Number,
+  //     required: true
+  //   }
+  // },
+
   data () {
     return {
       internalStep: this.value,

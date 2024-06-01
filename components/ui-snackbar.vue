@@ -1,35 +1,41 @@
 <template>
   <v-snackbar
-    v-model="showSnackbar"
+    :value="showSnackbar"
     :color="color"
     :timeout="timeout"
     class="rounded-pill"
+    @input="toggleSnackbar(false)"
   >
-    <v-row align="center" justify="center" class="text-center">
-      <v-icon>{{ icon }}&nbsp;</v-icon>
-      {{ mensaje }}
+    <v-row class="d-flex align-center align-content-center justify-space-between text-center px-5">
+      <v-icon>{{ icon }}</v-icon>
+      <strong class="ml-2">{{ mensaje }}</strong>
     </v-row>
   </v-snackbar>
 </template>
 
 <script>
-import { mapState } from 'vuex'
 export default {
   computed: {
-    ...mapState({
-      showSnackbar: state => state.showSnackbar,
-      timeout: state => state.timeout,
-      color: state => state.color,
-      mensaje: state => state.mensaje,
-      icon: state => state.icon
-    })
+    showSnackbar () {
+      return this.$store.state.showSnackbar
+    },
+    timeout () {
+      return this.$store.state.timeout
+    },
+    color () {
+      return this.$store.state.color
+    },
+    mensaje () {
+      return this.$store.state.mensaje
+    },
+    icon () {
+      return this.$store.state.icon
+    }
   },
-  watch: {
-    showSnackbar () {},
-    timeout () {},
-    color () {},
-    mensaje () {},
-    icon () {}
+  methods: {
+    toggleSnackbar (value) {
+      this.$store.commit('modifySnackbar', value)
+    }
   }
 }
 </script>

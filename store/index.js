@@ -1,7 +1,7 @@
 export const state = () => ({
   color: '',
   showSnackbar: false,
-  timeout: null,
+  timeout: 2000,
   mensaje: '',
   icon: '',
   user: {},
