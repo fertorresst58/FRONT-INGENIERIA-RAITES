@@ -12,6 +12,20 @@
         @submit.prevent="submit"
       >
         <h3 class="fontTitle">
+          Foto de perfil (Solo URL):
+        </h3>
+        <v-text-field
+          v-model="foto"
+          class="fontTitle"
+          dense
+          solo
+          outlined
+          flat
+          required
+          type="url"
+          :rules="requiredRule"
+        />
+        <h3 class="fontTitle">
           Nombre:
         </h3>
         <v-text-field
@@ -182,6 +196,19 @@
           type="text"
           :rules="requiredRule"
         />
+        <h3 class="fontTitle">
+          Descripción:
+        </h3>
+        <v-textarea
+          v-model="description"
+          class="fontTitle"
+          dense
+          solo
+          outlined
+          flat
+          type="text"
+          :rules="requiredRule"
+        />
       </v-form>
     </v-card-text>
 
@@ -194,7 +221,7 @@
             color="#8C6E39"
             height="38px"
             width="90%"
-            @click="signUp()"
+            @click="update()"
           >
             <span class="fontTitle" style="text-transform: none; color: white">ACTUALIZAR</span>
           </v-btn>
@@ -206,12 +233,17 @@
 </template>
 
 <script>
+import moment from 'moment'
+import 'moment/locale/es'
+
 export default {
   name: 'UiEditProfile',
 
   data () {
     return {
       formActualizar: false,
+      foto: null,
+      description: null,
       nombre: null,
       apaterno: null,
       amaterno: null,
@@ -314,6 +346,52 @@ export default {
       correoRule: [
         v => /.+@ugto\.mx$/.test(v) || 'EMAIL INCORRECTO SOLO CORREO INSTITUCIONAL'
       ]
+    }
+  },
+
+  computed: {
+    formatearFecha () {
+      return this.fechaNacimiento ? moment(this.fechaNacimiento, 'YYYY-MM-DD').format('dddd, DD [de] MMMM [de] YYYY') : ''
+    }
+  },
+
+  created () {
+    this.maxDate = moment().subtract(18, 'years').format('YYYY-MM-DD')
+  },
+
+  methods: {
+    async update () {
+      try {
+        const url = '/updateUser'
+        const data = {
+          id: this.$store.state.user.id,
+          nombre: this.nombre.toUpperCase(),
+          apaterno: this.apaterno.toUpperCase(),
+          amaterno: this.amaterno.toUpperCase(),
+          sexo: this.sexo.toUpperCase(),
+          email: this.correo,
+          telefono: this.telefono,
+          carrera: this.carrera.toUpperCase(),
+          fecha_nac: this.fechaNacimiento,
+          des: this.description.toUpperCase(),
+          img: this.foto,
+          ciudad: this.ciudad.toUpperCase(),
+          campus: this.campus.toUpperCase()
+        }
+        const response = await this.$axios.put(url, data)
+
+        if (response.data.message === 'success') {
+          this.closeDialog()
+        } else {
+          console.error('Error al actualizar información del usuario:', response.data.message)
+        }
+      } catch (error) {
+        console.error('Error al enviar solicitud de actualización:', error)
+      }
+    },
+
+    closeDialog () {
+      this.$emit('closeDialog')
     }
   }
 }

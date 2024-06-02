@@ -399,11 +399,6 @@ export default {
           icon: 'mdi-routes',
           title: 'Mi Historial',
           to: '/history'
-        },
-        {
-          icon: 'mdi-message',
-          title: 'Mis Mensajes',
-          to: '/mis-viajes'
         }
       ],
       miniVariant: false,
@@ -551,7 +546,7 @@ export default {
 
     logOut () {
       localStorage.clear()
-      this.$routes.push('/')
+      this.$router.push('/')
     }
   }
 }

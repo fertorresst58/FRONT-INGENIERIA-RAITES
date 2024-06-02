@@ -90,7 +90,7 @@
             color="#8C6E39"
             height="38px"
             class="white--text"
-            @clic="dialogProfile=true"
+            @click="dialogProfile = true"
           >
             <span>EDITAR PERFIL</span>
           </v-btn>
@@ -99,7 +99,7 @@
       </v-card>
 
       <v-dialog v-model="dialogProfile" persistent width="700" class="pa-0 ma-0">
-        <edit-profile />
+        <edit-profile @closeDialog="closeDialog" />
       </v-dialog>
     </v-row>
   </v-col>
@@ -130,6 +130,12 @@ export default {
   },
 
   methods: {
+    closeDialog () {
+      this.dialogProfile = false
+      localStorage.clear()
+      location.reload()
+    },
+
     obtenerDatosUsuarios () {
       this.user = this.$store.state.user
       this.token = this.$store.state.token
