@@ -486,7 +486,9 @@ export default {
           fecha: this.Fecha,
           precio: this.Precio,
           capacidad: this.Nasientos,
-          descripcion: this.Detalles
+          descripcion: this.Detalles,
+          hora: this.HoraSalida,
+          disponible: true
         }
         const params = { id }
 
