@@ -477,33 +477,44 @@ export default {
     },
 
     publicarViaje () {
-      this.validForm = this.$refs.form.validate()
-      if (this.validForm) {
-        const id = this.$store.state.user.id
-        const sendData = {
-          inicio: this.Lsalida,
-          destino: this.Ldestino,
-          fecha: this.Fecha,
-          precio: this.Precio,
-          capacidad: this.Nasientos,
-          descripcion: this.Detalles,
-          hora: this.HoraSalida,
-          disponible: true
-        }
-        const params = { id }
-
-        const url = '/home'
-        this.$axios.post(url, sendData, { params })
-          .then((res) => {
-            this.publicarViaje = false
-          })
-          .catch((err) => {
-            console.log('@@@ err => ', err)
-            alert('Ocurrió un error al publicar el viaje. Por favor, inténtalo de nuevo.')
-          })
-      } else {
-        alert('Faltan datos')
+      if (!this.$refs.form.validate()) {
+        return
       }
+
+      const id = this.$store.state.user.id
+      const sendData = {
+        inicio: this.Lsalida,
+        destino: this.Ldestino,
+        fecha: this.Fecha,
+        precio: this.Precio,
+        hora: this.HoraSalida,
+        capacidad: this.Nasientos,
+        descripcion: this.Detalles,
+        disponible: true,
+        id
+      }
+
+      const url = '/registrarviaje'
+      // Agregar logs antes de la solicitud
+      console.log('URL:', url)
+      console.log('Datos enviados:', sendData)
+
+      this.$axios.post(url, sendData)
+        .then((res) => {
+          if (res.data.success) {
+            console.log('REGISTRO EXITOSO')
+          } else {
+            console.log('ERROR AL REGISTRAR')
+          }
+          this.resetForm()
+          this.dialog = false
+        })
+        .catch((err) => {
+          console.log('@@@ err => ', err)
+          alert('Ocurrió un error al publicar el viaje. Por favor, inténtalo de nuevo.')
+        })
+      this.resetForm()
+      this.dialog = false
     },
 
     validateHora (value) {
