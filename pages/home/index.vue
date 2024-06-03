@@ -891,7 +891,7 @@ export default {
 
           const today = new Date()
           const formattedToday = today.toISOString().split('T')[0]
-          this.misViajesApartados = res.data.viajes.filter(viaje => viaje.fecha >= formattedToday)
+          this.misViajesApartados = res.data.viajesReservados.filter(viaje => viaje.fecha >= formattedToday)
           this.viajesDisponibles = res.data.viajes.filter((viaje) => {
             return viaje.fecha >= formattedToday && viaje.capacidad > 0
           })
