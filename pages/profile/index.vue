@@ -136,7 +136,6 @@ export default {
       const url = `/user/${user.email}`
       await this.$axios.get(url)
         .then((res) => {
-          console.log('🚀 ~ closeDialog ~ res.data:', res.data)
           localStorage.removeItem('user')
           const updateUser = JSON.stringify(res.data.user)
           localStorage.setItem('user', updateUser)
@@ -160,7 +159,6 @@ export default {
 
     obtenerDatosUsuarios () {
       this.user = this.$store.state.user
-      console.log('🚀 ~ obtenerDatosUsuarios ~ this.user:', this.user)
       this.token = this.$store.state.token
     },
 
