@@ -708,7 +708,7 @@
 
     <!-- PAYMENT DIALOG -->
     <v-dialog v-model="dialogPay" max-width="300" height="300" persistent>
-      <v-card v-if="successPay === ''" color="#0A263D" class="pa-5 fontDisplay">
+      <v-card v-if="successPay === ''" color="#0A263D" class="pa-5 fontTitle">
         <v-card-text align="center" justify="center" class="white--text">
           <v-btn solo loading color="#0A263D" class="white--text" />
           <br>
@@ -719,7 +719,7 @@
         </v-card-text>
       </v-card>
 
-      <v-card v-else-if="successPay === 'paid'" color="green darken-4" class="pa-5 fontDisplay">
+      <v-card v-else-if="successPay === 'paid'" color="green darken-4" class="pa-5 fontTitle">
         <v-card-text align="center" justify="center" class="white--text">
           <v-icon large color="white">
             mdi-check-circle-outline
@@ -738,7 +738,7 @@
                 width="122px"
                 rounded
                 outlined
-                @click="actualizarBD()"
+                @click="salirPago()"
               >
                 CONTINUAR
               </v-btn>
@@ -747,7 +747,7 @@
         </v-card-actions>
       </v-card>
 
-      <v-card v-else-if="successPay === 'unpaid'" color="red darken-4" class="pa-5 fontDisplay">
+      <v-card v-else-if="successPay === 'unpaid'" color="red darken-4" class="pa-5 fontTitle">
         <v-card-text align="center" justify="center" class="white--text">
           <v-icon large color="white">
             mdi-close-circle-outline
@@ -876,6 +876,7 @@ export default {
       const url = '/home'
       const user = this.$store.state.user
       if (!user || !user.id) {
+        // eslint-disable-next-line no-console
         console.error('Error: Usuario no encontrado en el store.')
         return
       }
@@ -887,11 +888,10 @@ export default {
         if (res.data.success) {
           this.misViajesPublicados = res.data.viajesPublicados
           this.misViajesApartados = res.data.viajesReservados
-          console.log('🚀 ~ recuperarDatos ~ this.misViajesApartados:', this.misViajesApartados)
 
           const today = new Date()
           const formattedToday = today.toISOString().split('T')[0]
-
+          this.misViajesApartados = res.data.viajes.filter(viaje => viaje.fecha >= formattedToday)
           this.viajesDisponibles = res.data.viajes.filter((viaje) => {
             return viaje.fecha >= formattedToday && viaje.capacidad > 0
           })
@@ -911,6 +911,7 @@ export default {
           }
         }
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error al recuperar los datos:', error)
       }
     },
@@ -1043,6 +1044,7 @@ export default {
         })
         if (res.data.payment_status === 'paid') {
           this.successPay = 'paid'
+          await this.actualizarBD()
         } else if (res.data.payment_status === 'unpaid') {
           this.successPay = 'unpaid'
         }
@@ -1057,10 +1059,38 @@ export default {
       this.urlPay = ''
       this.sessionId = ''
       this.successPay = ''
+      if (this.successPay === 'paid') {
+        this.cerrarDialogDisponibles()
+      }
     },
 
-    actualizarBD () {
-      console.log('VIAJE APARTADO CORRECTAMENTE')
+    async actualizarBD () {
+      const url = '/reservarviaje'
+      const data = {
+        idusuario: this.$store.state.user.id,
+        idviaje: this.raiteDisponibleSelected.id,
+        reservado: this.raiteDisponibleSelected.capacidad - this.asientos
+      }
+
+      await this.$axios.post(url, data)
+        .then((res) => {
+          if (res.data.success) {
+            this.$store.commit('modifySnackbar', true)
+            this.$store.commit('modifyTimeout', 4000)
+            this.$store.commit('modifyColor', 'green darken-4')
+            this.$store.commit('modifyIcon', 'mdi-check-circle')
+            this.$store.commit('modifyText', 'VIAJE RESERVADO EXITOSAMENTE')
+            this.recuperarDatos()
+          }
+        })
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.log('ERROR EN REGISTRO => ', error)
+          this.$store.commit('modifySnackbar', true)
+          this.$store.commit('modifyColor', 'red darken-4')
+          this.$store.commit('modifyIcon', 'mdi-alert-circle')
+          this.$store.commit('modifyText', 'ERROR AL RESERVAR VIAJE')
+        })
     }
   }
 }

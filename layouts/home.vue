@@ -496,20 +496,20 @@ export default {
 
       const url = '/registrarviaje'
       // Agregar logs antes de la solicitud
-      console.log('URL:', url)
-      console.log('Datos enviados:', sendData)
-
       this.$axios.post(url, sendData)
         .then((res) => {
           if (res.data.success) {
+            // eslint-disable-next-line no-console
             console.log('REGISTRO EXITOSO')
           } else {
+            // eslint-disable-next-line no-console
             console.log('ERROR AL REGISTRAR')
           }
           this.resetForm()
           this.dialog = false
         })
         .catch((err) => {
+          // eslint-disable-next-line no-console
           console.log('@@@ err => ', err)
           alert('Ocurrió un error al publicar el viaje. Por favor, inténtalo de nuevo.')
         })
@@ -553,11 +553,11 @@ export default {
       this.$store.commit('setToken', this.token)
       this.nombre = this.user.nombre + ' ' + this.user.apaterno + ' ' + this.user.amaterno
       this.img = this.user.img
-      console.log('🚀 ~ obtenerDatosUsuarios ~ this.$store.state.token:', this.$store.state.token)
-      console.log('🚀 ~ obtenerDatosUsuarios ~ this.$store.state.user:', this.$store.state.user)
     },
 
     logOut () {
+      this.$store.commit('setToken', null)
+      this.$store.commit('setUser', null)
       localStorage.clear()
       this.$router.push('/')
     }

@@ -261,7 +261,7 @@ export default {
       itemsCampus: [
         'Celaya-Salvatierra',
         'Guanajuato',
-        'Irapauto-Salamanca',
+        'Irapuato-Salamanca',
         'Leon'
       ],
       itemsCarrera: [
@@ -341,7 +341,7 @@ export default {
         v => !!v || 'CAMPO REQUERIDO'
       ],
       passwordRule: [
-        v => (v && v.length > 7) || 'LA CONTRASEÑA DEBE DE TENER MINIMO 8 CARACTERES'
+        v => (v && v.length > 7) || 'LA CONTRASEÑA DEBE DE TENER MÍNIMO 8 CARACTERES'
       ],
       correoRule: [
         v => /.+@ugto\.mx$/.test(v) || 'EMAIL INCORRECTO SOLO CORREO INSTITUCIONAL'
@@ -381,11 +381,18 @@ export default {
         const response = await this.$axios.put(url, data)
 
         if (response.data.message === 'success') {
+          let user = localStorage.getItem('user')
+          user = JSON.parse(user)
+          user.email = this.correo
+          const updatedUser = JSON.stringify(user)
+          localStorage.setItem('user', updatedUser)
           this.closeDialog()
         } else {
+          // eslint-disable-next-line no-console
           console.error('Error al actualizar información del usuario:', response.data.message)
         }
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error al enviar solicitud de actualización:', error)
       }
     },
