@@ -342,7 +342,7 @@
             block
             height="38px"
             class="white--text"
-            @click="dialogApartados = false"
+            @click="dialogPublicados = false"
           >
             CERRAR
           </v-btn>
@@ -414,7 +414,7 @@
             <v-card height="265px" elevation="0">
               <v-card-title class="fontTitle">
                 <v-avatar>
-                  <v-img src="https://i.pravatar.cc/58" />
+                  <v-img :src="review.imagen" />
                 </v-avatar>
                 <span class="ml-3">{{ review.nombre }} {{ review.apaterno }} {{ review.amaterno }}</span>
               </v-card-title>
@@ -548,7 +548,7 @@
                   <v-card height="265px" elevation="0">
                     <v-card-title class="fontTitle">
                       <v-avatar>
-                        <v-img src="https://i.pravatar.cc/58" />
+                        <v-img :src="review.imagen" />
                       </v-avatar>
                       <span class="ml-3">{{ review.nombre }} {{ review.apaterno }} {{ review.amaterno }}</span>
                     </v-card-title>

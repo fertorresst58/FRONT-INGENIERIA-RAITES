@@ -133,7 +133,7 @@ export default {
     closeDialog () {
       this.dialogProfile = false
       localStorage.clear()
-      location.reload()
+      // location.reload()
     },
 
     obtenerDatosUsuarios () {
