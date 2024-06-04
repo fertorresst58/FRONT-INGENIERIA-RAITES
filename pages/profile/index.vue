@@ -90,7 +90,7 @@
             color="#8C6E39"
             height="38px"
             class="white--text"
-            @clic="dialogProfile=true"
+            @click="dialogProfile = true"
           >
             <span>EDITAR PERFIL</span>
           </v-btn>
@@ -98,8 +98,8 @@
         </v-card-actions>
       </v-card>
 
-      <v-dialog v-model="dialogProfile" persistent width="700" class="pa-0 ma-0">
-        <edit-profile />
+      <v-dialog v-model="dialogProfile" width="700" class="pa-0 ma-0">
+        <edit-profile @closeDialog="closeDialog" />
       </v-dialog>
     </v-row>
   </v-col>
@@ -130,6 +130,33 @@ export default {
   },
 
   methods: {
+    async closeDialog () {
+      const user = JSON.parse(localStorage.getItem('user'))
+
+      const url = `/user/${user.email}`
+      await this.$axios.get(url)
+        .then((res) => {
+          localStorage.removeItem('user')
+          const updateUser = JSON.stringify(res.data.user)
+          localStorage.setItem('user', updateUser)
+          this.$store.commit('setUser', res.data.user)
+          this.obtenerDatosUsuarios()
+          this.dialogProfile = false
+          this.$store.commit('modifySnackbar', true)
+          this.$store.commit('modifyColor', 'green darken-4')
+          this.$store.commit('modifyIcon', 'mdi-check-circle')
+          this.$store.commit('modifyText', 'USUARIO ACTUALIZADO EXITOSAMENTE')
+        })
+        .catch((err) => {
+          // eslint-disable-next-line no-console
+          console.log('🚀 ~ closeDialog ~ err:', err)
+          this.$store.commit('modifySnackbar', true)
+          this.$store.commit('modifyColor', 'red')
+          this.$store.commit('modifyIcon', 'mdi-close-circle')
+          this.$store.commit('modifyText', 'ERROR AL ACTUALIZAR USUARIO')
+        })
+    },
+
     obtenerDatosUsuarios () {
       this.user = this.$store.state.user
       this.token = this.$store.state.token

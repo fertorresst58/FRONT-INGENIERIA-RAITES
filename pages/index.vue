@@ -82,9 +82,11 @@
             </div>
           </v-row>
           <v-row>
-            <a @click="dialogForgotPassword = true"
-            style="text-decoration: none; color: white; font-size: 12px;"
-              class="fontTitle">Olvidé mi contraseña</a>
+            <a
+              style="text-decoration: none; color: white; font-size: 12px;"
+              class="fontTitle"
+              @click="dialogForgotPassword = true"
+            >Olvidé mi contraseña</a>
           </v-row>
         </v-col>
 
@@ -409,7 +411,7 @@
 
     <!-- DIALOG PARA OLVIDE MI CONTRASEÑA -->
     <v-dialog v-model="dialogForgotPassword" max-width="600px">
-      <v-card>
+      <v-card elevation="0">
         <v-card-title>
           <span class="headline">Olvidé mi contraseña</span>
         </v-card-title>
@@ -421,14 +423,19 @@
               <v-stepper-step :complete="step > 2" step="2" color="#0A263D">Código de Verificación</v-stepper-step>
               <v-divider></v-divider>
               <v-stepper-step step="3" color="#0A263D">Nueva Contraseña</v-stepper-step>
-            </v-stepper-header>
 
             <v-stepper-items>
               <v-stepper-content step="1">
                 <v-form ref="formForgotPassword" v-model="validForgotPassword" lazy-validation>
+                  <h3 class="fontTitle">
+                    Introduce tu correo electrónico:
+                  </h3>
                   <v-text-field
                     v-model="email"
-                    label="Correo Electrónico"
+                    solo
+                    flat
+                    dense
+                    outlined
                     required
                     :rules="correoRule"
                   />
@@ -746,12 +753,11 @@ export default {
       }
     },
     verifyCode () {
-      console.log('Stored verification code:', this.verificationCode)
-      console.log('Input verification code:', this.verificationCodeInput)
-
       if (this.verificationCodeInput === '') {
-        console.error('Código de verificación vacío')
-        this.errorMessageCodigo = 'Código vacio'
+        this.$store.commit('modifySnackbar', true)
+        this.$store.commit('modifyColor', 'red darken-4')
+        this.$store.commit('modifyIcon', 'mdi-check-circle')
+        this.$store.commit('modifyText', 'CÓDIGO DE VERIFICACIÓN VACIÓ')
         return // Salir de la función si el código de verificación está vacío
       }
 
@@ -760,14 +766,29 @@ export default {
         this.errorMessageCodigo = ''
         this.step = 3
       } else {
-        console.error('Código de verificación incorrecto')
-        this.errorMessageCodigo = 'Código incorrecto'
+        this.$store.commit('modifySnackbar', true)
+        this.$store.commit('modifyColor', 'red darken-4')
+        this.$store.commit('modifyIcon', 'mdi-check-circle')
+        this.$store.commit('modifyText', 'CODIGO DE VERIFICACIÓN INCORRECTO')
       }
     },
     resetPassword () {
       if (!this.newPassword) {
         console.error('Por favor, ingresa una nueva contraseña')
         return
+      if (this.newPassword) {
+        // Aquí podrías implementar la lógica para cambiar la contraseña, p.ej., actualizar el estado en tu aplicación
+        this.$store.commit('modifySnackbar', true)
+        this.$store.commit('modifyColor', 'green darken-4')
+        this.$store.commit('modifyIcon', 'mdi-check-circle')
+        this.$store.commit('modifyText', 'CONTRASEÑA CAMBIADA CORRECTAMENTE')
+        this.step = 1
+        this.dialogForgotPassword = false
+      } else {
+        this.$store.commit('modifySnackbar', true)
+        this.$store.commit('modifyColor', 'red darken-4')
+        this.$store.commit('modifyIcon', 'mdi-check-circle')
+        this.$store.commit('modifyText', 'POR FAVOR, INGRESA UNA NUEVA CONTRASEÑA')
       }
 
       const url = '/updatePassword'

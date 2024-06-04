@@ -107,7 +107,7 @@
         </v-card-title>
 
         <v-card-text class="py-2 white--text text-center coyoteBack">
-          {{ new Date().getFullYear() }} — <strong>Raites UG by Los Palomeros</strong>
+          {{ new Date().getFullYear() }} — <strong>BEE RAITES by Los Palomeros</strong>
         </v-card-text>
       </v-card>
     </v-footer>
@@ -399,11 +399,6 @@ export default {
           icon: 'mdi-routes',
           title: 'Mi Historial',
           to: '/history'
-        },
-        {
-          icon: 'mdi-message',
-          title: 'Mis Mensajes',
-          to: '/mis-viajes'
         }
       ],
       miniVariant: false,
@@ -459,17 +454,17 @@ export default {
   },
 
   created () {
-    // AUTENTICACION
-    if (this.$store.state.token || localStorage.getItem('token')) {
+    // AUTENTICACIÓN
+    if (this.$store.state.token !== null || localStorage.getItem('token') !== null) {
       this.obtenerDatosUsuarios()
     } else {
       this.$router.push('/')
     }
     this.minDate = moment().format('YYYY-MM-DD')
+    // this.obtenerDatosUsuarios()
   },
 
   mounted () {
-    // this.obtenerDatosUsuarios()
   },
 
   methods: {
@@ -482,31 +477,44 @@ export default {
     },
 
     publicarViaje () {
-      this.validForm = this.$refs.form.validate()
-      if (this.validForm) {
-        const id = this.$store.state.user.id
-        const sendData = {
-          inicio: this.Lsalida,
-          destino: this.Ldestino,
-          fecha: this.Fecha,
-          precio: this.Precio,
-          capacidad: this.Nasientos,
-          descripcion: this.Detalles
-        }
-        const params = { id }
-
-        const url = '/home'
-        this.$axios.post(url, sendData, { params })
-          .then((res) => {
-            this.publicarViaje = false
-          })
-          .catch((err) => {
-            console.log('@@@ err => ', err)
-            alert('Ocurrió un error al publicar el viaje. Por favor, inténtalo de nuevo.')
-          })
-      } else {
-        alert('Faltan datos')
+      if (!this.$refs.form.validate()) {
+        return
       }
+
+      const id = this.$store.state.user.id
+      const sendData = {
+        inicio: this.Lsalida,
+        destino: this.Ldestino,
+        fecha: this.Fecha,
+        precio: this.Precio,
+        hora: this.HoraSalida,
+        capacidad: this.Nasientos,
+        descripcion: this.Detalles,
+        disponible: true,
+        id
+      }
+
+      const url = '/registrarviaje'
+      // Agregar logs antes de la solicitud
+      this.$axios.post(url, sendData)
+        .then((res) => {
+          if (res.data.success) {
+            // eslint-disable-next-line no-console
+            console.log('REGISTRO EXITOSO')
+          } else {
+            // eslint-disable-next-line no-console
+            console.log('ERROR AL REGISTRAR')
+          }
+          this.resetForm()
+          this.dialog = false
+        })
+        .catch((err) => {
+          // eslint-disable-next-line no-console
+          console.log('@@@ err => ', err)
+          alert('Ocurrió un error al publicar el viaje. Por favor, inténtalo de nuevo.')
+        })
+      this.resetForm()
+      this.dialog = false
     },
 
     validateHora (value) {
@@ -540,14 +548,18 @@ export default {
 
     obtenerDatosUsuarios () {
       this.user = Object.keys(this.$store.state.user).length > 0 ? this.$store.state.user : JSON.parse(localStorage.getItem('user'))
+      this.$store.commit('setUser', this.user)
       this.token = this.$store.state.token ? this.$store.state.token : localStorage.getItem('token')
+      this.$store.commit('setToken', this.token)
       this.nombre = this.user.nombre + ' ' + this.user.apaterno + ' ' + this.user.amaterno
       this.img = this.user.img
     },
 
     logOut () {
+      this.$store.commit('setToken', null)
+      this.$store.commit('setUser', null)
       localStorage.clear()
-      this.$routes.push('/')
+      this.$router.push('/')
     }
   }
 }

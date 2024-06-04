@@ -3,11 +3,15 @@
     <v-expansion-panels
       v-model="panel"
       class="expansion-panels"
-      multiple
+      accordion
     >
       <!-- Tarjetas para "Viajes sin reseniar"-->
       <v-expansion-panel>
-        <v-expansion-panel-header><h2>Viajes sin reseñar</h2></v-expansion-panel-header>
+        <v-expansion-panel-header class="coyoteBack white--text">
+          <h2 class="fontTitle">
+            Viajes sin reseñar
+          </h2>
+        </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-container>
             <v-row>
@@ -19,58 +23,62 @@
                 md="4"
                 lg="3"
               >
-                <v-card class="mx-auto my-2" max-width="350">
+                <v-card class="mx-auto my-2 pa-3 white--text" max-width="350" elevation="0" color="#0A263D" rounded>
                   <v-list-item two-line>
-                    <v-list-item-content>
-                      <v-list-item-title class="text-h5">
-                        {{ raite.inicio }}
+                    <v-list-item-content class="text-center white--text">
+                      <v-list-item-title class="fontTitle">
+                        <small class="fontText">ORIGEN:</small>
+                        <br>
+                        <strong style="font-size: 30px;">{{ raite.inicio }}</strong>
                       </v-list-item-title>
-                      <div style="display: flex; align-items: center;">
-                        <v-icon class="mr-2">
-                          mdi-calendar-clock
-                        </v-icon>
-                        <v-list-item-subtitle>{{ raite.fecha }}, {{ raite.hora }}</v-list-item-subtitle>
-                      </div>
+                      <v-list-item-subtitle class="fontSubtitle my-4 white--text">
+                        <small>
+                          {{ formatearFecha(raite.fecha) }}
+                          <br>
+                          {{ formatearHora(raite.hora) }}
+                        </small>
+                      </v-list-item-subtitle>
+
+                      <v-list-item-title class="fontTitle">
+                        <small class="fontText">DESTINO:</small>
+                        <br>
+                        <strong style="font-size: 30px;">{{ raite.destino }}</strong>
+                      </v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
 
-                  <v-card-text>
-                    <v-row align="center">
-                      <v-col cols="2">
-                        <v-img
-                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoqzh_OZTGcMc5tZXeC5jNHUjI6B3VEOErabOVMjQ7gQ&s"
-                          alt="Sunny image"
-                          width="52"
-                        />
-                      </v-col>
-                      <v-col class="text-h4" cols="10">
-                        Finalizado
+                  <v-card-text align="center" class="py-0" style="font-size: 20px;">
+                    <v-divider class="my-3 white" />
+                    <strong class="mt-5 fontText white--text">$ {{ raite.precio }} MXN</strong>
+                    <v-divider class="my-3 white" />
+
+                    <v-row class="mt-4">
+                      <v-col cols="12" class="text-center d-flex align-center justify-center">
+                        <span class="fontSubtitle d-flex justify-center white--text">
+                          <v-icon color="white">mdi mdi-message-draw</v-icon>
+                          &nbsp;&nbsp;PENDIENTE
+                        </span>
                       </v-col>
                     </v-row>
                   </v-card-text>
 
-                  <v-list-item>
-                    <v-list-item-icon>
-                      <v-icon>mdi-car-traction-control</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-subtitle>Pasar por: {{ raite.destino }}</v-list-item-subtitle>
-                  </v-list-item>
-
-                  <v-list-item>
-                    <v-list-item-icon>
-                      <v-icon>mdi-hand-coin-outline</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-subtitle>${{ raite.precio }}.00 MXN</v-list-item-subtitle>
-                  </v-list-item>
-
-                  <v-divider />
-
-                  <v-card-actions>
-                    <v-btn color="warning" dark @click="showDetalles(raite)">
-                      Ver detalles
+                  <v-card-actions class="mt-5">
+                    <v-btn
+                      color="#FFD300"
+                      width="50%"
+                      height="38px"
+                      class="black--text"
+                      @click="showDetalles(raite)"
+                    >
+                      Detalles
                     </v-btn>
-                    <v-spacer />
-                    <v-btn color="warning" dark @click="dialogReviewFunction(raite.id)">
+                    <v-btn
+                      color="#FFD300"
+                      width="50%"
+                      height="38px"
+                      class="black--text"
+                      @click="dialogReviewFunction(raite.id)"
+                    >
                       Reseñar
                     </v-btn>
                   </v-card-actions>
@@ -83,7 +91,11 @@
 
       <!-- Tarjetas para "Viajes reseniados"-->
       <v-expansion-panel>
-        <v-expansion-panel-header><h2>Viajes reseñados</h2></v-expansion-panel-header>
+        <v-expansion-panel-header class="coyoteBack white--text">
+          <h2 class="fontTitle">
+            Viajes reseñados
+          </h2>
+        </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-container>
             <v-row>
@@ -95,54 +107,53 @@
                 md="4"
                 lg="3"
               >
-                <v-card class="mx-auto my-2" max-width="350">
+                <v-card class="mx-auto my-2 pa-3 white--text" max-width="350" elevation="0" color="#0A263D" rounded>
                   <v-list-item two-line>
-                    <v-list-item-content>
-                      <v-list-item-title class="text-h5">
-                        {{ raite.inicio }}
+                    <v-list-item-content class="text-center white--text">
+                      <v-list-item-title class="fontTitle">
+                        <small class="fontText">ORIGEN:</small>
+                        <br>
+                        <strong style="font-size: 30px;">{{ raite.inicio }}</strong>
                       </v-list-item-title>
-                      <div style="display: flex; align-items: center;">
-                        <v-icon class="mr-2">
-                          mdi-calendar-clock
-                        </v-icon>
-                        <v-list-item-subtitle>{{ raite.fecha }}, {{ raite.hora }}</v-list-item-subtitle>
-                      </div>
+                      <v-list-item-subtitle class="fontSubtitle my-4 white--text">
+                        <small>
+                          {{ formatearFecha(raite.fecha) }}
+                          <br>
+                          {{ formatearHora(raite.hora) }}
+                        </small>
+                      </v-list-item-subtitle>
+
+                      <v-list-item-title class="fontTitle">
+                        <small class="fontText">DESTINO:</small>
+                        <br>
+                        <strong style="font-size: 30px;">{{ raite.destino }}</strong>
+                      </v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
 
-                  <v-card-text>
-                    <v-row align="center">
-                      <v-col cols="2">
-                        <v-img
-                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoqzh_OZTGcMc5tZXeC5jNHUjI6B3VEOErabOVMjQ7gQ&s"
-                          alt="Sunny image"
-                          width="52"
-                        />
-                      </v-col>
-                      <v-col class="text-h4" cols="10">
-                        Finalizado
+                  <v-card-text align="center" class="py-0" style="font-size: 20px;">
+                    <v-divider class="my-3 white" />
+                    <strong class="mt-5 fontText white--text">$ {{ raite.precio }} MXN</strong>
+                    <v-divider class="my-3 white" />
+
+                    <v-row class="mt-4">
+                      <v-col cols="12" class="text-center d-flex align-center justify-center">
+                        <span class="fontSubtitle d-flex justify-center white--text">
+                          <v-icon color="white">mdi mdi-flag-checkered</v-icon>
+                          &nbsp;&nbsp;RESEÑADO
+                        </span>
                       </v-col>
                     </v-row>
                   </v-card-text>
 
-                  <v-list-item>
-                    <v-list-item-icon>
-                      <v-icon>mdi-car-traction-control</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-subtitle>Pasar por: {{ raite.destino }}</v-list-item-subtitle>
-                  </v-list-item>
-
-                  <v-list-item>
-                    <v-list-item-icon>
-                      <v-icon>mdi-hand-coin-outline</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-subtitle>${{ raite.precio }}.00 MXN</v-list-item-subtitle>
-                  </v-list-item>
-
-                  <v-divider />
-
-                  <v-card-actions>
-                    <v-btn color="warning" block dark @click="showDetalles(raite)">
+                  <v-card-actions class="mt-5">
+                    <v-btn
+                      color="#FFD300"
+                      block
+                      height="38px"
+                      class="black--text"
+                      @click="showDetalles(raite)"
+                    >
                       Ver detalles
                     </v-btn>
                   </v-card-actions>
@@ -154,178 +165,155 @@
       </v-expansion-panel>
     </v-expansion-panels>
 
-    <v-dialog v-model="dialogReview" persistent max-width="600px">
-      <v-toolbar
-        color="#0A263D"
-        dark
-      >
-        <v-card-title class="text-h5">
-          Reseña tu viaje
-        </v-card-title>
-      </v-toolbar>
+    <v-dialog
+      v-model="dialogReview"
+      width="700px"
+      class="d-flex align-center justify-center"
+      persistent
+    >
       <v-card
-        class="elevation-16 mx-auto"
-        width="auto"
+        class="text-start pa-3"
+        elevation="0"
+        outlined
       >
+        <v-card-title class="fontTitle">
+          <strong>RESEÑA TU VIAJE</strong>
+        </v-card-title>
+
         <v-form ref="form" v-model="validForm">
-          <v-card-text>
-            <div class="text-h6 pa-2">
-              Calificacion
-            </div>
-            <v-rating
-              v-model="calificacion"
-              color="yellow darken-3"
-              background-color="grey darken-1"
-              empty-icon="$ratingFull"
-              hover
-            />
-          </v-card-text>
-          <v-card-text>
-            <div class="text-h6 pa-2">
-              Comentarios
-            </div>
-            <v-textarea
-              v-model="comentario"
-              outlined
-              name="comentario"
-              label="¡Sé amable!"
-              persistent
-            />
-          </v-card-text>
+          <v-row class="pa-2">
+            <v-col cols="12" md="6">
+              <v-row>
+                <v-col cols="12" md="6">
+                  <v-card height="265px" elevation="0">
+                    <v-card-subtitle class="fontSubtitle">
+                      Califica tu viaje
+                      <v-rating
+                        v-model="calificacion"
+                        color="yellow darken-3"
+                        dense
+                        hover
+                      />
+                    </v-card-subtitle>
+                    <v-card-text class="fontText">
+                      <v-textarea
+                        v-model="comentario"
+                        name="comentario"
+                        label="¡Sé amable!"
+                        rows="3"
+                        row-height="25"
+                        persistent
+                      />
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
         </v-form>
-        <v-divider />
         <v-card-actions class="justify-space-between">
-          <v-btn text @click="resetReview()">
+          <v-btn
+            color="#8C6E39"
+            elevation="0"
+            height="38px"
+            class="white--text"
+            @click="resetReview()"
+          >
             No, gracias
           </v-btn>
           <v-btn
-            color="primary"
-            text
+            color="#8C6E39"
+            elevation="0"
+            height="38px"
+            class="white--text"
             @click="reviewNow()"
           >
             Calificar
           </v-btn>
         </v-card-actions>
       </v-card>
+      <v-divider />
     </v-dialog>
-    <v-dialog v-model="dialogDetalles" max-width="600px">
-      <v-toolbar color="#0A263D" dark>
-        <v-card-title class="text-h5">
-          Detalles del viaje
-        </v-card-title>
-      </v-toolbar>
+
+    <v-dialog
+      v-model="dialogDetalles"
+      width="700px"
+      class="d-flex align-center justify-center"
+      persistent
+    >
       <v-card
-        class="elevation-16 mx-auto"
-        width="auto"
-        style="overflow: hidden;"
+        class="text-start pa-3"
+        elevation="0"
+        outlined
       >
-        <v-row class="mt-2">
-          <v-col cols="12" sm="6">
-            <v-row align="center" no-gutters>
-              <v-col>
-                <v-text-field
-                  v-model="lugarPartida"
-                  label="Lugar de inicio"
-                  readonly
-                  class="pa-3"
-                  prepend-icon="mdi mdi-car-arrow-right"
-                />
+        <v-card-title class="fontTitle">
+          <strong>DETALLES DEL VIAJE</strong>
+        </v-card-title>
+
+        <v-card-text class="fontText">
+          <small>ORIGEN: </small>
+          <strong>{{ lugarPartida }}</strong>
+          <br>
+          <small>DESTINO: </small>
+          <strong>{{ lugarDestino }}</strong>
+          <br>
+          <small>CONDUCTOR: </small>
+          <strong>{{ conductor }}</strong>
+          <br>
+          <small>FECHA: </small>
+          <strong>{{ formatearFecha(fechaInicio) }}</strong>
+          <br>
+          <small>HORA: </small>
+          <strong>{{ formatearHora(horaInicio) }}</strong>
+          <br>
+          <small>ASIENTOS DISPONIBLES: </small>
+          <strong>{{ asientos }}</strong>
+          <br>
+          <small>PRECIO: </small>
+          <strong>${{ precioPersona }}MXN</strong>
+          <br>
+          <small>DESCRIPCIÓN: </small>
+          <strong>{{ descripcion }}</strong>
+
+          <v-divider class="mt-4" />
+        </v-card-text>
+        <v-row v-if="calificacionPuesto != 0" class="pa-2">
+          <v-col cols="12" md="6">
+            <v-card-title class="fontTitle">
+              <strong>MI REVIEW</strong>
+            </v-card-title>
+            <v-row>
+              <v-col cols="12" md="6">
+                <v-card height="265px" elevation="0">
+                  <v-card-title class="fontTitle">
+                    <v-avatar>
+                      <v-img :src="user.imagen" />
+                    </v-avatar>
+                    <span class="ml-3">{{ user.nombre }} {{ user.apaterno }} {{ user.amaterno }}</span>
+                  </v-card-title>
+                  <v-card-subtitle class="fontSubtitle">
+                    <v-rating :value="calificacionPuesto" color="yellow darken-3" dense readonly />
+                  </v-card-subtitle>
+                  <v-card-text class="fontText">
+                    <p>{{ comentarioPuesto }}</p>
+                    <small class="grey--text">{{ formatearFecha(fechaReview) }}</small>
+                  </v-card-text>
+                </v-card>
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="12" sm="6">
-            <v-text-field
-              v-model="lugarDestino"
-              label="Lugar de Destino"
-              readonly
-              class="pa-3"
-              prepend-icon="mdi mdi-flag-checkered"
-            />
-          </v-col>
         </v-row>
-        <v-row class="mt-2">
-          <v-col cols="8" sm="4">
-            <v-row align="center" no-gutters>
-              <v-col>
-                <v-text-field
-                  v-model="precioPersona"
-                  label="Precio"
-                  readonly
-                  class="pa-3"
-                  prepend-icon="mdi mdi-currency-usd"
-                />
-              </v-col>
-            </v-row>
-          </v-col>
-          <v-col cols="12" sm="6">
-            <v-text-field
-              v-model="conductor"
-              label="Conductor"
-              readonly
-              class="pa-3"
-              prepend-icon="mdi mdi-card-account-details-outline"
-            />
-          </v-col>
-        </v-row>
-        <v-row class="mt-2">
-          <v-col cols="8" sm="4">
-            <v-row align="center" no-gutters>
-              <v-col>
-                <v-text-field
-                  v-model="fechaInicio"
-                  label="Fecha"
-                  readonly
-                  class="pa-3"
-                  prepend-icon="mdi mdi-calendar-month"
-                />
-              </v-col>
-            </v-row>
-          </v-col>
-          <v-col cols="8" sm="4">
-            <v-text-field
-              v-model="horaInicio"
-              value="10:00"
-              readonly
-              class="pa-3"
-              prepend-icon="mdi mdi-clock-outline"
-            />
-          </v-col>
-        </v-row>
-        <v-row v-if="calificacionPuesto != 0" class="mt-2">
-          <v-col cols="8" sm="4">
-            <v-row align="center" no-gutters widht="auto">
-              <v-col>
-                <div class="text-h6 pa-2">
-                  Calificacion
-                </div>
-                <v-rating
-                  v-model="calificacionPuesto"
-                  color="yellow darken-3"
-                  background-color="grey darken-1"
-                  empty-icon="$ratingFull"
-                  hover
-                  readonly
-                />
-              </v-col>
-            </v-row>
-          </v-col>
-          <v-col cols="8" sm="4">
-            <v-textarea
-              v-model="comentarioPuesto"
-              outlined
-              name="comentario"
-              label="Comentario"
-              persistent
-              readonly
-            />
-          </v-col>
-        </v-row>
-        <v-divider />
-        <v-card-actions class="justify-space-between">
-          <v-btn text block @click="dialogDetalles=false">
-            Cerrar
+        <v-card-actions class="mt-5">
+          <v-btn
+            color="#8C6E39"
+            elevation="0"
+            block
+            height="38px"
+            class="white--text"
+            @click="dialogDetalles = false"
+          >
+            CERRAR
           </v-btn>
-          <v-btn color="primary" text />
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -333,6 +321,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+import 'moment/locale/es'
 
 export default {
   layout: 'home',
@@ -340,6 +330,7 @@ export default {
 
   data () {
     return {
+      user: this.$store.state.user,
       panel: [],
       detallesViaje: {},
       id: [],
@@ -349,6 +340,7 @@ export default {
       validForm: false,
       dialogReview: false,
       comentario: '',
+      fechaReview: '',
       calificacion: 0,
       viajeID: '',
       dialogDetalles: false,
@@ -357,6 +349,8 @@ export default {
       fechaInicio: '',
       horaInicio: '',
       precioPersona: '',
+      asientos: '',
+      descripcion: '',
       calificacionPuesto: '',
       comentarioPuesto: '',
       conductor: ''
@@ -371,6 +365,13 @@ export default {
   },
 
   methods: {
+    formatearFecha (fecha) {
+      return fecha ? moment(fecha, 'YYYY-MM-DD').format('dddd, DD [de] MMMM') : ''
+    },
+
+    formatearHora (hora) {
+      return hora ? moment(hora, 'HH:mm:ss').format('hh:mm A') : ''
+    },
     showDetalles (raite) {
       console.log('DATA RAITE => ', raite)
       this.lugarPartida = raite.inicio
@@ -379,8 +380,11 @@ export default {
       this.horaInicio = raite.hora
       this.precioPersona = raite.precio
       this.conductor = raite.conductor
+      this.asientos = raite.capacidad
+      this.descripcion = raite.descripcion
       if (raite.review) {
         this.calificacionPuesto = raite.review.puntuacion
+        this.fechaReview = raite.review.fecha
         if (raite.review.comentario) {
           this.comentarioPuesto = raite.review.comentario
         }
@@ -524,29 +528,26 @@ export default {
   cursor: pointer;
 }
 
+.expansion-panels {
+  margin-top: 20px;
+}
+
 /* Estilos para los controles de filtro */
 .filtro-controls {
-  position: absolute;
-  top: 60px;
-  right: 20px;
-  background-color: #ffffff;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .filtro-menu {
-  background-color: #ffffff;
-  border: 1px solid #ccc;
+  background-color: #fff;
+  padding: 15px;
   border-radius: 5px;
-  padding: 10px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 2000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-
 /* Estilos para los elementos dentro del menú desplegable */
+
 .filtro-menu div {
   margin-bottom: 10px;
   z-index: 2001;
@@ -598,6 +599,16 @@ th {
 .expansion-panels {
   max-width: 90%; /* Cambia esto según el ancho deseado */
   margin: 0 auto; /* Centra el componente horizontalmente */
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.button-container .v-btn {
+  margin: 0 8px;
 }
 
 </style>
