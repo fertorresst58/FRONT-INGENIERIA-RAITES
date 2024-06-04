@@ -418,18 +418,11 @@
         <v-card-text>
           <v-stepper v-model="step">
             <v-stepper-header>
-              <v-stepper-step :complete="step > 1" step="1" color="#0A263D">
-                Correo Electrónico
-              </v-stepper-step>
-              <v-divider />
-              <v-stepper-step :complete="step > 2" step="2" color="#0A263D">
-                Código de Verificación
-              </v-stepper-step>
-              <v-divider />
-              <v-stepper-step step="3" color="#0A263D">
-                Nueva Contraseña
-              </v-stepper-step>
-            </v-stepper-header>
+              <v-stepper-step :complete="step > 1" step="1" color="#0A263D">Correo Electrónico</v-stepper-step>
+              <v-divider></v-divider>
+              <v-stepper-step :complete="step > 2" step="2" color="#0A263D">Código de Verificación</v-stepper-step>
+              <v-divider></v-divider>
+              <v-stepper-step step="3" color="#0A263D">Nueva Contraseña</v-stepper-step>
 
             <v-stepper-items>
               <v-stepper-content step="1">
@@ -447,94 +440,81 @@
                     :rules="correoRule"
                   />
                 </v-form>
-                <v-btn
-                  color="#8C6E39"
-                  height="38px"
-                  class="white--text"
-                  @click="sendResetEmail"
-                >
-                  Enviar
-                </v-btn>
+                <transition name="fade">
+                  <p v-if="errorMessageusuario" class="error">
+                    <v-icon class="error-icon">mdi-alert-circle</v-icon>
+                    {{ errorMessageusuario }}
+                  </p>
+                </transition>
+                <v-btn color="#8C6E39"
+                    height="38px"
+                    class="white--text"
+                    @click="sendResetEmail">Enviar</v-btn>
               </v-stepper-content>
 
               <v-stepper-content step="2">
                 <v-form ref="formVerificationCode" v-model="validVerificationCode" lazy-validation>
-                  <h3 class="fontTitle">
-                    Introduce el código de verificación:
-                  </h3>
                   <v-text-field
                     v-model="verificationCodeInput"
-                    solo
-                    flat
-                    dense
-                    outlined
+                    label="Código de Verificación"
                     required
                   />
                 </v-form>
-                <v-btn
-                  color="#8C6E39"
-                  height="38px"
-                  class="white--text"
-                  :disabled="!validVerificationCode"
-                  @click="verifyCode"
-                >
-                  Verificar
-                </v-btn>
+                <transition name="fade">
+                  <p v-if="errorMessageCodigo" class="errorcodigo">
+                  <v-icon class="error-iconcodigo">mdi-alert-circle</v-icon>
+                  {{ errorMessageCodigo }}
+                  </p>
+                </transition>
+                <v-btn color="#8C6E39"
+                    height="38px"
+                    class="white--text"
+                    @click="verifyCode"
+                    :disabled="!validVerificationCode">Verificar</v-btn>
                 <v-btn
                   color="blue darken-1"
-                  :disabled="!codigoVerificado"
                   @click="codigoVerificado = true; step = 3"
+                  :disabled="!codigoVerificado"
                 >
                   Continuar
                 </v-btn>
-                <v-btn
-                  color="#8C6E39"
-                  height="38px"
-                  class="white--text"
-                  @click="sendResetEmail"
-                >
-                  Reenviar código
-                </v-btn>
+                <v-btn color="#8C6E39"
+                    height="38px"
+                    class="white--text"
+                    @click="sendResetEmail">Reenviar código</v-btn>
               </v-stepper-content>
 
               <v-stepper-content step="3">
                 <v-form ref="formNewPassword" v-model="validNewPassword" lazy-validation>
-                  <h3 class="fontTitle">
-                    Nueva contraseña:
-                  </h3>
+                  <v-text-field
+                    v-model="email"
+                    label="Correo Electrónico"
+                    required
+                    :rules="correoRule"
+                  />
                   <v-text-field
                     v-model="newPassword"
+                    label="Nueva Contraseña"
                     type="password"
-                    solo
-                    flat
-                    dense
-                    outlined
                     required
+                    :rules="passwordRulenueva"
                   />
                 </v-form>
-                <v-btn
-                  v-if="step === 3 && validVerificationCode"
-                  color="#8C6E39"
-                  height="38px"
-                  class="white--text"
-                  @click="resetPassword"
-                >
-                  Cambiar Contraseña
-                </v-btn>
+                <v-btn color="#8C6E39"
+                    height="38px"
+                    class="white--text"
+                    @click="resetPassword"
+                    :disabled="!isPasswordValid">Cambiar Contraseña</v-btn>
               </v-stepper-content>
             </v-stepper-items>
           </v-stepper>
         </v-card-text>
         <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="#8C6E39"
-            height="38px"
-            class="white--text"
-            @click="dialogForgotPassword = false"
-          >
-            Cancelar
-          </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="#8C6E39"
+                    height="38px"
+                    class="white--text"
+                    @click="dialogForgotPassword = false">Cancelar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -545,6 +525,7 @@
 
 <script>
 import moment from 'moment'
+import '@mdi/font/css/materialdesignicons.css'
 import emailjs from 'emailjs-com'
 import { mask } from 'vue-the-mask'
 import { mapState } from 'vuex'
@@ -671,6 +652,10 @@ export default {
       passwordRule: [
         v => (v && v.length > 7) || 'LA CONTRASEÑA DEBE DE TENER MINIMO 8 CARACTERES'
       ],
+      passwordRulenueva: [
+        v => !!v || 'La contraseña es requerida',
+        v => (v && v.length >= 8) || 'La contraseña debe tener al menos 8 caracteres'
+      ],
       passwordConfirmRule: [
         v => v === this.contrasena || 'LAS CONTRASEÑAS NO COINCIDEN'
       ],
@@ -702,7 +687,9 @@ export default {
       correoRecuperacion: '',
       contrasenaRecuperacion: '',
       confirmarContrasenaRecuperacion: '',
-      otp: ''
+      otp: '',
+      errorMessageusuario: null,
+      errorMessageCodigo: ''
     }
   },
 
@@ -713,6 +700,9 @@ export default {
 
     formatearFecha () {
       return this.fechaNacimiento ? moment(this.fechaNacimiento, 'YYYY-MM-DD').format('dddd, DD [de] MMMM [de] YYYY') : ''
+    },
+    isPasswordValid () {
+      return this.newPassword && this.newPassword.length >= 8
     }
   },
 
@@ -731,26 +721,35 @@ export default {
 
   methods: {
     async sendResetEmail () {
+      const url = '/userfind/' + this.email
+      const email = this.email
+      const params = { email }
       try {
-        const verificationCode = Math.floor(100000 + Math.random() * 900000) // Generar un código de verificación aleatorio de 6 dígitos
+        const res = await this.$axios.get(url, { params })
+        if (res.data.success) {
+          try {
+            const verificationCode = Math.floor(100000 + Math.random() * 900000) // Generar un código de verificación aleatorio de 6 dígitos
 
-        const templateParams = {
-          to_email: this.email,
-          verification_code: verificationCode
-        }
+            const templateParams = {
+              to_email: this.email,
+              verification_code: verificationCode
+            }
 
-        this.verificationCode = verificationCode // Guardar el código de verificación para la validación
+            this.verificationCode = verificationCode // Guardar el código de verificación para la validación
 
-        const response = await emailjs.send('service_qccslyk', 'template_m1zhp89', templateParams, 'Vl2L6MP3-0OOpT5oV')
-        if (response.status === 200) {
-          this.step = 2
-        } else {
-          // eslint-disable-next-line no-console
-          console.error('Error enviando el correo:', response.text)
+            const response = await emailjs.send('service_qccslyk', 'template_m1zhp89', templateParams, 'Vl2L6MP3-0OOpT5oV')
+            if (response.status === 200) {
+              this.step = 2
+            } else {
+              console.error('Error enviando el correo:', response.text)
+            }
+          } catch (error) {
+            console.error('Error enviando el correo:', error)
+          }
         }
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Error enviando el correo:', error)
+        console.error('Error al recuperar los datos:', error)
+        this.errorMessageusuario = 'Correo no encontrado'
       }
     },
     verifyCode () {
@@ -764,6 +763,7 @@ export default {
 
       if (this.verificationCode.toString() === this.verificationCodeInput.toString()) {
         this.codigoVerificado = true
+        this.errorMessageCodigo = ''
         this.step = 3
       } else {
         this.$store.commit('modifySnackbar', true)
@@ -771,9 +771,11 @@ export default {
         this.$store.commit('modifyIcon', 'mdi-check-circle')
         this.$store.commit('modifyText', 'CODIGO DE VERIFICACIÓN INCORRECTO')
       }
-      this.codigoVerificado = false
     },
     resetPassword () {
+      if (!this.newPassword) {
+        console.error('Por favor, ingresa una nueva contraseña')
+        return
       if (this.newPassword) {
         // Aquí podrías implementar la lógica para cambiar la contraseña, p.ej., actualizar el estado en tu aplicación
         this.$store.commit('modifySnackbar', true)
@@ -788,6 +790,23 @@ export default {
         this.$store.commit('modifyIcon', 'mdi-check-circle')
         this.$store.commit('modifyText', 'POR FAVOR, INGRESA UNA NUEVA CONTRASEÑA')
       }
+
+      const url = '/updatePassword'
+      const params = { email: this.email, password: this.newPassword }
+
+      this.$axios.put(url, params)
+        .then((res) => {
+          if (res.data.success) {
+            console.log('Contraseña cambiada correctamente')
+            this.step = 1
+            this.dialogForgotPassword = false
+          } else {
+            console.error('Error al cambiar la contraseña:', res.data.message)
+          }
+        })
+        .catch((error) => {
+          console.error('Error al recuperar los datos:', error)
+        })
     },
     async login () {
       this.validLogin = this.$refs.formLogin.validate()
@@ -902,5 +921,40 @@ export default {
 .logo-img {
   position: relative;
   top: 50%;
+}
+
+.error {
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.error-icon {
+  margin-right: 8px;
+  font-size: 20px;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease-in-out;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active en versiones <2.1.8 */ {
+  opacity: 0;
+}
+
+.errorcodigo {
+  color: white;
+  background-color: red;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.error-iconcodigo {
+  margin-right: 8px;
 }
 </style>
