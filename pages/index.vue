@@ -408,90 +408,96 @@
     </v-footer>
 
     <!-- DIALOG PARA OLVIDE MI CONTRASEÑA -->
-  <v-dialog v-model="dialogForgotPassword" max-width="600px">
-    <v-card>
-      <v-card-title>
-        <span class="headline" >Olvidé mi contraseña</span>
-      </v-card-title>
-      <v-card-text>
-        <v-stepper v-model="step">
-          <v-stepper-header>
-            <v-stepper-step :complete="step > 1" step="1" color="#0A263D">Correo Electrónico</v-stepper-step>
-            <v-divider></v-divider>
-            <v-stepper-step :complete="step > 2" step="2" color="#0A263D">Código de Verificación</v-stepper-step>
-            <v-divider></v-divider>
-            <v-stepper-step step="3" color="#0A263D">Nueva Contraseña</v-stepper-step>
-          </v-stepper-header>
+    <v-dialog v-model="dialogForgotPassword" max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline" >Olvidé mi contraseña</span>
+        </v-card-title>
+        <v-card-text>
+          <v-stepper v-model="step">
+            <v-stepper-header>
+              <v-stepper-step :complete="step > 1" step="1" color="#0A263D">Correo Electrónico</v-stepper-step>
+              <v-divider></v-divider>
+              <v-stepper-step :complete="step > 2" step="2" color="#0A263D">Código de Verificación</v-stepper-step>
+              <v-divider></v-divider>
+              <v-stepper-step step="3" color="#0A263D">Nueva Contraseña</v-stepper-step>
+            </v-stepper-header>
 
-          <v-stepper-items>
-            <v-stepper-content step="1">
-              <v-form ref="formForgotPassword" v-model="validForgotPassword" lazy-validation>
-                <v-text-field
-                  v-model="email"
-                  label="Correo Electrónico"
-                  required
-                  :rules="correoRule"
-                />
-              </v-form>
-              <v-btn color="#8C6E39"
-                  height="38px"
-                  class="white--text"
-                  @click="sendResetEmail">Enviar</v-btn>
-            </v-stepper-content>
+            <v-stepper-items>
+              <v-stepper-content step="1">
+                <v-form ref="formForgotPassword" v-model="validForgotPassword" lazy-validation>
+                  <v-text-field
+                    v-model="email"
+                    label="Correo Electrónico"
+                    required
+                    :rules="correoRule"
+                  />
+                </v-form>
+                <v-btn color="#8C6E39"
+                    height="38px"
+                    class="white--text"
+                    @click="sendResetEmail">Enviar</v-btn>
+              </v-stepper-content>
 
-            <v-stepper-content step="2">
-              <v-form ref="formVerificationCode" v-model="validVerificationCode" lazy-validation>
-                <v-text-field
-                  v-model="verificationCodeInput"
-                  label="Código de Verificación"
-                  required
-                />
-              </v-form>
-              <v-btn color="#8C6E39"
-                  height="38px"
-                  class="white--text"
-                  @click="verifyCode"
-                  :disabled="!validVerificationCode">Verificar</v-btn>
-              <v-btn
-                color="blue darken-1"
-                @click="codigoVerificado = true; step = 3"
-                :disabled="!codigoVerificado"
-              >
-                Continuar
-              </v-btn>
-              <v-btn color="#8C6E39"
-                  height="38px"
-                  class="white--text"
-                  @click="sendResetEmail">Reenviar código</v-btn>
-            </v-stepper-content>
+              <v-stepper-content step="2">
+                <v-form ref="formVerificationCode" v-model="validVerificationCode" lazy-validation>
+                  <v-text-field
+                    v-model="verificationCodeInput"
+                    label="Código de Verificación"
+                    required
+                  />
+                </v-form>
+                <v-btn color="#8C6E39"
+                    height="38px"
+                    class="white--text"
+                    @click="verifyCode"
+                    :disabled="!validVerificationCode">Verificar</v-btn>
+                <v-btn
+                  color="blue darken-1"
+                  @click="codigoVerificado = true; step = 3"
+                  :disabled="!codigoVerificado"
+                >
+                  Continuar
+                </v-btn>
+                <v-btn color="#8C6E39"
+                    height="38px"
+                    class="white--text"
+                    @click="sendResetEmail">Reenviar código</v-btn>
+              </v-stepper-content>
 
-            <v-stepper-content step="3">
-              <v-form ref="formNewPassword" v-model="validNewPassword" lazy-validation>
-                <v-text-field
-                  v-model="newPassword"
-                  label="Nueva Contraseña"
-                  type="password"
-                  required
-                />
-              </v-form>
-              <v-btn color="#8C6E39"
-                  height="38px"
-                  class="white--text"
-                  @click="resetPassword"
-                  v-if="step === 3 && validVerificationCode">Cambiar Contraseña</v-btn>
-            </v-stepper-content>
-          </v-stepper-items>
-        </v-stepper>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="#8C6E39"
-                  height="38px"
-                  class="white--text"
-                  @click="dialogForgotPassword = false">Cancelar</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+              <v-stepper-content step="3">
+                <v-form ref="formNewPassword" v-model="validNewPassword" lazy-validation>
+                  <v-text-field
+                    v-model="email"
+                    label="Correo Electrónico"
+                    required
+                    :rules="correoRule"
+                  />
+                  <v-text-field
+                    v-model="newPassword"
+                    label="Nueva Contraseña"
+                    type="password"
+                    required
+                  />
+                </v-form>
+                <v-btn color="#8C6E39"
+                    height="38px"
+                    class="white--text"
+                    @click="resetPassword"
+                    v-if="step === 3 && validVerificationCode">Cambiar Contraseña</v-btn>
+              </v-stepper-content>
+            </v-stepper-items>
+          </v-stepper>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="#8C6E39"
+                    height="38px"
+                    class="white--text"
+                    @click="dialogForgotPassword = false">Cancelar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <ui-snackbar />
   </v-app>
@@ -685,24 +691,34 @@ export default {
 
   methods: {
     async sendResetEmail () {
+      const url = '/userfind/' + this.email
+      const email = this.email
+      const params = { email }
       try {
-        const verificationCode = Math.floor(100000 + Math.random() * 900000) // Generar un código de verificación aleatorio de 6 dígitos
+        const res = await this.$axios.get(url, { params })
+        if (res.data.success) {
+          try {
+            const verificationCode = Math.floor(100000 + Math.random() * 900000) // Generar un código de verificación aleatorio de 6 dígitos
 
-        const templateParams = {
-          to_email: this.email,
-          verification_code: verificationCode
-        }
+            const templateParams = {
+              to_email: this.email,
+              verification_code: verificationCode
+            }
 
-        this.verificationCode = verificationCode // Guardar el código de verificación para la validación
+            this.verificationCode = verificationCode // Guardar el código de verificación para la validación
 
-        const response = await emailjs.send('service_qccslyk', 'template_m1zhp89', templateParams, 'Vl2L6MP3-0OOpT5oV')
-        if (response.status === 200) {
-          this.step = 2
-        } else {
-          console.error('Error enviando el correo:', response.text)
+            const response = await emailjs.send('service_qccslyk', 'template_m1zhp89', templateParams, 'Vl2L6MP3-0OOpT5oV')
+            if (response.status === 200) {
+              this.step = 2
+            } else {
+              console.error('Error enviando el correo:', response.text)
+            }
+          } catch (error) {
+            console.error('Error enviando el correo:', error)
+          }
         }
       } catch (error) {
-        console.error('Error enviando el correo:', error)
+        console.error('Error al recuperar los datos:', error)
       }
     },
     verifyCode () {
@@ -723,14 +739,27 @@ export default {
       this.codigoVerificado = false
     },
     resetPassword () {
-      if (this.newPassword) {
-        // Aquí podrías implementar la lógica para cambiar la contraseña, p.ej., actualizar el estado en tu aplicación
-        console.log('Contraseña cambiada correctamente')
-        this.step = 1
-        this.dialogForgotPassword = false
-      } else {
+      if (!this.newPassword) {
         console.error('Por favor, ingresa una nueva contraseña')
+        return
       }
+
+      const url = '/updatePassword'
+      const params = { email: this.email, password: this.newPassword }
+
+      this.$axios.put(url, params)
+        .then(res => {
+          if (res.data.success) {
+            console.log('Contraseña cambiada correctamente')
+            this.step = 1
+            this.dialogForgotPassword = false
+          } else {
+            console.error('Error al cambiar la contraseña:', res.data.message)
+          }
+        })
+        .catch(error => {
+          console.error('Error al recuperar los datos:', error)
+        })
     },
     async login () {
       this.validLogin = this.$refs.formLogin.validate()
