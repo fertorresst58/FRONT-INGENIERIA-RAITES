@@ -418,11 +418,18 @@
         <v-card-text>
           <v-stepper v-model="step">
             <v-stepper-header>
-              <v-stepper-step :complete="step > 1" step="1" color="#0A263D">Correo Electrónico</v-stepper-step>
-              <v-divider></v-divider>
-              <v-stepper-step :complete="step > 2" step="2" color="#0A263D">Código de Verificación</v-stepper-step>
-              <v-divider></v-divider>
-              <v-stepper-step step="3" color="#0A263D">Nueva Contraseña</v-stepper-step>
+              <v-stepper-step :complete="step > 1" step="1" color="#0A263D">
+                Correo Electrónico
+              </v-stepper-step>
+              <v-divider />
+              <v-stepper-step :complete="step > 2" step="2" color="#0A263D">
+                Código de Verificación
+              </v-stepper-step>
+              <v-divider />
+              <v-stepper-step step="3" color="#0A263D">
+                Nueva Contraseña
+              </v-stepper-step>
+            </v-stepper-header>
 
             <v-stepper-items>
               <v-stepper-content step="1">
@@ -442,14 +449,20 @@
                 </v-form>
                 <transition name="fade">
                   <p v-if="errorMessageusuario" class="error">
-                    <v-icon class="error-icon">mdi-alert-circle</v-icon>
+                    <v-icon class="error-icon">
+                      mdi-alert-circle
+                    </v-icon>
                     {{ errorMessageusuario }}
                   </p>
                 </transition>
-                <v-btn color="#8C6E39"
-                    height="38px"
-                    class="white--text"
-                    @click="sendResetEmail">Enviar</v-btn>
+                <v-btn
+                  color="#8C6E39"
+                  height="38px"
+                  class="white--text"
+                  @click="sendResetEmail"
+                >
+                  Enviar
+                </v-btn>
               </v-stepper-content>
 
               <v-stepper-content step="2">
@@ -462,26 +475,36 @@
                 </v-form>
                 <transition name="fade">
                   <p v-if="errorMessageCodigo" class="errorcodigo">
-                  <v-icon class="error-iconcodigo">mdi-alert-circle</v-icon>
-                  {{ errorMessageCodigo }}
+                    <v-icon class="error-iconcodigo">
+                      mdi-alert-circle
+                    </v-icon>
+                    {{ errorMessageCodigo }}
                   </p>
                 </transition>
-                <v-btn color="#8C6E39"
-                    height="38px"
-                    class="white--text"
-                    @click="verifyCode"
-                    :disabled="!validVerificationCode">Verificar</v-btn>
+                <v-btn
+                  color="#8C6E39"
+                  height="38px"
+                  class="white--text"
+                  :disabled="!validVerificationCode"
+                  @click="verifyCode"
+                >
+                  Verificar
+                </v-btn>
                 <v-btn
                   color="blue darken-1"
-                  @click="codigoVerificado = true; step = 3"
                   :disabled="!codigoVerificado"
+                  @click="codigoVerificado = true; step = 3"
                 >
                   Continuar
                 </v-btn>
-                <v-btn color="#8C6E39"
-                    height="38px"
-                    class="white--text"
-                    @click="sendResetEmail">Reenviar código</v-btn>
+                <v-btn
+                  color="#8C6E39"
+                  height="38px"
+                  class="white--text"
+                  @click="sendResetEmail"
+                >
+                  Reenviar código
+                </v-btn>
               </v-stepper-content>
 
               <v-stepper-content step="3">
@@ -500,21 +523,29 @@
                     :rules="passwordRulenueva"
                   />
                 </v-form>
-                <v-btn color="#8C6E39"
-                    height="38px"
-                    class="white--text"
-                    @click="resetPassword"
-                    :disabled="!isPasswordValid">Cambiar Contraseña</v-btn>
+                <v-btn
+                  color="#8C6E39"
+                  height="38px"
+                  class="white--text"
+                  :disabled="!isPasswordValid"
+                  @click="resetPassword"
+                >
+                  Cambiar Contraseña
+                </v-btn>
               </v-stepper-content>
             </v-stepper-items>
           </v-stepper>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="#8C6E39"
-                    height="38px"
-                    class="white--text"
-                    @click="dialogForgotPassword = false">Cancelar</v-btn>
+          <v-spacer />
+          <v-btn
+            color="#8C6E39"
+            height="38px"
+            class="white--text"
+            @click="dialogForgotPassword = false"
+          >
+            Cancelar
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -772,10 +803,13 @@ export default {
         this.$store.commit('modifyText', 'CODIGO DE VERIFICACIÓN INCORRECTO')
       }
     },
+
     resetPassword () {
       if (!this.newPassword) {
         console.error('Por favor, ingresa una nueva contraseña')
         return
+      }
+
       if (this.newPassword) {
         // Aquí podrías implementar la lógica para cambiar la contraseña, p.ej., actualizar el estado en tu aplicación
         this.$store.commit('modifySnackbar', true)
@@ -808,6 +842,7 @@ export default {
           console.error('Error al recuperar los datos:', error)
         })
     },
+
     async login () {
       this.validLogin = this.$refs.formLogin.validate()
 
