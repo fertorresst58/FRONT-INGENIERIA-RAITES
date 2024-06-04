@@ -411,7 +411,7 @@
     <v-dialog v-model="dialogForgotPassword" max-width="600px">
       <v-card>
         <v-card-title>
-          <span class="headline" >Olvidé mi contraseña</span>
+          <span class="headline">Olvidé mi contraseña</span>
         </v-card-title>
         <v-card-text>
           <v-stepper v-model="step">
@@ -433,6 +433,12 @@
                     :rules="correoRule"
                   />
                 </v-form>
+                <transition name="fade">
+                  <p v-if="errorMessageusuario" class="error">
+                    <v-icon class="error-icon">mdi-alert-circle</v-icon>
+                    {{ errorMessageusuario }}
+                  </p>
+                </transition>
                 <v-btn color="#8C6E39"
                     height="38px"
                     class="white--text"
@@ -447,6 +453,12 @@
                     required
                   />
                 </v-form>
+                <transition name="fade">
+                  <p v-if="errorMessageCodigo" class="errorcodigo">
+                  <v-icon class="error-iconcodigo">mdi-alert-circle</v-icon>
+                  {{ errorMessageCodigo }}
+                  </p>
+                </transition>
                 <v-btn color="#8C6E39"
                     height="38px"
                     class="white--text"
@@ -478,13 +490,14 @@
                     label="Nueva Contraseña"
                     type="password"
                     required
+                    :rules="passwordRulenueva"
                   />
                 </v-form>
                 <v-btn color="#8C6E39"
                     height="38px"
                     class="white--text"
                     @click="resetPassword"
-                    v-if="step === 3 && validVerificationCode">Cambiar Contraseña</v-btn>
+                    :disabled="!isPasswordValid">Cambiar Contraseña</v-btn>
               </v-stepper-content>
             </v-stepper-items>
           </v-stepper>
@@ -505,6 +518,7 @@
 
 <script>
 import moment from 'moment'
+import '@mdi/font/css/materialdesignicons.css'
 import emailjs from 'emailjs-com'
 import { mask } from 'vue-the-mask'
 import { mapState } from 'vuex'
@@ -631,6 +645,10 @@ export default {
       passwordRule: [
         v => (v && v.length > 7) || 'LA CONTRASEÑA DEBE DE TENER MINIMO 8 CARACTERES'
       ],
+      passwordRulenueva: [
+        v => !!v || 'La contraseña es requerida',
+        v => (v && v.length >= 8) || 'La contraseña debe tener al menos 8 caracteres'
+      ],
       passwordConfirmRule: [
         v => v === this.contrasena || 'LAS CONTRASEÑAS NO COINCIDEN'
       ],
@@ -662,7 +680,9 @@ export default {
       correoRecuperacion: '',
       contrasenaRecuperacion: '',
       confirmarContrasenaRecuperacion: '',
-      otp: ''
+      otp: '',
+      errorMessageusuario: null,
+      errorMessageCodigo: ''
     }
   },
 
@@ -673,6 +693,9 @@ export default {
 
     formatearFecha () {
       return this.fechaNacimiento ? moment(this.fechaNacimiento, 'YYYY-MM-DD').format('dddd, DD [de] MMMM [de] YYYY') : ''
+    },
+    isPasswordValid () {
+      return this.newPassword && this.newPassword.length >= 8
     }
   },
 
@@ -719,6 +742,7 @@ export default {
         }
       } catch (error) {
         console.error('Error al recuperar los datos:', error)
+        this.errorMessageusuario = 'Correo no encontrado'
       }
     },
     verifyCode () {
@@ -727,16 +751,18 @@ export default {
 
       if (this.verificationCodeInput === '') {
         console.error('Código de verificación vacío')
+        this.errorMessageCodigo = 'Código vacio'
         return // Salir de la función si el código de verificación está vacío
       }
 
       if (this.verificationCode.toString() === this.verificationCodeInput.toString()) {
         this.codigoVerificado = true
+        this.errorMessageCodigo = ''
         this.step = 3
       } else {
         console.error('Código de verificación incorrecto')
+        this.errorMessageCodigo = 'Código incorrecto'
       }
-      this.codigoVerificado = false
     },
     resetPassword () {
       if (!this.newPassword) {
@@ -748,7 +774,7 @@ export default {
       const params = { email: this.email, password: this.newPassword }
 
       this.$axios.put(url, params)
-        .then(res => {
+        .then((res) => {
           if (res.data.success) {
             console.log('Contraseña cambiada correctamente')
             this.step = 1
@@ -757,7 +783,7 @@ export default {
             console.error('Error al cambiar la contraseña:', res.data.message)
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error al recuperar los datos:', error)
         })
     },
@@ -874,5 +900,40 @@ export default {
 .logo-img {
   position: relative;
   top: 50%;
+}
+
+.error {
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.error-icon {
+  margin-right: 8px;
+  font-size: 20px;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease-in-out;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active en versiones <2.1.8 */ {
+  opacity: 0;
+}
+
+.errorcodigo {
+  color: white;
+  background-color: red;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.error-iconcodigo {
+  margin-right: 8px;
 }
 </style>
