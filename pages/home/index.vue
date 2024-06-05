@@ -1,5 +1,19 @@
 <template>
   <div>
+    <v-row class="mb-4" align="center" justify="center">
+      <v-col cols="12" align="center" justify="center">
+        <v-btn
+          color="#8C6E39"
+          class="fontTitle white--text"
+          height="38px"
+          @click="recuperarDatos()"
+        >
+          <v-icon>mdi-refresh</v-icon>&nbsp;
+          <span style="text-transform: none;">Actualizar</span>
+        </v-btn>
+      </v-col>
+    </v-row>
+
     <v-expansion-panels
       v-model="panel"
       class="expansion-panels"
@@ -314,9 +328,6 @@
           <small>DESTINO: </small>
           <strong>{{ raitePublicadoSelected.destino }}</strong>
           <br>
-          <small>CONDUCTOR: </small>
-          <strong>{{ raitePublicadoSelected.conductor }}</strong>
-          <br>
           <small>FECHA: </small>
           <strong>{{ formatearFecha(raitePublicadoSelected.fecha) }}</strong>
           <br>
@@ -450,7 +461,7 @@
       max-width="800px"
       persistent
     >
-      <v-stepper v-model="stepperDisponibles">
+      <v-stepper v-model="stepperDisponibles" alt-labels>
         <v-stepper-header
           class="blueBack black--text"
         >

@@ -22,6 +22,21 @@
 
         <v-divider />
 
+        <v-row class="d-flex justify-center align-center">
+          <v-col cols="12" style="max-width: 80%;">
+            <v-btn
+              class="my-5"
+              block
+              color="#8C6E39"
+              height="38px"
+              width="90%"
+              @click="dialog = true"
+            >
+              <span class="fontTitle" style="text-transform: none; color: white">Publicar viaje</span>
+            </v-btn>
+          </v-col>
+        </v-row>
+
         <v-list-item
           v-for="(item, i) in items"
           :key="i"
@@ -115,100 +130,135 @@
     <!-- Dialogo para Publicar Viaje -->
     <v-dialog v-model="dialog" max-width="800px">
       <v-card>
-        <v-card-title class="pa-3 d-flex justify-center" style="background-color: #0A263D; color: white;">
+        <v-card-title class="pa-3 d-flex justify-center fontTitle" style="background-color: #0A263D; color: white;">
           Publicar Viaje
         </v-card-title>
-        <v-card-text class="pt-5">
+        <v-card-text class="pa-5">
           <v-form
             ref="form"
             v-model="validForm"
           >
             <v-row>
               <v-col cols="12">
+                <h3 class="fontTitle">
+                  Origen:
+                </h3>
                 <v-text-field
                   v-model="Lsalida"
-                  label="Lugar de salida"
+                  class="fontTitle"
                   type="text"
                   outlined
+                  flat
+                  solo
+                  dense
                   :rules="[v => !!v || 'Campo requerido']"
                 />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12">
+                <h3 class="fontTitle">
+                  Destino:
+                </h3>
                 <v-text-field
                   v-model="Ldestino"
-                  label="Lugar de destino"
+                  class="fontTitle"
                   type="text"
                   outlined
+                  flat
+                  solo
+                  dense
                   :rules="[v => !!v || 'Campo requerido']"
                 />
               </v-col>
             </v-row>
             <v-row>
-              <v-col cols="3">
+              <v-col cols="6">
+                <h3 class="fontTitle">
+                  Fecha de salida:
+                </h3>
                 <v-text-field
                   v-model="Fecha"
-                  label="Fecha del viaje"
+                  class="fontTitle"
                   type="date"
                   outlined
+                  flat
+                  solo
+                  dense
                   :min="minDate"
                   :rules="[v => !!v || 'Campo requerido']"
                 />
-              </v-col>
-              <v-col cols="3">
+                <h3 class="fontTitle">
+                  Hora de salida:
+                </h3>
                 <v-text-field
                   v-model="HoraSalida"
-                  label="Hora de salida"
+                  class="fontTitle"
                   type="time"
                   outlined
+                  flat
+                  solo
+                  dense
                   :rules="[v => !!v || 'Campo requerido', validateHora]"
                 />
               </v-col>
-              <v-col cols="3">
+              <v-col cols="6">
+                <h3 class="fontTitle">
+                  Precio por persona:
+                </h3>
                 <v-text-field
                   v-model="Precio"
-                  label="Precio"
+                  class="fontTitle"
                   type="number"
                   prefix="$"
                   outlined
+                  flat
+                  solo
+                  dense
                   :rules="[v => !!v || 'Campo requerido']"
                 />
-              </v-col>
-              <v-col cols="3">
+                <h3 class="fontTitle">
+                  N° de asientos:
+                </h3>
                 <v-select
                   v-model="Nasientos"
-                  label="N° de asientos"
+                  class="fontTitle"
                   :items="options"
                   type="number"
                   outlined
+                  flat
+                  solo
+                  dense
                   :rules="[v => !!v || 'Campo requerido']"
                 />
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="12">
-                <v-text-field
+                <h3 class="fontTitle">
+                  Descripción del viaje:
+                </h3>
+                <v-textarea
                   v-model="Detalles"
-                  label="Detalles adicionales"
+                  class="fontTitle"
                   type="text"
                   outlined
+                  flat
+                  solo
+                  dense
                 />
               </v-col>
             </v-row>
           </v-form>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="px-5 pb-5 fontTitle">
           <v-spacer />
-          <v-btn color="red" style="color: white;" @click="dialog = false">
-            Cancelar
+          <v-btn color="black" text @click="dialog = false">
+            <span style="text-transform: none;">Cancelar</span>
           </v-btn>
-          <v-btn color="#8C6E39" style="color: white;" @click="publicarViaje">
-            Publicar
+          <v-btn color="#8C6E39" class="white--text" @click="publicarViaje">
+            <span style="text-transform: none;">Publicar</span>
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
+
     <!-- Dialogo para el boton de panico-->
     <v-dialog v-model="panicDialog" max-width="800px">
       <v-card>
@@ -386,11 +436,6 @@ export default {
           to: '/home'
         },
         {
-          icon: 'mdi-airplane',
-          title: 'Publicar Viaje',
-          dialog: true
-        },
-        {
           icon: 'mdi-account',
           title: 'Mi Perfil',
           to: '/profile'
@@ -476,34 +521,33 @@ export default {
       }
     },
 
-    publicarViaje () {
+    async publicarViaje () {
       if (!this.$refs.form.validate()) {
         return
       }
 
       const id = this.$store.state.user.id
       const sendData = {
-        inicio: this.Lsalida,
-        destino: this.Ldestino,
+        inicio: this.Lsalida.toUpperCase(),
+        destino: this.Ldestino.toUpperCase(),
         fecha: this.Fecha,
         precio: this.Precio,
         hora: this.HoraSalida,
         capacidad: this.Nasientos,
-        descripcion: this.Detalles,
+        descripcion: this.Detalles.toUpperCase(),
         disponible: true,
         id
       }
 
       const url = '/registrarviaje'
       // Agregar logs antes de la solicitud
-      this.$axios.post(url, sendData)
+      await this.$axios.post(url, sendData)
         .then((res) => {
           if (res.data.success) {
-            // eslint-disable-next-line no-console
-            console.log('REGISTRO EXITOSO')
-          } else {
-            // eslint-disable-next-line no-console
-            console.log('ERROR AL REGISTRAR')
+            this.$store.commit('modifySnackbar', true)
+            this.$store.commit('modifyColor', 'green darken-4')
+            this.$store.commit('modifyIcon', 'mdi-check-bold')
+            this.$store.commit('modifyText', 'VIAJE PUBLICADO CORRECTAMENTE')
           }
           this.resetForm()
           this.dialog = false
@@ -511,7 +555,10 @@ export default {
         .catch((err) => {
           // eslint-disable-next-line no-console
           console.log('@@@ err => ', err)
-          alert('Ocurrió un error al publicar el viaje. Por favor, inténtalo de nuevo.')
+          this.$store.commit('modifySnackbar', true)
+          this.$store.commit('modifyColor', 'red darken-4')
+          this.$store.commit('modifyIcon', 'mdi-alert-circle')
+          this.$store.commit('modifyText', 'OCURRIÓ UN ERROR AL PUBLICAR EL VIAJE')
         })
       this.resetForm()
       this.dialog = false
@@ -548,11 +595,13 @@ export default {
 
     obtenerDatosUsuarios () {
       this.user = Object.keys(this.$store.state.user).length > 0 ? this.$store.state.user : JSON.parse(localStorage.getItem('user'))
+      console.log('🚀 ~ obtenerDatosUsuarios ~ this.user:', this.user)
       this.$store.commit('setUser', this.user)
       this.token = this.$store.state.token ? this.$store.state.token : localStorage.getItem('token')
       this.$store.commit('setToken', this.token)
       this.nombre = this.user.nombre + ' ' + this.user.apaterno + ' ' + this.user.amaterno
       this.img = this.user.img
+      console.log('🚀 ~ obtenerDatosUsuarios ~ this.img:', this.img)
     },
 
     logOut () {
