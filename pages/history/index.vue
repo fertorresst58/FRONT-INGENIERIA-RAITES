@@ -1,5 +1,18 @@
 <template>
   <div>
+    <v-row class="mb-4" align="center" justify="center">
+      <v-col cols="12" align="center" justify="center">
+        <v-btn
+          color="#8C6E39"
+          class="fontTitle white--text"
+          height="38px"
+          @click="recuperarDatos()"
+        >
+          <v-icon>mdi-refresh</v-icon>&nbsp;
+          <span style="text-transform: none;">Actualizar</span>
+        </v-btn>
+      </v-col>
+    </v-row>
     <v-expansion-panels
       v-model="panel"
       class="expansion-panels"
@@ -182,9 +195,9 @@
 
         <v-form ref="form" v-model="validForm">
           <v-row class="pa-2">
-            <v-col cols="12" md="6">
+            <v-col cols="12">
               <v-row>
-                <v-col cols="12" md="6">
+                <v-col cols="12">
                   <v-card height="265px" elevation="0">
                     <v-card-subtitle class="fontSubtitle">
                       Califica tu viaje
@@ -452,6 +465,7 @@ export default {
         return null
       }
     },
+
     async findDriver (viajeId) {
       const viajeID = viajeId
       const sendData = {
@@ -471,6 +485,7 @@ export default {
         return null
       }
     },
+
     recuperarDatos () {
       const url = '/home'
       const id = this.$store.state.user.id
