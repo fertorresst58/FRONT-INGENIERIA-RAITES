@@ -378,19 +378,20 @@ export default {
           ciudad: this.ciudad.toUpperCase(),
           campus: this.campus.toUpperCase()
         }
-        const response = await this.$axios.put(url, data)
-
-        if (response.data.message === 'success') {
-          let user = localStorage.getItem('user')
-          user = JSON.parse(user)
-          user.email = this.correo
-          const updatedUser = JSON.stringify(user)
-          localStorage.setItem('user', updatedUser)
-          this.closeDialog()
-        } else {
-          // eslint-disable-next-line no-console
-          console.error('Error al actualizar información del usuario:', response.data.message)
-        }
+        await this.$axios.put(url, data)
+          .then((response) => {
+            if (response.data.success) {
+              let user = localStorage.getItem('user')
+              user = JSON.parse(user)
+              user.email = this.correo
+              const updatedUser = JSON.stringify(user)
+              localStorage.setItem('user', updatedUser)
+              this.closeDialog()
+            } else {
+              // eslint-disable-next-line no-console
+              console.error('Error al actualizar información del usuario:', response.data.message)
+            }
+          })
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error('Error al enviar solicitud de actualización:', error)

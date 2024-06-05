@@ -461,7 +461,7 @@
       max-width="800px"
       persistent
     >
-      <v-stepper v-model="stepperDisponibles" alt-labels>
+      <v-stepper v-model="stepperDisponibles">
         <v-stepper-header
           class="blueBack black--text"
         >
