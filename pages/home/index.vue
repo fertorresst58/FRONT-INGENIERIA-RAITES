@@ -634,7 +634,7 @@
             <v-btn
               color="#FFD300"
               class="fontTitle"
-              @click="stepperDisponibles = 3"
+              @click="validarEquipaje()"
             >
               <span style="text-transform: none;">Continuar</span>
             </v-btn>
@@ -988,6 +988,7 @@ export default {
 
     cerrarDialogDisponibles () {
       this.dialogDisponibles = false
+      this.stepperDisponibles = 1
       this.asientos = 0
       this.raiteDisponibleSelected = []
       this.equipajes = []
@@ -1069,10 +1070,10 @@ export default {
       this.dialogPay = false
       this.urlPay = ''
       this.sessionId = ''
-      this.successPay = ''
       if (this.successPay === 'paid') {
         this.cerrarDialogDisponibles()
       }
+      this.successPay = ''
     },
 
     async actualizarBD () {
@@ -1102,6 +1103,25 @@ export default {
           this.$store.commit('modifyIcon', 'mdi-alert-circle')
           this.$store.commit('modifyText', 'ERROR AL RESERVAR VIAJE')
         })
+    },
+
+    validarEquipaje () {
+      if (this.equipajes.length > 0 && this.asientos > 0) {
+        const todosEquipajesConDatos = this.equipajes.every(equipaje => equipaje !== null && equipaje !== undefined && equipaje !== '')
+        if (todosEquipajesConDatos) {
+          this.stepperDisponibles = 3
+        } else {
+          this.$store.commit('modifySnackbar', true)
+          this.$store.commit('modifyColor', 'red darken-4')
+          this.$store.commit('modifyIcon', 'mdi-alert-circle')
+          this.$store.commit('modifyText', 'ALGUNOS PASAJEROS NO TIENEN SU EQUIPAJE SELECCIONADO')
+        }
+      } else {
+        this.$store.commit('modifySnackbar', true)
+        this.$store.commit('modifyColor', 'red darken-4')
+        this.$store.commit('modifyIcon', 'mdi-alert-circle')
+        this.$store.commit('modifyText', 'DEBES DE SELECCIONAR AL MENOS UN PASAJERO CON SU EQUIPAJE')
+      }
     }
   }
 }
