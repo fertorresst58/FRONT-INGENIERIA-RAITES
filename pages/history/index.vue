@@ -300,7 +300,7 @@
                 <v-card height="265px" elevation="0">
                   <v-card-title class="fontTitle">
                     <v-avatar>
-                      <v-img :src="user.imagen" />
+                      <v-img :src="user.img" />
                     </v-avatar>
                     <span class="ml-3">{{ user.nombre }} {{ user.apaterno }} {{ user.amaterno }}</span>
                   </v-card-title>
